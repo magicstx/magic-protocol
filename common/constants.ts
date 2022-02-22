@@ -16,6 +16,7 @@ import { WebProvider } from '@clarigen/web';
 
 export let network: StacksNetwork;
 export let btcNetwork: networks.Network;
+
 export const NETWORK_CONFIG = process.env.NEXT_PUBLIC_NETWORK || 'mocknet';
 if (NETWORK_CONFIG === 'mainnet') {
   network = new StacksMainnet({

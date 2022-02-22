@@ -7,12 +7,17 @@ import { Transaction } from 'bitcoinjs-lib';
 import { bytesToHex } from 'micro-stacks/common';
 
 export function getElectrumConfig() {
+  const defaultHost = process.env.ELECTRUM_HOST;
+  const defaultPort = process.env.ELECTRUM_PORT
+    ? parseInt(process.env.ELECTRUM_PORT, 10)
+    : undefined;
+  const defaultProtocol = process.env.ELECTRUM_PROTOCOL;
   switch (NETWORK_CONFIG) {
     case 'testnet':
       return {
-        host: 'testnet.electrumx.hodlwallet.com',
-        port: 51002,
-        protocol: 'ssl',
+        host: defaultHost || 'blackie.c3-soft.com',
+        port: defaultPort === undefined ? 57006 : defaultPort,
+        protocol: defaultProtocol || 'ssl',
       };
     case 'mocknet':
       return {
@@ -86,7 +91,7 @@ export async function getTxData(txid: string, address: string) {
     });
 
     const outputIndex = tx.vout.findIndex(vout => {
-      return vout.scriptPubKey.addresses[0] === address;
+      return vout.scriptPubKey.addresses?.[0] === address;
     });
 
     const blockArg = {
