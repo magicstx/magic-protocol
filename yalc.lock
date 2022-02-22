@@ -1,0 +1,54 @@
+{
+  "version": "v1",
+  "packages": {
+    "@micro-stacks/nextjs": {
+      "signature": "d7ad2321f48c144bc1e5e504bf210565",
+      "file": true,
+      "replaced": "0.0.8"
+    },
+    "@clarigen/web": {
+      "signature": "385424e74c765066001de7829d1bd288",
+      "file": true,
+      "replaced": "^0.3.2"
+    },
+    "@clarigen/node": {
+      "signature": "c605056c28f5b45d7e2c98f1afd49ca9",
+      "file": true,
+      "replaced": "0.3.1"
+    },
+    "@clarigen/native-bin": {
+      "signature": "a648f0abfb3a6c6df784af31a25b453f",
+      "file": true,
+      "replaced": "^0.3.2"
+    },
+    "jotai-query-toolkit": {
+      "signature": "dec36ef73b45d050f9e11633c35b2ed5",
+      "file": true,
+      "replaced": "0.1.17"
+    },
+    "@clarigen/core": {
+      "signature": "db9e3e1deb4229917d1f2919d7f80ac0",
+      "file": true,
+      "replaced": "^0.3.2"
+    },
+    "micro-stacks": {
+      "signature": "db11499a1a2758b52d0afbc5e827dd80",
+      "file": true,
+      "replaced": "^0.1.0"
+    },
+    "@nelson-ui/react": {
+      "signature": "78731f569f80f0cdd65b27df7ac2e5a1",
+      "file": true,
+      "replaced": "latest"
+    },
+    "@nelson-ui/core": {
+      "signature": "ebdd37169a999e24ca70eacb66ec6704",
+      "file": true,
+      "replaced": "latest"
+    },
+    "@nelson-ui/theme": {
+      "signature": "ca67066bcc0882a79cc3b6d65ac79d31",
+      "file": true
+    }
+  }
+}

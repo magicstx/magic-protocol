@@ -1,0 +1,23 @@
+[project]
+name = "bridge"
+requirements = []
+
+[contracts.ft-trait]
+path = "contracts/ft-trait.clar"
+depends_on = []
+
+[contracts.test-utils]
+path = "contracts/test/test-utils.clar"
+depends_on = []
+
+[contracts.xbtc]
+path = "contracts/xbtc.clar"
+depends_on = ["ft-trait"]
+
+[contracts.clarity-bitcoin]
+path = "contracts/clarity-bitcoin.clar"
+depends_on = ["test-utils"]
+
+[contracts.bridge]
+path = "contracts/bridge.clar"
+depends_on = ["xbtc", "clarity-bitcoin"]

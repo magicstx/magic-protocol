@@ -1,0 +1,78 @@
+import { WalletConnectButton } from './wallet-connect-button';
+import { Box, SpaceBetween, Stack } from '@nelson-ui/react';
+import { Text } from './text';
+import React, { useMemo } from 'react';
+import { Link } from './link';
+import { useBalances } from '../common/hooks/use-balances';
+import { SafeSuspense } from './safe-suspense';
+import BigNumber from 'bignumber.js';
+import { useAuth } from '@micro-stacks/react';
+import { NETWORK_CONFIG } from '../common/constants';
+import { BurstIcon } from './icons/burst';
+
+export const Balance: React.FC<{ label: string; amount: string; decimals: number }> = ({
+  amount,
+  label,
+  decimals,
+}) => {
+  const formatted = useMemo(() => {
+    return new BigNumber(amount).shiftedBy(-1 * decimals).toFormat();
+  }, [amount, decimals]);
+  return (
+    <SpaceBetween spacing="$1">
+      <Text variant="Label01" color="$color-slate-85">
+        {formatted}
+      </Text>
+      <Text variant="Label01" color="$color-slate-75">
+        {label}
+      </Text>
+    </SpaceBetween>
+  );
+};
+
+export const Balances: React.FC = () => {
+  const balances = useBalances();
+  return (
+    <Stack isInline spacing="40px">
+      <Balance label="xBTC" amount={balances.xbtc} decimals={8} />
+      <Balance label="STX" amount={balances.stx} decimals={6} />
+    </Stack>
+  );
+};
+
+export function Header() {
+  const { isSignedIn, session } = useAuth();
+
+  return (
+    <SpaceBetween pt="30px" px="$extra-loose" maxWidth="1100px" mx="auto" width="100vw">
+      <SpaceBetween spacing="40px">
+        <SpaceBetween spacing="12px">
+          <BurstIcon />
+          <Link href="/" variant="Label01">
+            Magic Bridge
+          </Link>
+        </SpaceBetween>
+        {isSignedIn ? (
+          <>
+            <Link href="/swaps" variant="Label01">
+              Swap history
+            </Link>
+            {NETWORK_CONFIG === 'mocknet' ? (
+              <Link href="/faucet" variant="Label01">
+                Faucet
+              </Link>
+            ) : null}
+          </>
+        ) : null}
+      </SpaceBetween>
+      <Stack isInline spacing="40px">
+        {session?.appPrivateKey ? (
+          <SafeSuspense fallback={<></>}>
+            <Balances />
+          </SafeSuspense>
+        ) : null}
+        <WalletConnectButton />
+      </Stack>
+    </SpaceBetween>
+  );
+}
