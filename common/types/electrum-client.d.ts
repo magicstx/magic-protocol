@@ -60,6 +60,7 @@ declare module 'electrum-client-sl' {
           reqSigs: number;
           type: 'scripthash';
           addresses: string[];
+          address: string;
         };
       }[];
     }>;

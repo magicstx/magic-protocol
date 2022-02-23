@@ -91,7 +91,9 @@ export async function getTxData(txid: string, address: string) {
     });
 
     const outputIndex = tx.vout.findIndex(vout => {
-      return vout.scriptPubKey.addresses?.[0] === address;
+      const addressesMatch = vout.scriptPubKey.addresses?.[0] === address;
+      const addressMatch = vout.scriptPubKey.address === address;
+      return addressMatch || addressesMatch;
     });
 
     const blockArg = {
