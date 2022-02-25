@@ -2,6 +2,8 @@
 
 This repository is the codebase for the Magic Bridge contracts and web application.
 
+Check out the [Magic docs](https://docs.magic.fun) for more information about how Magic works.
+
 ## Contracts
 
 The main contract for Magic is [./contracts/bridge.clar](`bridge.clar`), where all protocol-specific logic is handled. You can find tests for this contract under the `test` directory.
