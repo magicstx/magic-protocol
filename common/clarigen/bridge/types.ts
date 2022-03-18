@@ -34,6 +34,15 @@ export interface BridgeContract {
   initiateOutboundSwap: (xbtc: number | bigint, btcVersion: Uint8Array, btcHash: Uint8Array, operatorId: number | bigint) => ContractCalls.Public<bigint, bigint>;
   registerOperator: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string, funds: number | bigint) => ContractCalls.Public<bigint, bigint>;
   removeFunds: (amount: number | bigint) => ContractCalls.Public<bigint, bigint>;
+  revokeExpiredOutbound: (swapId: number | bigint) => ContractCalls.Public<{
+  "created-at": bigint;
+  "hash": Uint8Array;
+  "operator": bigint;
+  "sats": bigint;
+  "swapper": string;
+  "version": Uint8Array;
+  "xbtc": bigint
+    }, bigint>;
   updateOperator: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string) => ContractCalls.Public<{
   "controller": string;
   "inbound-base-fee": bigint;
@@ -132,6 +141,15 @@ export interface BridgeContract {
   validateBtcAddr: (version: Uint8Array, hash: Uint8Array) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
   validateExpiration: (expiration: number | bigint, minedHeight: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
   validateFee: (feeOpt: bigint | null) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
+  validateOutboundRevocable: (swapId: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+  "created-at": bigint;
+  "hash": Uint8Array;
+  "operator": bigint;
+  "sats": bigint;
+  "swapper": string;
+  "version": Uint8Array;
+  "xbtc": bigint
+    }, bigint>>;
   completedOutboundSwapTxids: (key: Uint8Array) => ContractCalls.Map<Uint8Array, bigint>;
   completedOutboundSwaps: (key: number | bigint) => ContractCalls.Map<number | bigint, Uint8Array>;
   inboundMeta: (key: Uint8Array) => ContractCalls.Map<Uint8Array, {

@@ -492,6 +492,63 @@ export const BridgeInterface: ClarityAbi = {
       "access": "public",
       "args": [
         {
+          "name": "swap-id",
+          "type": "uint128"
+        }
+      ],
+      "name": "revoke-expired-outbound",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": {
+              "tuple": [
+                {
+                  "name": "created-at",
+                  "type": "uint128"
+                },
+                {
+                  "name": "hash",
+                  "type": {
+                    "buffer": {
+                      "length": 20
+                    }
+                  }
+                },
+                {
+                  "name": "operator",
+                  "type": "uint128"
+                },
+                {
+                  "name": "sats",
+                  "type": "uint128"
+                },
+                {
+                  "name": "swapper",
+                  "type": "principal"
+                },
+                {
+                  "name": "version",
+                  "type": {
+                    "buffer": {
+                      "length": 1
+                    }
+                  }
+                },
+                {
+                  "name": "xbtc",
+                  "type": "uint128"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "access": "public",
+      "args": [
+        {
           "name": "public-key",
           "type": {
             "buffer": {
@@ -1596,6 +1653,63 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       }
+    },
+    {
+      "access": "read_only",
+      "args": [
+        {
+          "name": "swap-id",
+          "type": "uint128"
+        }
+      ],
+      "name": "validate-outbound-revocable",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": {
+              "tuple": [
+                {
+                  "name": "created-at",
+                  "type": "uint128"
+                },
+                {
+                  "name": "hash",
+                  "type": {
+                    "buffer": {
+                      "length": 20
+                    }
+                  }
+                },
+                {
+                  "name": "operator",
+                  "type": "uint128"
+                },
+                {
+                  "name": "sats",
+                  "type": "uint128"
+                },
+                {
+                  "name": "swapper",
+                  "type": "principal"
+                },
+                {
+                  "name": "version",
+                  "type": {
+                    "buffer": {
+                      "length": 1
+                    }
+                  }
+                },
+                {
+                  "name": "xbtc",
+                  "type": "uint128"
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   ],
   "fungible_tokens": [],
@@ -2051,6 +2165,26 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "constant",
+      "name": "ERR_REVOKE_OUTBOUND_IS_FINALIZED",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
+      "name": "ERR_REVOKE_OUTBOUND_NOT_EXPIRED",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
       "name": "ERR_SWAPPER_EXISTS",
       "type": {
         "response": {
@@ -2146,6 +2280,15 @@ export const BridgeInterface: ClarityAbi = {
     {
       "access": "constant",
       "name": "P2SH_VERSION",
+      "type": {
+        "buffer": {
+          "length": 1
+        }
+      }
+    },
+    {
+      "access": "constant",
+      "name": "REVOKED_OUTBOUND_TXID",
       "type": {
         "buffer": {
           "length": 1

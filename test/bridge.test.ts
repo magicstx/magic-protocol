@@ -28,7 +28,7 @@ import { privateKey, publicKey, publicKeys } from './mocks';
 import { script as bScript, Transaction, payments, networks } from 'bitcoinjs-lib';
 import { base58checkDecode } from 'micro-stacks/crypto';
 import { NativeClarityBinProvider } from '@clarigen/native-bin';
-import { ContractReturn } from '@clarigen/core';
+import { ContractReturn, CoreNodeEventType, filterEvents } from '@clarigen/core';
 
 let contract: BridgeContract;
 let xbtcContract: XbtcContract;
@@ -36,12 +36,13 @@ let testUtils: TestUtilsContract;
 let clarityBtc: ClarityBitcoinContract;
 let t: TestProvider;
 
-let bridgeId: string;
-
 const deployer = accounts.deployer.address;
 const operator = accounts.operator.address;
 const swapper = accounts.swapper.address;
 const alice = accounts.wallet_3.address;
+
+let bridgeId: string;
+const xbtcTokenId = `${deployer}.xbtc::xbtc`;
 
 const feeIn = 300n;
 const feeOut = 100n;
@@ -333,8 +334,7 @@ describe('successful inbound swap', () => {
   });
 
   test('validates proper amount of xbtc moved', () => {
-    const tokensMoved =
-      finalizeReceipt.assets.tokens[`${deployer}.bridge`][`${deployer}.xbtc::xbtc`];
+    const tokensMoved = finalizeReceipt.assets.tokens[`${deployer}.bridge`][xbtcTokenId];
     expect(BigInt(tokensMoved)).toEqual(xbtcAmount);
   });
 
@@ -637,7 +637,7 @@ describe('successful outbound swap', () => {
   });
 
   test('tx sent the right amount of xbtc', async () => {
-    const tokensMoved = receipt.assets.tokens[swapper][`${deployer}.xbtc::xbtc`];
+    const tokensMoved = receipt.assets.tokens[swapper][xbtcTokenId];
     expect(tokensMoved).toEqual(xbtcAmount.toString());
     const balance = await t.rovOk(xbtcContract.getBalance(swapper));
     expect(balance).toEqual(swapperBalanceBefore - xbtcAmount);
@@ -696,6 +696,60 @@ describe('successful outbound swap', () => {
     expect(await t.rov(contract.getTotalOutboundVolume())).toEqual(xbtcAmount);
     expect(await t.rov(contract.getUserTotalVolume(swapper))).toEqual(newTotal);
     expect(await t.rov(contract.getTotalVolume())).toEqual(newTotal);
+  });
+});
+
+describe('revoking outbound swap', () => {
+  const address = '1AbDToGxjv4TmrouWHfyCRSkQdRM5uujup';
+  const decoded = base58checkDecode(address);
+  const version = hexToBytes(numberToHex(decoded.version));
+  const hash = Buffer.from(decoded.hash);
+  const xbtcAmount = 10000n;
+  const sats = getSwapAmount(xbtcAmount, feeOut, 100);
+  let swapperBalanceBefore: bigint;
+  let bridgeBalanceBefore: bigint;
+  let operatorFundsBefore: bigint;
+  let receipt: PublicResultOk<bigint>;
+  let swapId: bigint;
+  let prevVolume: bigint;
+
+  const payment = payments.p2pkh({ hash, network: networks.regtest });
+  const txHex = makeTxHex(payment, Number(sats));
+  const txid = hexToBytes(Transaction.fromBuffer(txHex).getId());
+
+  beforeAll(async () => {
+    swapperBalanceBefore = await t.rovOk(xbtcContract.getBalance(swapper));
+    bridgeBalanceBefore = await t.rovOk(xbtcContract.getBalance(bridgeId));
+    operatorFundsBefore = (await t.rov(contract.getFunds(0n)))!;
+    prevVolume = await t.rov(contract.getTotalVolume());
+    await t.txOk(testUtils.setMined(txid), deployer);
+    receipt = await t.txOk(contract.initiateOutboundSwap(xbtcAmount, version, hash, 0n), swapper);
+    swapId = receipt.value;
+  });
+
+  test('cannot revoke if not expired', async () => {
+    const receipt = await t.txErr(contract.revokeExpiredOutbound(swapId), swapper);
+    expect(receipt.value).toEqual(25n);
+  });
+
+  describe('after expiration', () => {
+    beforeAll(async () => {
+      await mineBlocks(199n, t);
+    });
+
+    test('can revoke an outbound swap after expiration', async () => {
+      // anyone can call this function
+      const receipt = await t.txOk(contract.revokeExpiredOutbound(swapId), alice);
+      const events = filterEvents(receipt.events, CoreNodeEventType.FtTransferEvent);
+      expect(events.length).toEqual(1);
+      const [ftTransfer] = events;
+      expect(ftTransfer.ft_transfer_event.sender).toEqual(bridgeId);
+      expect(ftTransfer.ft_transfer_event.recipient).toEqual(swapper);
+      expect(ftTransfer.ft_transfer_event.amount).toEqual(xbtcAmount.toString());
+      expect(ftTransfer.ft_transfer_event.asset_identifier).toEqual(xbtcTokenId);
+
+      expect(receipt.assets.tokens[bridgeId][xbtcTokenId]).toEqual(xbtcAmount.toString());
+    });
   });
 });
 

@@ -64,6 +64,9 @@
 (define-constant P2PKH_VERSION 0x00)
 (define-constant P2SH_VERSION 0x05)
 
+;; use a placeholder txid to mark as "finalized"
+(define-constant REVOKED_OUTBOUND_TXID 0x00)
+
 (define-constant ERR_PANIC (err u1)) ;; should never be thrown
 (define-constant ERR_OPERATOR_EXISTS (err u2))
 (define-constant ERR_UNAUTHORIZED (err u3))
@@ -88,6 +91,8 @@
 (define-constant ERR_INVALID_BTC_ADDR (err u22))
 (define-constant ERR_SWAP_NOT_FOUND (err u23))
 (define-constant ERR_INSUFFICIENT_AMOUNT (err u24))
+(define-constant ERR_REVOKE_OUTBOUND_NOT_EXPIRED (err u25))
+(define-constant ERR_REVOKE_OUTBOUND_IS_FINALIZED (err u26))
 
 (define-public (register-operator
     (public-key (buff 33))
@@ -276,7 +281,7 @@
         (operator-id (get operator swap))
         (xbtc (get xbtc swap))
         (escrowed (unwrap! (map-get? operator-escrow operator-id) ERR_PANIC))
-        (swapper (unwrap! (map-get? swapper-by-id (get swapper swap)) ERR_PANIC))
+        (swapper (unwrap! (get-swapper-principal (get swapper swap)) ERR_PANIC))
       )
       (map-insert inbound-preimages txid preimage)
       (try! (as-contract (transfer xbtc tx-sender swapper)))
@@ -344,6 +349,19 @@
     (asserts! (>= output-sats (get sats swap)) ERR_INSUFFICIENT_AMOUNT)
     (update-user-outbound-volume (get swapper swap) xbtc)
     (ok true)
+  )
+)
+
+(define-public (revoke-expired-outbound (swap-id uint))
+  (let
+    (
+      (swap (try! (validate-outbound-revocable swap-id)))
+      (xbtc (get xbtc swap))
+      (swapper (get swapper swap))
+    )
+    (try! (as-contract (transfer xbtc tx-sender swapper)))
+    (asserts! (map-insert completed-outbound-swaps swap-id REVOKED_OUTBOUND_TXID) ERR_PANIC)
+    (ok swap)
   )
 )
 
@@ -572,6 +590,23 @@
     )
     (asserts! (and valid-hash valid-version) ERR_INVALID_BTC_ADDR)
     (ok true)
+  )
+)
+
+;; lookup an outbound swap and validate that it is revocable.
+;; to be revoked, it must be expired and not finalized
+(define-read-only (validate-outbound-revocable (swap-id uint))
+  (let
+    (
+      (swap (unwrap! (get-outbound-swap swap-id) ERR_SWAP_NOT_FOUND))
+      (finalize-txid (get-completed-outbound-swap-txid swap-id))
+      (swap-expiration (+ (get created-at swap) OUTBOUND_EXPIRATION))
+      (is-expired (>= block-height swap-expiration))
+      (is-not-finalized (is-none finalize-txid))
+    )
+    (asserts! is-expired ERR_REVOKE_OUTBOUND_NOT_EXPIRED)
+    (asserts! is-not-finalized ERR_REVOKE_OUTBOUND_IS_FINALIZED)
+    (ok swap)
   )
 )
 
