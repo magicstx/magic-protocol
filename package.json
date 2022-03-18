@@ -1,6 +1,7 @@
 {
   "name": "bridge-ui",
   "private": true,
+  "version": "0.1.0",
   "scripts": {
     "dev": "MICRO_STACKS_DEBUG=true next dev -p 4444",
     "build": "next build",
@@ -17,12 +18,12 @@
   },
   "prettier": "@stacks/prettier-config",
   "dependencies": {
-    "@clarigen/cli": "1.0.0-next.7",
-    "@clarigen/core": "1.0.0-next.7",
-    "@clarigen/native-bin": "1.0.0-next.7",
-    "@clarigen/node": "1.0.0-next.7",
-    "@clarigen/test": "1.0.0-next.7",
-    "@clarigen/web": "1.0.0-next.7",
+    "@clarigen/cli": "1.0.0-next.9",
+    "@clarigen/core": "1.0.0-next.9",
+    "@clarigen/native-bin": "1.0.0-next.9",
+    "@clarigen/node": "1.0.0-next.9",
+    "@clarigen/test": "1.0.0-next.9",
+    "@clarigen/web": "1.0.0-next.9",
     "@mempool/mempool.js": "^2.2.4",
     "@micro-stacks/nextjs": "0.0.15",
     "@micro-stacks/query": "0.0.11",
@@ -73,6 +74,8 @@
   },
   "devDependencies": {
     "@babel/template": "7.16.0",
+    "@changesets/changelog-github": "^0.4.3",
+    "@changesets/cli": "^2.21.1",
     "@stacks/eslint-config": "1.0.9",
     "@stacks/prettier-config": "0.0.9",
     "@stacks/stacks-blockchain-api-types": "0.70.1",
