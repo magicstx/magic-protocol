@@ -24,7 +24,7 @@ export interface BridgeContract {
   finalizeOutboundSwap: (block: {
   "header": Uint8Array;
   "height": bigint
-    }, tx: Uint8Array, proof: {
+    }, prevBlocks: Uint8Array[], tx: Uint8Array, proof: {
   "hashes": Uint8Array[];
   "tree-depth": bigint;
   "tx-index": bigint

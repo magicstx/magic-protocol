@@ -294,6 +294,19 @@ export const BridgeInterface: ClarityAbi = {
           }
         },
         {
+          "name": "prev-blocks",
+          "type": {
+            "list": {
+              "length": 10,
+              "type": {
+                "buffer": {
+                  "length": 80
+                }
+              }
+            }
+          }
+        },
+        {
           "name": "tx",
           "type": {
             "buffer": {

@@ -681,6 +681,7 @@ describe('successful outbound swap', () => {
     const receipt = await t.txOk(
       contract.finalizeOutboundSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,

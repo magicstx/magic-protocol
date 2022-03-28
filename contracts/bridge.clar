@@ -323,6 +323,7 @@
 
 (define-public (finalize-outbound-swap
     (block { header: (buff 80), height: uint })
+    (prev-blocks (list 10 (buff 80)))
     (tx (buff 1024))
     (proof { tx-index: uint, hashes: (list 12 (buff 32)), tree-depth: uint })
     (output-index uint)
@@ -330,7 +331,7 @@
   )
   (let
     (
-      (was-mined-bool (unwrap! (contract-call? .clarity-bitcoin was-tx-mined? block tx proof) ERR_TX_NOT_MINED))
+      (was-mined-bool (unwrap! (contract-call? .clarity-bitcoin was-tx-mined-prev? block prev-blocks tx proof) ERR_TX_NOT_MINED))
       (was-mined (asserts! was-mined-bool ERR_TX_NOT_MINED))
       (swap (unwrap! (get-outbound-swap swap-id) ERR_SWAP_NOT_FOUND))
       (expected-output (generate-output (get version swap) (get hash swap)))
