@@ -259,6 +259,7 @@ describe('successful inbound swap', () => {
     const receipt = await t.txOk(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -312,6 +313,7 @@ describe('successful inbound swap', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -390,7 +392,13 @@ describe('validating inbound swaps', () => {
   test('validates that tx was mined', async () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
-        { header: Buffer.from([]), height: 1n },
+        {
+          header: hexToBytes(
+            '046000205b8fe9509c8d5059419ecb0c7d8899ac5a33f4cc075b03000000000000000000d8ec11bb52893d95e8f240c0c44c2e837d239b930ed246f78b140be4841f459df46e3d62c0400a17a9ad0873'
+          ),
+          height: 1n,
+        },
+        [],
         txHex,
         proof,
         0n,
@@ -411,6 +419,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -440,6 +449,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -462,6 +472,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txBuff,
         proof,
         0n,
@@ -493,6 +504,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -523,6 +535,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -553,6 +566,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -575,6 +589,7 @@ describe('validating inbound swaps', () => {
       await t.txOk(
         contract.escrowSwap(
           { header: Buffer.from([]), height: 1n },
+          [],
           txHex,
           proof,
           0n,

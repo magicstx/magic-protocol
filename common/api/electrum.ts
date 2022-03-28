@@ -1,6 +1,6 @@
 import ElectrumClient from 'electrum-client-sl';
 import { reverseBuffer } from '../htlc';
-import { getStacksBlock } from './stacks';
+import { confirmationsToHeight, findStacksBlockAtHeight, getStacksBlock } from './stacks';
 import { BridgeContract } from '../clarigen';
 import { NETWORK_CONFIG } from '../constants';
 import { Transaction } from 'bitcoinjs-lib';
@@ -59,8 +59,9 @@ export async function withElectrumClient<T = void>(
 }
 
 type MintParams = Parameters<BridgeContract['escrowSwap']>;
+type BlocksParam = MintParams[1];
 type BlockParam = MintParams[0];
-type ProofParam = MintParams[2];
+type ProofParam = MintParams[3];
 
 export type TxData = Awaited<ReturnType<typeof getTxData>>;
 
@@ -76,14 +77,16 @@ export function getTxHex(txHex: string) {
 }
 
 export async function getTxData(txid: string, address: string) {
-  await electrumClient.connect();
+  try {
+    await electrumClient.close();
+  } catch (error) {}
+  try {
+    await electrumClient.connect();
+  } catch (error) {}
   try {
     const tx = await electrumClient.blockchain_transaction_get(txid, true);
-
-    const blockHash = tx.blockhash;
-
-    const { burnHeight, stacksHeight } = await getStacksBlock(blockHash);
-    const header = await electrumClient.blockchain_block_header(burnHeight);
+    const burnHeight = await confirmationsToHeight(tx.confirmations);
+    const { header, stacksHeight, prevBlocks } = await findStacksBlockAtHeight(burnHeight, []);
 
     const merkle = await electrumClient.blockchain_transaction_getMerkle(txid, burnHeight);
     const hashes = merkle.merkle.map(hash => {
@@ -113,10 +116,12 @@ export async function getTxData(txid: string, address: string) {
       txHex: txHex,
       proof: proofArg,
       block: blockArg,
+      prevBlocks,
       tx,
       outputIndex,
     };
   } catch (error) {
+    console.error(error);
     await electrumClient.close();
     throw error;
   }

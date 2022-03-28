@@ -20,6 +20,7 @@ export const useEscrowSwap = (swap: InboundSwapSent) => {
     const swapperHex = numberToLE(swapperId);
     const escrowTx = contracts.bridge.contract.escrowSwap(
       txData.block,
+      txData.prevBlocks,
       txData.txHex,
       txData.proof,
       txData.outputIndex,
