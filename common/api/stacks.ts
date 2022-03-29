@@ -1,3 +1,4 @@
+import type ElectrumClient from 'electrum-client-sl';
 import { Configuration, BlocksApi, TransactionsApi, InfoApi } from '@stacks/blockchain-api-client';
 import type {
   AddressBalanceResponse,
@@ -13,7 +14,6 @@ import {
   fetchBlockByBurnBlockHeight,
   fetchCoreApiInfo,
 } from 'micro-stacks/api';
-import { electrumClient } from './electrum';
 
 export const apiConfig = new Configuration({
   fetchApi: fetch,
@@ -63,7 +63,8 @@ interface StacksBlockByHeight {
 }
 export async function findStacksBlockAtHeight(
   height: number,
-  prevBlocks: string[]
+  prevBlocks: string[],
+  electrumClient: ElectrumClient
 ): Promise<StacksBlockByHeight> {
   const [header, stacksHeight] = await Promise.all([
     electrumClient.blockchain_block_header(height),
@@ -77,7 +78,7 @@ export async function findStacksBlockAtHeight(
     };
   }
   prevBlocks.unshift(header);
-  return findStacksBlockAtHeight(height + 1, prevBlocks);
+  return findStacksBlockAtHeight(height + 1, prevBlocks, electrumClient);
 }
 
 export async function confirmationsToHeight(confirmations: number) {

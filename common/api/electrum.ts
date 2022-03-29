@@ -45,6 +45,12 @@ export const electrumClient = new ElectrumClient(
 export async function withElectrumClient<T = void>(
   cb: (client: ElectrumClient) => Promise<T>
 ): Promise<T> {
+  const electrumConfig = getElectrumConfig();
+  const electrumClient = new ElectrumClient(
+    electrumConfig.host,
+    electrumConfig.port,
+    electrumConfig.protocol
+  );
   const client = electrumClient;
   await client.connect();
   try {
@@ -77,16 +83,14 @@ export function getTxHex(txHex: string) {
 }
 
 export async function getTxData(txid: string, address: string) {
-  try {
-    await electrumClient.close();
-  } catch (error) {}
-  try {
-    await electrumClient.connect();
-  } catch (error) {}
-  try {
+  return withElectrumClient(async electrumClient => {
     const tx = await electrumClient.blockchain_transaction_get(txid, true);
     const burnHeight = await confirmationsToHeight(tx.confirmations);
-    const { header, stacksHeight, prevBlocks } = await findStacksBlockAtHeight(burnHeight, []);
+    const { header, stacksHeight, prevBlocks } = await findStacksBlockAtHeight(
+      burnHeight,
+      [],
+      electrumClient
+    );
 
     const merkle = await electrumClient.blockchain_transaction_getMerkle(txid, burnHeight);
     const hashes = merkle.merkle.map(hash => {
@@ -120,9 +124,5 @@ export async function getTxData(txid: string, address: string) {
       tx,
       outputIndex,
     };
-  } catch (error) {
-    console.error(error);
-    await electrumClient.close();
-    throw error;
-  }
+  });
 }
