@@ -5,7 +5,7 @@ import type { Query } from 'jotai-query-toolkit/nextjs';
 import { atomWithStorage } from 'jotai/utils';
 import { getPublicKey } from 'noble-secp256k1';
 import { BridgeContract } from '../clarigen';
-import { OperatorsApi } from '../../pages/api/operators';
+import type { SuppliersApi } from '../../pages/api/suppliers';
 import { LOCAL_URL, webProvider, contracts, NETWORK_CONFIG } from '../constants';
 import { generateGaiaHubConfig } from 'micro-stacks/storage';
 import { bytesToHex, hexToBytes, IntegerType } from 'micro-stacks/common';
@@ -14,9 +14,9 @@ import { intToString } from '../utils';
 const bridge = contracts.bridge.contract;
 
 export enum QueryKeys {
-  OPERATORID = 'operatorById',
+  SUPPLIERID = 'supplierById',
   SWAPPERID = 'swapperId',
-  OPERATORS = 'operators',
+  SUPPLIERS = 'suppliers',
   INBOUND_SWAPS_TXID = 'inboundSwapsTxid',
   GAIA_CONFIG = 'gaiaConfig',
   INBOUND_SWAPS = 'inboundSwaps',
@@ -31,46 +31,46 @@ export enum QueryKeys {
   BTC_BALANCES = 'btcBalances',
 }
 
-export async function fetchOperatorWithContract(id: number, bridge: BridgeContract) {
-  const [operator, funds] = await Promise.all([
-    webProvider.ro(bridge.getOperator(id)),
+export async function fetchSupplierWithContract(id: number, bridge: BridgeContract) {
+  const [supplier, funds] = await Promise.all([
+    webProvider.ro(bridge.getSupplier(id)),
     webProvider.ro(bridge.getFunds(id)),
   ]);
-  if (operator && funds !== null) {
+  if (supplier && funds !== null) {
     return {
-      controller: operator.controller,
-      inboundFee: Number(operator['inbound-fee']),
-      outboundFee: Number(operator['outbound-fee']),
-      outboundBaseFee: Number(operator['outbound-base-fee']),
-      inboundBaseFee: Number(operator['inbound-base-fee']),
-      publicKey: bytesToHex(operator['public-key']),
+      controller: supplier.controller,
+      inboundFee: Number(supplier['inbound-fee']),
+      outboundFee: Number(supplier['outbound-fee']),
+      outboundBaseFee: Number(supplier['outbound-base-fee']),
+      inboundBaseFee: Number(supplier['inbound-base-fee']),
+      publicKey: bytesToHex(supplier['public-key']),
       funds: Number(funds),
-      name: operator.name,
+      name: supplier.name,
       id,
     };
   }
-  throw new Error(`Could not find operator with id ${id}`);
+  throw new Error(`Could not find supplier with id ${id}`);
 }
 
-export async function fetchOperator(id: number) {
+export async function fetchSupplier(id: number) {
   try {
     // const bridge = webProvider().bridge.contract;
-    const operator = await fetchOperatorWithContract(id, bridge);
-    if (operator === null) {
-      throw new Error(`Could not find operator with id ${id}`);
+    const supplier = await fetchSupplierWithContract(id, bridge);
+    if (supplier === null) {
+      throw new Error(`Could not find supplier with id ${id}`);
     }
-    return operator;
+    return supplier;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
 
-export async function fetchAllOperatorsApi() {
-  const url = `${LOCAL_URL}/api/operators`;
+export async function fetchAllSuppliersApi() {
+  const url = `${LOCAL_URL}/api/suppliers`;
   const res = await fetch(url);
-  const data = (await res.json()) as OperatorsApi;
-  return data.operators;
+  const data = (await res.json()) as SuppliersApi;
+  return data.suppliers;
 }
 
 export async function fetchSwapperId(address: string) {
@@ -102,17 +102,17 @@ export type OutboundSwap = Awaited<ReturnType<typeof fetchOutboundSwap>>;
 
 export type InboundSwap = Awaited<ReturnType<typeof fetchInboundSwap>>;
 
-export type Operator = Awaited<ReturnType<typeof fetchOperator>>;
+export type Supplier = Awaited<ReturnType<typeof fetchSupplier>>;
 
 // ---
 // atoms
 // ---
-export const operatorState = atomFamilyWithQuery<number, Operator>(
-  (get, param) => [QueryKeys.OPERATORID, param],
+export const supplierState = atomFamilyWithQuery<number, Supplier>(
+  (get, param) => [QueryKeys.SUPPLIERID, param],
   async (get, param) => {
     try {
-      const operator = await fetchOperator(param);
-      return operator;
+      const supplier = await fetchSupplier(param);
+      return supplier;
     } catch (error) {
       console.error(error);
       throw error;
@@ -134,9 +134,9 @@ export const swapperIdState = atomWithQuery(QueryKeys.SWAPPERID, async get => {
   return id;
 });
 
-export const operatorsState = atomWithQuery(QueryKeys.OPERATORS, async get => {
-  const operators = await fetchAllOperatorsApi();
-  return operators;
+export const suppliersState = atomWithQuery(QueryKeys.SUPPLIERS, async get => {
+  const suppliers = await fetchAllSuppliersApi();
+  return suppliers;
 });
 
 export const inboundSwapByTxidState = atomFamilyWithQuery<string, InboundSwap>(
@@ -167,7 +167,7 @@ export const finalizedOutboundSwapState = atomFamilyWithQuery<string, string | n
 export const btcAddressState = atomWithStorage('btcAddress', '');
 export const secretState = atomWithStorage('secret', '');
 
-export const selectedOperatorState = atom<Operator | null>(null);
+export const selectedSupplierState = atom<Supplier | null>(null);
 
 export const publicKeyState = atom(get => {
   const session = get(stacksSessionAtom);
@@ -190,22 +190,15 @@ export const gaiaConfigState = atomWithQuery(QueryKeys.GAIA_CONFIG, async get =>
 // ---
 // queries
 // ---
-// export const operatorQuery: Query<{ id: number }> = [
-//   QueryKeys.OPERATORID,
-//   (ctx, query) => {
-//     if (!query?.id) throw new Error('Missing id param');
-//     return fetchOperator(query.id);
-//   },
-// ];
 
-export const operatorQuery = (id: number): Query => {
+export const supplierQuery = (id: number): Query => {
   return [
-    [QueryKeys.OPERATORID, id],
+    [QueryKeys.SUPPLIERID, id],
     async () => {
       try {
-        const operator = await fetchOperator(id);
-        if (operator === null) throw new Error('Operator not found');
-        return operator;
+        const supplier = await fetchSupplier(id);
+        if (supplier === null) throw new Error('Supplier not found');
+        return supplier;
       } catch (error) {
         console.error(error);
         throw error;
@@ -214,10 +207,10 @@ export const operatorQuery = (id: number): Query => {
   ];
 };
 
-export const operatorsQuery: Query = [
-  QueryKeys.OPERATORS,
+export const suppliersQuery: Query = [
+  QueryKeys.SUPPLIERS,
   async () => {
-    return await fetchAllOperatorsApi();
+    return await fetchAllSuppliersApi();
   },
 ];
 
@@ -233,13 +226,13 @@ export const swapperIdQuery = (address: string): Query => {
 // ---
 // hooks
 // ---
-export const useOperator = (id: number) => useQueryAtom(operatorState(id));
+export const useSupplier = (id: number) => useQueryAtom(supplierState(id));
 export const useSwapperId = () => {
   const [val] = useQueryAtom(swapperIdState);
   if (val === null) return null;
   return val.id;
 };
-export const useOperators = () => useQueryAtom(operatorsState);
+export const useSuppliers = () => useQueryAtom(suppliersState);
 
 export const useInboundSwap = (txid: string) => useQueryAtom(inboundSwapByTxidState(txid));
 

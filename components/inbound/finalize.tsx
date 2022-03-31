@@ -34,8 +34,8 @@ export const SwapFinalize: React.FC = () => {
   if (!('escrowTxid' in swap)) throw new Error('Invalid swap state');
   const [escrowTx] = useStxTx(swap.escrowTxid);
   const xbtc = useMemo(() => {
-    return getSwapAmount(swap.satsAmount, swap.operator.inboundFee, swap.operator.inboundBaseFee);
-  }, [swap.satsAmount, swap.operator.inboundFee, swap.operator.inboundBaseFee]);
+    return getSwapAmount(swap.satsAmount, swap.supplier.inboundFee, swap.supplier.inboundBaseFee);
+  }, [swap.satsAmount, swap.supplier.inboundFee, swap.supplier.inboundBaseFee]);
 
   const finalizeTx = useFinalizeInbound({
     txid: swap.btcTxid,

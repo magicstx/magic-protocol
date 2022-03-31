@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Text } from '../text';
 import { Box, Flex } from '@nelson-ui/react';
-import { Operator, useOperators } from '../../common/store';
+import { Supplier, useSuppliers } from '../../common/store';
 import { styled } from '@stitches/react';
 import { SupplierRow } from './supplier-row';
 import { amountState, useSwapForm } from '../../common/hooks/use-swap-form';
@@ -10,13 +10,13 @@ import { useAtomValue } from 'jotai/utils';
 export const SelectSupplier: React.FC = () => {
   const { outputToken } = useSwapForm();
 
-  const [operators] = useOperators();
+  const [suppliers] = useSuppliers();
 
   const rows = useMemo(() => {
-    return operators.map(operator => {
-      return <SupplierRow operator={operator} key={operator.id} outputToken={outputToken} />;
+    return suppliers.map(supplier => {
+      return <SupplierRow supplier={supplier} key={supplier.id} outputToken={outputToken} />;
     });
-  }, [operators, outputToken]);
+  }, [suppliers, outputToken]);
 
   const token = useMemo(() => {
     return outputToken === 'xbtc' ? 'xBTC' : 'BTC';

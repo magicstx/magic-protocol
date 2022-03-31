@@ -99,8 +99,8 @@ export const SwapDone: React.FC = () => {
             <Divider />
             <FinalSummary
               satsAmount={swap.satsAmount}
-              fee={swap.operator.inboundFee}
-              baseFee={swap.operator.inboundBaseFee}
+              fee={swap.supplier.inboundFee}
+              baseFee={swap.supplier.inboundBaseFee}
             />
           </>
         ) : null}

@@ -24,7 +24,7 @@ async function run() {
   const OPERATOR_PUBLIC = hexToBytes(pubHex);
   console.log('OPERATOR_PUBLIC', pubHex);
 
-  const registerTx = bridge.registerOperator(
+  const registerTx = bridge.registerSupplier(
     OPERATOR_PUBLIC,
     BigInt(inboundFee || 50n),
     BigInt(outboundFee || 30n),

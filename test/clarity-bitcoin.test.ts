@@ -10,7 +10,7 @@ let testUtils: TestUtilsContract;
 const alice = accounts.wallet_3.address;
 
 beforeAll(async () => {
-  const { bridge, ...rest } = contracts;
+  const { bridge, supplierWrapper, ...rest } = contracts;
   const { deployed, provider } = await TestProvider.fromContracts({
     ...rest,
     clarityBitcoin: {
@@ -18,6 +18,7 @@ beforeAll(async () => {
       contractFile: 'contracts/test/clarity-bitcoin.clar',
     },
     bridge,
+    supplierWrapper,
   });
   t = provider;
   contract = deployed.clarityBitcoin.contract;
