@@ -1,4 +1,4 @@
-(define-map operator-by-id uint {
+(define-map supplier-by-id uint {
   public-key: (buff 33),
   controller: principal,
   inbound-fee: (optional int),
@@ -7,20 +7,20 @@
   inbound-base-fee: int,
   name: (string-ascii 18)
 })
-(define-map operator-by-public-key (buff 33) uint)
-(define-map operator-by-controller principal uint)
-(define-map operator-by-name (string-ascii 18) uint)
+(define-map supplier-by-public-key (buff 33) uint)
+(define-map supplier-by-controller principal uint)
+(define-map supplier-by-name (string-ascii 18) uint)
 
 (define-map swapper-by-id uint principal)
 (define-map swapper-by-principal principal uint)
 
-(define-map operator-funds uint uint)
-(define-map operator-escrow uint uint)
+(define-map supplier-funds uint uint)
+(define-map supplier-escrow uint uint)
 
 (define-map inbound-swaps (buff 32) {
   swapper: uint,
   xbtc: uint,
-  operator: uint,
+  supplier: uint,
   expiration: uint,
   hash: (buff 32),
 })
@@ -37,7 +37,7 @@
   swapper: principal,
   sats: uint,
   xbtc: uint,
-  operator: uint,
+  supplier: uint,
   version: (buff 1),
   hash: (buff 20),
   created-at: uint,
@@ -53,7 +53,7 @@
 (define-map user-outbound-volume-map principal uint)
 (define-data-var total-outbound-volume-var uint u0)
 
-(define-data-var next-operator-id uint u0)
+(define-data-var next-supplier-id uint u0)
 (define-data-var next-swapper-id uint u0)
 (define-data-var next-outbound-id uint u0)
 
@@ -68,18 +68,18 @@
 (define-constant REVOKED_OUTBOUND_TXID 0x00)
 
 (define-constant ERR_PANIC (err u1)) ;; should never be thrown
-(define-constant ERR_OPERATOR_EXISTS (err u2))
+(define-constant ERR_supplier_EXISTS (err u2))
 (define-constant ERR_UNAUTHORIZED (err u3))
 (define-constant ERR_ADD_FUNDS (err u4))
 (define-constant ERR_TRANSFER (err u5))
-(define-constant ERR_OPERATOR_NOT_FOUND (err u6))
+(define-constant ERR_supplier_NOT_FOUND (err u6))
 (define-constant ERR_SWAPPER_NOT_FOUND (err u7))
 (define-constant ERR_FEE_INVALID (err u8))
 (define-constant ERR_SWAPPER_EXISTS (err u9))
 (define-constant ERR_INVALID_TX (err u10))
 (define-constant ERR_INVALID_OUTPUT (err u11))
 (define-constant ERR_INVALID_HASH (err u12))
-(define-constant ERR_INVALID_OPERATOR (err u13))
+(define-constant ERR_INVALID_supplier (err u13))
 (define-constant ERR_INSUFFICIENT_FUNDS (err u14))
 (define-constant ERR_INVALID_EXPIRATION (err u15))
 (define-constant ERR_TXID_USED (err u16))
@@ -94,7 +94,7 @@
 (define-constant ERR_REVOKE_OUTBOUND_NOT_EXPIRED (err u25))
 (define-constant ERR_REVOKE_OUTBOUND_IS_FINALIZED (err u26))
 
-(define-public (register-operator
+(define-public (register-supplier
     (public-key (buff 33))
     (inbound-fee (optional int))
     (outbound-fee (optional int))
@@ -105,8 +105,8 @@
   )
   (let
     (
-      (id (var-get next-operator-id))
-      (operator { 
+      (id (var-get next-supplier-id))
+      (supplier { 
         inbound-fee: inbound-fee, 
         outbound-fee: outbound-fee, 
         public-key: public-key, 
@@ -116,17 +116,17 @@
         name: name,
       })
     )
-    (asserts! (map-insert operator-by-id id operator) ERR_PANIC)
-    (asserts! (map-insert operator-funds id u0) ERR_PANIC)
-    (asserts! (map-insert operator-escrow id u0) ERR_PANIC)
+    (asserts! (map-insert supplier-by-id id supplier) ERR_PANIC)
+    (asserts! (map-insert supplier-funds id u0) ERR_PANIC)
+    (asserts! (map-insert supplier-escrow id u0) ERR_PANIC)
     (try! (validate-fee inbound-fee))
     (try! (validate-fee outbound-fee))
 
     ;; validate that the public key and controller do not exist
-    (asserts! (map-insert operator-by-public-key public-key id) ERR_OPERATOR_EXISTS)
-    (asserts! (map-insert operator-by-controller tx-sender id) ERR_OPERATOR_EXISTS)
-    (asserts! (map-insert operator-by-name name id) ERR_OPERATOR_EXISTS)
-    (var-set next-operator-id (+ id u1))
+    (asserts! (map-insert supplier-by-public-key public-key id) ERR_supplier_EXISTS)
+    (asserts! (map-insert supplier-by-controller tx-sender id) ERR_supplier_EXISTS)
+    (asserts! (map-insert supplier-by-name name id) ERR_supplier_EXISTS)
+    (var-set next-supplier-id (+ id u1))
     (try! (add-funds funds))
     (ok id)
   )
@@ -135,12 +135,12 @@
 (define-public (add-funds (amount uint))
   (let
     (
-      (operator-id (unwrap! (get-operator-id-by-controller contract-caller) ERR_UNAUTHORIZED))
-      (existing-funds (get-funds operator-id))
+      (supplier-id (unwrap! (get-supplier-id-by-controller contract-caller) ERR_UNAUTHORIZED))
+      (existing-funds (get-funds supplier-id))
       (new-funds (+ amount existing-funds))
     )
     (try! (transfer amount tx-sender (as-contract tx-sender)))
-    (map-set operator-funds operator-id new-funds)
+    (map-set supplier-funds supplier-id new-funds)
     (ok new-funds)
   )
 )
@@ -148,19 +148,19 @@
 (define-public (remove-funds (amount uint))
   (let
     (
-      (operator-id (unwrap! (get-operator-id-by-controller contract-caller) ERR_UNAUTHORIZED))
-      (existing-funds (get-funds operator-id))
+      (supplier-id (unwrap! (get-supplier-id-by-controller contract-caller) ERR_UNAUTHORIZED))
+      (existing-funds (get-funds supplier-id))
       (amount-ok (asserts! (>= existing-funds amount) ERR_INSUFFICIENT_FUNDS))
       (new-funds (- existing-funds amount))
       (controller contract-caller)
     )
     (try! (as-contract (transfer amount tx-sender controller)))
-    (map-set operator-funds operator-id new-funds)
+    (map-set supplier-funds supplier-id new-funds)
     (ok new-funds)
   )
 )
 
-(define-public (update-operator
+(define-public (update-supplier
     (public-key (buff 33))
     (inbound-fee (optional int))
     (outbound-fee (optional int))
@@ -170,9 +170,9 @@
   )
   (let
     (
-      (operator-id (unwrap! (get-operator-id-by-controller contract-caller) ERR_UNAUTHORIZED))
-      (existing-operator (unwrap! (get-operator operator-id) ERR_PANIC))
-      (operator { 
+      (supplier-id (unwrap! (get-supplier-id-by-controller contract-caller) ERR_UNAUTHORIZED))
+      (existing-supplier (unwrap! (get-supplier supplier-id) ERR_PANIC))
+      (supplier { 
         inbound-fee: inbound-fee, 
         outbound-fee: outbound-fee, 
         public-key: public-key, 
@@ -183,13 +183,13 @@
       })
     )
     ;; validate that the public key and name do not exist
-    (asserts! (map-insert operator-by-public-key public-key operator-id) ERR_OPERATOR_EXISTS)
-    (asserts! (map-insert operator-by-name name operator-id) ERR_OPERATOR_EXISTS)
+    (asserts! (map-insert supplier-by-public-key public-key supplier-id) ERR_supplier_EXISTS)
+    (asserts! (map-insert supplier-by-name name supplier-id) ERR_supplier_EXISTS)
     ;; delete old mappings
-    (asserts! (map-delete operator-by-public-key (get public-key existing-operator)) ERR_PANIC)
-    (asserts! (map-delete operator-by-name (get name existing-operator)) ERR_PANIC)
-    (map-set operator-by-id operator-id operator)
-    (ok operator)
+    (asserts! (map-delete supplier-by-public-key (get public-key existing-supplier)) ERR_PANIC)
+    (asserts! (map-delete supplier-by-name (get name existing-supplier)) ERR_PANIC)
+    (map-set supplier-by-id supplier-id supplier)
+    (ok supplier)
   )
 )
 
@@ -217,7 +217,7 @@
     (expiration-buff (buff 4))
     (hash (buff 32))
     (swapper-buff (buff 4))
-    (operator-id uint)
+    (supplier-id uint)
   )
   (let
     (
@@ -229,13 +229,13 @@
       (parsed-tx (unwrap! (contract-call? .clarity-bitcoin parse-tx tx) ERR_INVALID_TX))
       (output (unwrap! (element-at (get outs parsed-tx) output-index) ERR_INVALID_TX))
       (output-script (get scriptPubKey output))
-      (operator (unwrap! (map-get? operator-by-id operator-id) ERR_INVALID_OPERATOR))
+      (supplier (unwrap! (map-get? supplier-by-id supplier-id) ERR_INVALID_supplier))
       (sats (get value output))
-      (fee-rate (unwrap! (get inbound-fee operator) ERR_INVALID_OPERATOR))
-      (xbtc (try! (get-swap-amount sats fee-rate (get inbound-base-fee operator))))
-      (funds (get-funds operator-id))
+      (fee-rate (unwrap! (get inbound-fee supplier) ERR_INVALID_supplier))
+      (xbtc (try! (get-swap-amount sats fee-rate (get inbound-base-fee supplier))))
+      (funds (get-funds supplier-id))
       (funds-ok (asserts! (>= funds xbtc) ERR_INSUFFICIENT_FUNDS))
-      (escrowed (unwrap! (map-get? operator-escrow operator-id) ERR_PANIC))
+      (escrowed (unwrap! (map-get? supplier-escrow supplier-id) ERR_PANIC))
       (new-funds (- funds xbtc))
       (new-escrow (+ escrowed xbtc))
       (expiration (try! (read-uint32 expiration-buff (len expiration-buff))))
@@ -244,7 +244,7 @@
       (expiration-ok (try! (validate-expiration expiration mined-height)))
       (escrow {
         swapper: swapper-id,
-        operator: operator-id,
+        supplier: supplier-id,
         xbtc: xbtc,
         expiration: (+ mined-height (- expiration ESCROW_EXPIRATION)),
         hash: hash,
@@ -258,14 +258,14 @@
       })
       (event (merge escrow meta))
     )
-    (asserts! (is-eq (get public-key operator) recipient) ERR_INVALID_OUTPUT)
+    (asserts! (is-eq (get public-key supplier) recipient) ERR_INVALID_OUTPUT)
     (asserts! (is-eq output-script htlc-output) ERR_INVALID_OUTPUT)
     (asserts! (is-eq (len hash) u32) ERR_INVALID_HASH)
     (asserts! (map-insert inbound-swaps txid escrow) ERR_TXID_USED)
     (asserts! (map-insert inbound-meta txid meta) ERR_PANIC)
     (unwrap! (map-get? swapper-by-id swapper-id) ERR_SWAPPER_NOT_FOUND)
-    (map-set operator-funds operator-id new-funds)
-    (map-set operator-escrow operator-id new-escrow)
+    (map-set supplier-funds supplier-id new-funds)
+    (map-set supplier-escrow supplier-id new-escrow)
     (print (merge meta { topic: "escrow" }))
     (ok meta)
   )
@@ -279,15 +279,15 @@
         (swap (unwrap! (map-get? inbound-swaps txid) ERR_INVALID_ESCROW))
         (stored-hash (get hash swap))
         (preimage-ok (asserts! (is-eq (sha256 preimage) stored-hash) ERR_INVALID_PREIMAGE))
-        (operator-id (get operator swap))
+        (supplier-id (get supplier swap))
         (xbtc (get xbtc swap))
-        (escrowed (unwrap! (map-get? operator-escrow operator-id) ERR_PANIC))
+        (escrowed (unwrap! (map-get? supplier-escrow supplier-id) ERR_PANIC))
         (swapper (unwrap! (get-swapper-principal (get swapper swap)) ERR_PANIC))
       )
       (map-insert inbound-preimages txid preimage)
       (try! (as-contract (transfer xbtc tx-sender swapper)))
       (asserts! (>= (get expiration swap) block-height) ERR_ESCROW_EXPIRED)
-      (map-set operator-escrow operator-id (- escrowed xbtc))
+      (map-set supplier-escrow supplier-id (- escrowed xbtc))
       (update-user-inbound-volume swapper xbtc)
       (ok true)
     )
@@ -296,16 +296,16 @@
 
 ;; outbound swaps
 
-(define-public (initiate-outbound-swap (xbtc uint) (btc-version (buff 1)) (btc-hash (buff 20)) (operator-id uint))
+(define-public (initiate-outbound-swap (xbtc uint) (btc-version (buff 1)) (btc-hash (buff 20)) (supplier-id uint))
   (let
     (
-      (operator (unwrap! (map-get? operator-by-id operator-id) ERR_INVALID_OPERATOR))
-      (fee-rate (unwrap! (get outbound-fee operator) ERR_INVALID_OPERATOR))
-      (sats (try! (get-swap-amount xbtc fee-rate (get outbound-base-fee operator))))
+      (supplier (unwrap! (map-get? supplier-by-id supplier-id) ERR_INVALID_supplier))
+      (fee-rate (unwrap! (get outbound-fee supplier) ERR_INVALID_supplier))
+      (sats (try! (get-swap-amount xbtc fee-rate (get outbound-base-fee supplier))))
       (swap {
         sats: sats,
         xbtc: xbtc,
-        operator: operator-id,
+        supplier: supplier-id,
         version: btc-version,
         hash: btc-hash,
         created-at: burn-block-height,
@@ -341,10 +341,10 @@
       (txid (contract-call? .clarity-bitcoin get-txid tx))
       (output-sats (get value output))
       (xbtc (get xbtc swap))
-      (operator (get operator swap))
-      (funds-before (get-funds operator))
+      (supplier (get supplier swap))
+      (funds-before (get-funds supplier))
     )
-    (map-set operator-funds operator (+ funds-before xbtc))
+    (map-set supplier-funds supplier (+ funds-before xbtc))
     (asserts! (is-eq output-script expected-output) ERR_INVALID_OUTPUT)
     (asserts! (map-insert completed-outbound-swaps swap-id txid) ERR_ALREADY_FINALIZED)
     (asserts! (map-insert completed-outbound-swap-txids txid swap-id) ERR_TXID_USED)
@@ -369,31 +369,31 @@
 
 ;; getters
 
-(define-read-only (get-operator-id-by-controller (controller principal))
-  (map-get? operator-by-controller controller)
+(define-read-only (get-supplier-id-by-controller (controller principal))
+  (map-get? supplier-by-controller controller)
 )
 
-(define-read-only (get-operator-id-by-public-key (public-key (buff 33)))
-  (map-get? operator-by-public-key public-key)
+(define-read-only (get-supplier-id-by-public-key (public-key (buff 33)))
+  (map-get? supplier-by-public-key public-key)
 )
 
-(define-read-only (get-operator-by-name (name (string-ascii 18)))
-  (map-get? operator-by-name name)
+(define-read-only (get-supplier-by-name (name (string-ascii 18)))
+  (map-get? supplier-by-name name)
 )
 
-(define-read-only (get-operator (id uint))
-  (map-get? operator-by-id id)
+(define-read-only (get-supplier (id uint))
+  (map-get? supplier-by-id id)
 )
 
 (define-read-only (get-funds (id uint))
-  (match (map-get? operator-funds id)
+  (match (map-get? supplier-funds id)
     funds funds
     u0
   )
 )
 
 (define-read-only (get-escrow (id uint))
-  (map-get? operator-escrow id)
+  (map-get? supplier-escrow id)
 )
 
 (define-read-only (get-inbound-swap (txid (buff 32)))
@@ -424,18 +424,18 @@
   (map-get? swapper-by-id id)
 )
 
-(define-read-only (get-next-operator-id) (var-get next-operator-id))
+(define-read-only (get-next-supplier-id) (var-get next-supplier-id))
 (define-read-only (get-next-swapper-id) (var-get next-swapper-id))
 (define-read-only (get-next-outbound-id) (var-get next-outbound-id))
 
-(define-read-only (get-full-operator (id uint))
+(define-read-only (get-full-supplier (id uint))
   (let
     (
-      (operator (unwrap! (get-operator id) ERR_INVALID_OPERATOR))
+      (supplier (unwrap! (get-supplier id) ERR_INVALID_supplier))
       (funds (get-funds id))
       (escrow (unwrap! (get-escrow id) ERR_PANIC))
     )
-    (ok (merge operator { funds: funds, escrow: escrow }))
+    (ok (merge supplier { funds: funds, escrow: escrow }))
   )
 )
 

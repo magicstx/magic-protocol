@@ -226,7 +226,7 @@ export const BridgeInterface: ClarityAbi = {
           }
         },
         {
-          "name": "operator-id",
+          "name": "supplier-id",
           "type": "uint128"
         }
       ],
@@ -428,7 +428,7 @@ export const BridgeInterface: ClarityAbi = {
           }
         },
         {
-          "name": "operator-id",
+          "name": "supplier-id",
           "type": "uint128"
         }
       ],
@@ -486,7 +486,7 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "register-operator",
+      "name": "register-supplier",
       "outputs": {
         "type": {
           "response": {
@@ -542,11 +542,11 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 },
                 {
-                  "name": "operator",
+                  "name": "sats",
                   "type": "uint128"
                 },
                 {
-                  "name": "sats",
+                  "name": "supplier",
                   "type": "uint128"
                 },
                 {
@@ -611,7 +611,7 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "update-operator",
+      "name": "update-supplier",
       "outputs": {
         "type": {
           "response": {
@@ -1032,10 +1032,6 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 },
                 {
-                  "name": "operator",
-                  "type": "uint128"
-                },
-                {
                   "name": "output-index",
                   "type": "uint128"
                 },
@@ -1060,6 +1056,10 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 },
                 {
+                  "name": "supplier",
+                  "type": "uint128"
+                },
+                {
                   "name": "swapper",
                   "type": "uint128"
                 },
@@ -1081,7 +1081,7 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-full-operator",
+      "name": "get-full-supplier",
       "outputs": {
         "type": {
           "response": {
@@ -1235,7 +1235,7 @@ export const BridgeInterface: ClarityAbi = {
                 }
               },
               {
-                "name": "operator",
+                "name": "supplier",
                 "type": "uint128"
               },
               {
@@ -1254,7 +1254,7 @@ export const BridgeInterface: ClarityAbi = {
     {
       "access": "read_only",
       "args": [],
-      "name": "get-next-operator-id",
+      "name": "get-next-outbound-id",
       "outputs": {
         "type": "uint128"
       }
@@ -1262,7 +1262,7 @@ export const BridgeInterface: ClarityAbi = {
     {
       "access": "read_only",
       "args": [],
-      "name": "get-next-outbound-id",
+      "name": "get-next-supplier-id",
       "outputs": {
         "type": "uint128"
       }
@@ -1283,7 +1283,84 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-operator",
+      "name": "get-outbound-swap",
+      "outputs": {
+        "type": {
+          "optional": {
+            "tuple": [
+              {
+                "name": "created-at",
+                "type": "uint128"
+              },
+              {
+                "name": "hash",
+                "type": {
+                  "buffer": {
+                    "length": 20
+                  }
+                }
+              },
+              {
+                "name": "sats",
+                "type": "uint128"
+              },
+              {
+                "name": "supplier",
+                "type": "uint128"
+              },
+              {
+                "name": "swapper",
+                "type": "principal"
+              },
+              {
+                "name": "version",
+                "type": {
+                  "buffer": {
+                    "length": 1
+                  }
+                }
+              },
+              {
+                "name": "xbtc",
+                "type": "uint128"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "access": "read_only",
+      "args": [
+        {
+          "name": "txid",
+          "type": {
+            "buffer": {
+              "length": 32
+            }
+          }
+        }
+      ],
+      "name": "get-preimage",
+      "outputs": {
+        "type": {
+          "optional": {
+            "buffer": {
+              "length": 128
+            }
+          }
+        }
+      }
+    },
+    {
+      "access": "read_only",
+      "args": [
+        {
+          "name": "id",
+          "type": "uint128"
+        }
+      ],
+      "name": "get-supplier",
       "outputs": {
         "type": {
           "optional": {
@@ -1345,7 +1422,7 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "get-operator-by-name",
+      "name": "get-supplier-by-name",
       "outputs": {
         "type": {
           "optional": "uint128"
@@ -1360,7 +1437,7 @@ export const BridgeInterface: ClarityAbi = {
           "type": "principal"
         }
       ],
-      "name": "get-operator-id-by-controller",
+      "name": "get-supplier-id-by-controller",
       "outputs": {
         "type": {
           "optional": "uint128"
@@ -1379,87 +1456,10 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "get-operator-id-by-public-key",
+      "name": "get-supplier-id-by-public-key",
       "outputs": {
         "type": {
           "optional": "uint128"
-        }
-      }
-    },
-    {
-      "access": "read_only",
-      "args": [
-        {
-          "name": "id",
-          "type": "uint128"
-        }
-      ],
-      "name": "get-outbound-swap",
-      "outputs": {
-        "type": {
-          "optional": {
-            "tuple": [
-              {
-                "name": "created-at",
-                "type": "uint128"
-              },
-              {
-                "name": "hash",
-                "type": {
-                  "buffer": {
-                    "length": 20
-                  }
-                }
-              },
-              {
-                "name": "operator",
-                "type": "uint128"
-              },
-              {
-                "name": "sats",
-                "type": "uint128"
-              },
-              {
-                "name": "swapper",
-                "type": "principal"
-              },
-              {
-                "name": "version",
-                "type": {
-                  "buffer": {
-                    "length": 1
-                  }
-                }
-              },
-              {
-                "name": "xbtc",
-                "type": "uint128"
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "access": "read_only",
-      "args": [
-        {
-          "name": "txid",
-          "type": {
-            "buffer": {
-              "length": 32
-            }
-          }
-        }
-      ],
-      "name": "get-preimage",
-      "outputs": {
-        "type": {
-          "optional": {
-            "buffer": {
-              "length": 128
-            }
-          }
         }
       }
     },
@@ -1708,11 +1708,11 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 },
                 {
-                  "name": "operator",
+                  "name": "sats",
                   "type": "uint128"
                 },
                 {
-                  "name": "sats",
+                  "name": "supplier",
                   "type": "uint128"
                 },
                 {
@@ -1833,7 +1833,7 @@ export const BridgeInterface: ClarityAbi = {
             }
           },
           {
-            "name": "operator",
+            "name": "supplier",
             "type": "uint128"
           },
           {
@@ -1848,13 +1848,57 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "key": "uint128",
+      "name": "outbound-swaps",
+      "value": {
+        "tuple": [
+          {
+            "name": "created-at",
+            "type": "uint128"
+          },
+          {
+            "name": "hash",
+            "type": {
+              "buffer": {
+                "length": 20
+              }
+            }
+          },
+          {
+            "name": "sats",
+            "type": "uint128"
+          },
+          {
+            "name": "supplier",
+            "type": "uint128"
+          },
+          {
+            "name": "swapper",
+            "type": "principal"
+          },
+          {
+            "name": "version",
+            "type": {
+              "buffer": {
+                "length": 1
+              }
+            }
+          },
+          {
+            "name": "xbtc",
+            "type": "uint128"
+          }
+        ]
+      }
+    },
+    {
       "key": "principal",
-      "name": "operator-by-controller",
+      "name": "supplier-by-controller",
       "value": "uint128"
     },
     {
       "key": "uint128",
-      "name": "operator-by-id",
+      "name": "supplier-by-id",
       "value": {
         "tuple": [
           {
@@ -1906,7 +1950,7 @@ export const BridgeInterface: ClarityAbi = {
           "length": 18
         }
       },
-      "name": "operator-by-name",
+      "name": "supplier-by-name",
       "value": "uint128"
     },
     {
@@ -1915,62 +1959,18 @@ export const BridgeInterface: ClarityAbi = {
           "length": 33
         }
       },
-      "name": "operator-by-public-key",
+      "name": "supplier-by-public-key",
       "value": "uint128"
     },
     {
       "key": "uint128",
-      "name": "operator-escrow",
+      "name": "supplier-escrow",
       "value": "uint128"
     },
     {
       "key": "uint128",
-      "name": "operator-funds",
+      "name": "supplier-funds",
       "value": "uint128"
-    },
-    {
-      "key": "uint128",
-      "name": "outbound-swaps",
-      "value": {
-        "tuple": [
-          {
-            "name": "created-at",
-            "type": "uint128"
-          },
-          {
-            "name": "hash",
-            "type": {
-              "buffer": {
-                "length": 20
-              }
-            }
-          },
-          {
-            "name": "operator",
-            "type": "uint128"
-          },
-          {
-            "name": "sats",
-            "type": "uint128"
-          },
-          {
-            "name": "swapper",
-            "type": "principal"
-          },
-          {
-            "name": "version",
-            "type": {
-              "buffer": {
-                "length": 1
-              }
-            }
-          },
-          {
-            "name": "xbtc",
-            "type": "uint128"
-          }
-        ]
-      }
     },
     {
       "key": "uint128",
@@ -2111,16 +2111,6 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "constant",
-      "name": "ERR_INVALID_OPERATOR",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
       "name": "ERR_INVALID_OUTPUT",
       "type": {
         "response": {
@@ -2151,17 +2141,7 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "constant",
-      "name": "ERR_OPERATOR_EXISTS",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_OPERATOR_NOT_FOUND",
+      "name": "ERR_INVALID_supplier",
       "type": {
         "response": {
           "error": "uint128",
@@ -2281,6 +2261,26 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "constant",
+      "name": "ERR_supplier_EXISTS",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
+      "name": "ERR_supplier_NOT_FOUND",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
       "name": "ESCROW_EXPIRATION",
       "type": "uint128"
     },
@@ -2323,12 +2323,12 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "variable",
-      "name": "next-operator-id",
+      "name": "next-outbound-id",
       "type": "uint128"
     },
     {
       "access": "variable",
-      "name": "next-outbound-id",
+      "name": "next-supplier-id",
       "type": "uint128"
     },
     {

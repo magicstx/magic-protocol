@@ -14,7 +14,7 @@ export interface BridgeContract {
   "hashes": Uint8Array[];
   "tree-depth": bigint;
   "tx-index": bigint
-    }, outputIndex: number | bigint, sender: Uint8Array, recipient: Uint8Array, expirationBuff: Uint8Array, hash: Uint8Array, swapperBuff: Uint8Array, operatorId: number | bigint) => ContractCalls.Public<{
+    }, outputIndex: number | bigint, sender: Uint8Array, recipient: Uint8Array, expirationBuff: Uint8Array, hash: Uint8Array, swapperBuff: Uint8Array, supplierId: number | bigint) => ContractCalls.Public<{
   "csv": bigint;
   "output-index": bigint;
   "redeem-script": Uint8Array;
@@ -31,19 +31,19 @@ export interface BridgeContract {
     }, outputIndex: number | bigint, swapId: number | bigint) => ContractCalls.Public<boolean, bigint>;
   finalizeSwap: (txid: Uint8Array, preimage: Uint8Array) => ContractCalls.Public<boolean, bigint>;
   initializeSwapper: () => ContractCalls.Public<bigint, bigint>;
-  initiateOutboundSwap: (xbtc: number | bigint, btcVersion: Uint8Array, btcHash: Uint8Array, operatorId: number | bigint) => ContractCalls.Public<bigint, bigint>;
-  registerOperator: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string, funds: number | bigint) => ContractCalls.Public<bigint, bigint>;
+  initiateOutboundSwap: (xbtc: number | bigint, btcVersion: Uint8Array, btcHash: Uint8Array, supplierId: number | bigint) => ContractCalls.Public<bigint, bigint>;
+  registerSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string, funds: number | bigint) => ContractCalls.Public<bigint, bigint>;
   removeFunds: (amount: number | bigint) => ContractCalls.Public<bigint, bigint>;
   revokeExpiredOutbound: (swapId: number | bigint) => ContractCalls.Public<{
   "created-at": bigint;
   "hash": Uint8Array;
-  "operator": bigint;
   "sats": bigint;
+  "supplier": bigint;
   "swapper": string;
   "version": Uint8Array;
   "xbtc": bigint
     }, bigint>;
-  updateOperator: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string) => ContractCalls.Public<{
+  updateSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string) => ContractCalls.Public<{
   "controller": string;
   "inbound-base-fee": bigint;
   "inbound-fee": bigint | null;
@@ -69,15 +69,15 @@ export interface BridgeContract {
   "csv": bigint;
   "expiration": bigint;
   "hash": Uint8Array;
-  "operator": bigint;
   "output-index": bigint;
   "redeem-script": Uint8Array;
   "sats": bigint;
   "sender-public-key": Uint8Array;
+  "supplier": bigint;
   "swapper": bigint;
   "xbtc": bigint
     }, bigint>>;
-  getFullOperator: (id: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+  getFullSupplier: (id: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<{
   "controller": string;
   "escrow": bigint;
   "funds": bigint;
@@ -99,14 +99,24 @@ export interface BridgeContract {
   getInboundSwap: (txid: Uint8Array) => ContractCalls.ReadOnly<{
   "expiration": bigint;
   "hash": Uint8Array;
-  "operator": bigint;
+  "supplier": bigint;
   "swapper": bigint;
   "xbtc": bigint
     } | null>;
-  getNextOperatorId: () => ContractCalls.ReadOnly<bigint>;
   getNextOutboundId: () => ContractCalls.ReadOnly<bigint>;
+  getNextSupplierId: () => ContractCalls.ReadOnly<bigint>;
   getNextSwapperId: () => ContractCalls.ReadOnly<bigint>;
-  getOperator: (id: number | bigint) => ContractCalls.ReadOnly<{
+  getOutboundSwap: (id: number | bigint) => ContractCalls.ReadOnly<{
+  "created-at": bigint;
+  "hash": Uint8Array;
+  "sats": bigint;
+  "supplier": bigint;
+  "swapper": string;
+  "version": Uint8Array;
+  "xbtc": bigint
+    } | null>;
+  getPreimage: (txid: Uint8Array) => ContractCalls.ReadOnly<Uint8Array | null>;
+  getSupplier: (id: number | bigint) => ContractCalls.ReadOnly<{
   "controller": string;
   "inbound-base-fee": bigint;
   "inbound-fee": bigint | null;
@@ -115,19 +125,9 @@ export interface BridgeContract {
   "outbound-fee": bigint | null;
   "public-key": Uint8Array
     } | null>;
-  getOperatorByName: (name: string) => ContractCalls.ReadOnly<bigint | null>;
-  getOperatorIdByController: (controller: string) => ContractCalls.ReadOnly<bigint | null>;
-  getOperatorIdByPublicKey: (publicKey: Uint8Array) => ContractCalls.ReadOnly<bigint | null>;
-  getOutboundSwap: (id: number | bigint) => ContractCalls.ReadOnly<{
-  "created-at": bigint;
-  "hash": Uint8Array;
-  "operator": bigint;
-  "sats": bigint;
-  "swapper": string;
-  "version": Uint8Array;
-  "xbtc": bigint
-    } | null>;
-  getPreimage: (txid: Uint8Array) => ContractCalls.ReadOnly<Uint8Array | null>;
+  getSupplierByName: (name: string) => ContractCalls.ReadOnly<bigint | null>;
+  getSupplierIdByController: (controller: string) => ContractCalls.ReadOnly<bigint | null>;
+  getSupplierIdByPublicKey: (publicKey: Uint8Array) => ContractCalls.ReadOnly<bigint | null>;
   getSwapAmount: (amount: number | bigint, feeRate: number | bigint, baseFee: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<bigint, bigint>>;
   getSwapperId: (swapper: string) => ContractCalls.ReadOnly<bigint | null>;
   getSwapperPrincipal: (id: number | bigint) => ContractCalls.ReadOnly<string | null>;
@@ -144,8 +144,8 @@ export interface BridgeContract {
   validateOutboundRevocable: (swapId: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<{
   "created-at": bigint;
   "hash": Uint8Array;
-  "operator": bigint;
   "sats": bigint;
+  "supplier": bigint;
   "swapper": string;
   "version": Uint8Array;
   "xbtc": bigint
@@ -163,12 +163,21 @@ export interface BridgeContract {
   inboundSwaps: (key: Uint8Array) => ContractCalls.Map<Uint8Array, {
   "expiration": bigint;
   "hash": Uint8Array;
-  "operator": bigint;
+  "supplier": bigint;
   "swapper": bigint;
   "xbtc": bigint
     }>;
-  operatorByController: (key: string) => ContractCalls.Map<string, bigint>;
-  operatorById: (key: number | bigint) => ContractCalls.Map<number | bigint, {
+  outboundSwaps: (key: number | bigint) => ContractCalls.Map<number | bigint, {
+  "created-at": bigint;
+  "hash": Uint8Array;
+  "sats": bigint;
+  "supplier": bigint;
+  "swapper": string;
+  "version": Uint8Array;
+  "xbtc": bigint
+    }>;
+  supplierByController: (key: string) => ContractCalls.Map<string, bigint>;
+  supplierById: (key: number | bigint) => ContractCalls.Map<number | bigint, {
   "controller": string;
   "inbound-base-fee": bigint;
   "inbound-fee": bigint | null;
@@ -177,19 +186,10 @@ export interface BridgeContract {
   "outbound-fee": bigint | null;
   "public-key": Uint8Array
     }>;
-  operatorByName: (key: string) => ContractCalls.Map<string, bigint>;
-  operatorByPublicKey: (key: Uint8Array) => ContractCalls.Map<Uint8Array, bigint>;
-  operatorEscrow: (key: number | bigint) => ContractCalls.Map<number | bigint, bigint>;
-  operatorFunds: (key: number | bigint) => ContractCalls.Map<number | bigint, bigint>;
-  outboundSwaps: (key: number | bigint) => ContractCalls.Map<number | bigint, {
-  "created-at": bigint;
-  "hash": Uint8Array;
-  "operator": bigint;
-  "sats": bigint;
-  "swapper": string;
-  "version": Uint8Array;
-  "xbtc": bigint
-    }>;
+  supplierByName: (key: string) => ContractCalls.Map<string, bigint>;
+  supplierByPublicKey: (key: Uint8Array) => ContractCalls.Map<Uint8Array, bigint>;
+  supplierEscrow: (key: number | bigint) => ContractCalls.Map<number | bigint, bigint>;
+  supplierFunds: (key: number | bigint) => ContractCalls.Map<number | bigint, bigint>;
   swapperById: (key: number | bigint) => ContractCalls.Map<number | bigint, string>;
   swapperByPrincipal: (key: string) => ContractCalls.Map<string, bigint>;
   userInboundVolumeMap: (key: string) => ContractCalls.Map<string, bigint>;
