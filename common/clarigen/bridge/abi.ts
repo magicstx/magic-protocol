@@ -386,7 +386,34 @@ export const BridgeInterface: ClarityAbi = {
         "type": {
           "response": {
             "error": "uint128",
-            "ok": "bool"
+            "ok": {
+              "tuple": [
+                {
+                  "name": "expiration",
+                  "type": "uint128"
+                },
+                {
+                  "name": "hash",
+                  "type": {
+                    "buffer": {
+                      "length": 32
+                    }
+                  }
+                },
+                {
+                  "name": "supplier",
+                  "type": "uint128"
+                },
+                {
+                  "name": "swapper",
+                  "type": "uint128"
+                },
+                {
+                  "name": "xbtc",
+                  "type": "uint128"
+                }
+              ]
+            }
           }
         }
       }
@@ -1062,6 +1089,10 @@ export const BridgeInterface: ClarityAbi = {
                 {
                   "name": "swapper",
                   "type": "uint128"
+                },
+                {
+                  "name": "swapper-principal",
+                  "type": "principal"
                 },
                 {
                   "name": "xbtc",

@@ -289,7 +289,7 @@
       (asserts! (>= (get expiration swap) block-height) ERR_ESCROW_EXPIRED)
       (map-set supplier-escrow supplier-id (- escrowed xbtc))
       (update-user-inbound-volume swapper xbtc)
-      (ok true)
+      (ok swap)
     )
   )
 )
@@ -448,8 +448,9 @@
     (
       (swap (unwrap! (get-inbound-swap txid) ERR_INVALID_ESCROW))
       (meta (unwrap! (get-inbound-meta txid) ERR_INVALID_ESCROW))
+      (swapper-principal (unwrap! (get-swapper-principal (get swapper swap)) ERR_PANIC))
     )
-    (ok (merge swap meta))
+    (ok (merge { swapper-principal: swapper-principal } (merge swap meta)))
   )
 )
 

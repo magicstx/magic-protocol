@@ -73,31 +73,31 @@ beforeAll(async () => {
 
 test('can register as operator', async () => {
   const receipt = await t.txOk(
-    contract.registerOperator(publicKey, feeIn, feeOut, 100, 100, 'first', startingFunds),
+    contract.registerSupplier(publicKey, feeIn, feeOut, 100, 100, 'first', startingFunds),
     operator
   );
   expect(receipt.value).toEqual(0n);
 
-  expect(await t.rov(contract.getOperatorIdByController(operator))).toEqual(0n);
-  expect(await t.rov(contract.getOperatorIdByPublicKey(publicKey))).toEqual(0n);
+  expect(await t.rov(contract.getSupplierIdByController(operator))).toEqual(0n);
+  expect(await t.rov(contract.getSupplierIdByPublicKey(publicKey))).toEqual(0n);
 });
 
 test('alice can register as operator', async () => {
   await t.txOk(xbtcContract.transfer(1000, operator, alice, null), operator);
   const receipt = await t.txOk(
-    contract.registerOperator(publicKeys[2], feeIn, feeOut, 100, 100, 'second', 1000),
+    contract.registerSupplier(publicKeys[2], feeIn, feeOut, 100, 100, 'second', 1000),
     alice
   );
   expect(receipt.value).toEqual(1n);
 
-  expect(await t.rov(contract.getOperatorIdByController(alice))).toEqual(1n);
-  expect(await t.rov(contract.getOperatorIdByPublicKey(publicKeys[2]))).toEqual(1n);
+  expect(await t.rov(contract.getSupplierIdByController(alice))).toEqual(1n);
+  expect(await t.rov(contract.getSupplierIdByPublicKey(publicKeys[2]))).toEqual(1n);
 });
 
 test('cannot set invalid fee', async () => {
   async function expectFeeError(inbound: bigint, outbound: bigint) {
     const receipt = await t.txErr(
-      contract.registerOperator(Buffer.from('asdf', 'hex'), inbound, outbound, 0, 0, 'first', 0),
+      contract.registerSupplier(Buffer.from('asdf', 'hex'), inbound, outbound, 0, 0, 'first', 0),
       deployer
     );
     expect(receipt.value).toEqual(8n);
@@ -110,7 +110,7 @@ test('cannot set invalid fee', async () => {
 
 test('cannot re-register with same controller', async () => {
   const receipt = await t.txErr(
-    contract.registerOperator(Buffer.from('asdf', 'hex'), feeIn, feeOut, 0, 0, 'first', 0),
+    contract.registerSupplier(Buffer.from('asdf', 'hex'), feeIn, feeOut, 0, 0, 'first', 0),
     operator
   );
   expect(receipt.value).toEqual(2n);
@@ -118,7 +118,7 @@ test('cannot re-register with same controller', async () => {
 
 test('cannot register with existing public key', async () => {
   const receipt = await t.txErr(
-    contract.registerOperator(publicKey, feeIn, feeOut, 0, 0, 'first', 0),
+    contract.registerSupplier(publicKey, feeIn, feeOut, 0, 0, 'first', 0),
     deployer
   );
   expect(receipt.value).toEqual(2n);
@@ -279,7 +279,7 @@ describe('successful inbound swap', () => {
     if (swap === null) throw new Error('Expected swap');
     expect(swap.expiration).toEqual(501n - 200n);
     expect(swap.swapper).toEqual(0n);
-    expect(swap.operator).toEqual(0n);
+    expect(swap.supplier).toEqual(0n);
     expect(swap.hash).toEqual(hash);
     expect(swap.xbtc).toEqual(xbtcAmount);
   });
@@ -329,7 +329,7 @@ describe('successful inbound swap', () => {
     expect(receipt.value).toEqual(16n);
   });
 
-  let finalizeReceipt: PublicResultOk<boolean>;
+  let finalizeReceipt: PublicResultOk<any>;
 
   test('can finalize an escrow', async () => {
     finalizeReceipt = await t.txOk(contract.finalizeSwap(txid, Buffer.from(preImage)), swapper);
@@ -667,7 +667,7 @@ describe('successful outbound swap', () => {
     expect(swap.xbtc).toEqual(xbtcAmount);
     const blockHeight = await getBlockHeight(t);
     expect(swap['created-at']).toEqual(blockHeight - 1n);
-    expect(swap.operator).toEqual(0n);
+    expect(swap.supplier).toEqual(0n);
     expect(swap.version).toEqual(version);
     expect(Buffer.from(swap.hash)).toEqual(hash);
   });
@@ -775,7 +775,7 @@ describe('validating outbound swaps', () => {
 });
 
 test('can update operator info', async () => {
-  const newOperator: NonNullable<ContractReturn<typeof contract.getOperator>> = {
+  const newOperator: NonNullable<ContractReturn<typeof contract.getSupplier>> = {
     'public-key': publicKeys[3],
     'inbound-base-fee': 123n,
     'outbound-base-fee': 234n,
@@ -786,7 +786,7 @@ test('can update operator info', async () => {
   };
 
   const receipt = await t.txOk(
-    contract.updateOperator(
+    contract.updateSupplier(
       newOperator['public-key'],
       newOperator['inbound-fee'],
       newOperator['outbound-fee'],
@@ -799,6 +799,6 @@ test('can update operator info', async () => {
 
   expect(receipt.value).toEqual(newOperator);
 
-  const op = await t.rov(contract.getOperator(0n));
+  const op = await t.rov(contract.getSupplier(0n));
   expect(op).toEqual(newOperator);
 });

@@ -29,7 +29,13 @@ export interface BridgeContract {
   "tree-depth": bigint;
   "tx-index": bigint
     }, outputIndex: number | bigint, swapId: number | bigint) => ContractCalls.Public<boolean, bigint>;
-  finalizeSwap: (txid: Uint8Array, preimage: Uint8Array) => ContractCalls.Public<boolean, bigint>;
+  finalizeSwap: (txid: Uint8Array, preimage: Uint8Array) => ContractCalls.Public<{
+  "expiration": bigint;
+  "hash": Uint8Array;
+  "supplier": bigint;
+  "swapper": bigint;
+  "xbtc": bigint
+    }, bigint>;
   initializeSwapper: () => ContractCalls.Public<bigint, bigint>;
   initiateOutboundSwap: (xbtc: number | bigint, btcVersion: Uint8Array, btcHash: Uint8Array, supplierId: number | bigint) => ContractCalls.Public<bigint, bigint>;
   registerSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string, funds: number | bigint) => ContractCalls.Public<bigint, bigint>;
@@ -75,6 +81,7 @@ export interface BridgeContract {
   "sender-public-key": Uint8Array;
   "supplier": bigint;
   "swapper": bigint;
+  "swapper-principal": string;
   "xbtc": bigint
     }, bigint>>;
   getFullSupplier: (id: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<{
