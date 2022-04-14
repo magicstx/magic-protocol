@@ -262,6 +262,17 @@ export interface ClarityBitcoinContract {
   "tree-depth": bigint;
   "tx-index": bigint
     }) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
+  verifyPrevBlock: (block: Uint8Array, parent: Uint8Array) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
+  verifyPrevBlocks: (block: Uint8Array, prevBlocks: Uint8Array[]) => ContractCalls.ReadOnly<ClarityTypes.Response<Uint8Array, bigint>>;
+  verifyPrevBlocksFold: (parent: Uint8Array, nextResp: ClarityTypes.Response<Uint8Array, bigint>) => ContractCalls.ReadOnly<ClarityTypes.Response<Uint8Array, bigint>>;
+  wasTxMinedPrev: (block: {
+  "header": Uint8Array;
+  "height": bigint
+    }, prevBlocks: Uint8Array[], tx: Uint8Array, proof: {
+  "hashes": Uint8Array[];
+  "tree-depth": bigint;
+  "tx-index": bigint
+    }) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
   wasTxMined: (block: {
   "header": Uint8Array;
   "height": bigint

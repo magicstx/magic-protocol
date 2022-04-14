@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { pendingInitOutboundState, useInitiateOutbound } from './tx/use-initiate-outbound';
 import nProgress from 'nprogress';
 import { useGenerateOutboundSwap } from './use-generate-outbound-swap';
-import { useAutoSelectOperator } from './use-auto-select-operator';
+import { useAutoSelectSupplier } from './use-auto-select-supplier';
 
 export function oppositeToken(token: Token): Token {
   return token === 'btc' ? 'xbtc' : 'btc';
@@ -35,10 +35,10 @@ export function useSwapForm() {
   const [pendingInitOutbound, setPendingOutbound] = useAtom(pendingInitOutboundState);
   const { generate: generateOutbound } = useGenerateOutboundSwap();
   const { generate } = useGenerateInboundSwap();
-  const { operator } = useAutoSelectOperator(amount.value);
+  const { supplier } = useAutoSelectSupplier(amount.value);
   const fee = useMemo(() => {
-    return inputToken === 'btc' ? operator.inboundFee : operator.outboundFee;
-  }, [inputToken, operator]);
+    return inputToken === 'btc' ? supplier.inboundFee : supplier.outboundFee;
+  }, [inputToken, supplier]);
 
   const feePercent = useMemo(() => {
     return bpsToPercent(fee);
@@ -82,7 +82,7 @@ export function useSwapForm() {
         if (typeof swapperId === 'number') {
           if (!isValid) return;
           const swap = await generate({
-            operator,
+            supplier: supplier,
             inputAmount: btcToSats(amount.value),
           });
           void router.push({
@@ -93,13 +93,13 @@ export function useSwapForm() {
           set(pendingRegisterSwapperState, true);
         }
       },
-      [generate, operator, router, amount.value, swapperId, isValid]
+      [generate, supplier, router, amount.value, swapperId, isValid]
     )
   );
 
   const outboundTx = useInitiateOutbound({
     address: btcAddress.value,
-    operatorId: operator.id,
+    supplierId: supplier.id,
     amount: amount.value,
   });
 
@@ -144,7 +144,7 @@ export function useSwapForm() {
     outputToken,
     outputAmount,
     amount,
-    operator,
+    supplier,
     feePercent,
     submit,
     btcAddress,

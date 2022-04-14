@@ -1,6 +1,6 @@
 import ElectrumClient from 'electrum-client-sl';
 import { reverseBuffer } from '../htlc';
-import { getStacksBlock } from './stacks';
+import { confirmationsToHeight, findStacksBlockAtHeight, getStacksBlock } from './stacks';
 import { BridgeContract } from '../clarigen';
 import { NETWORK_CONFIG } from '../constants';
 import { Transaction } from 'bitcoinjs-lib';
@@ -45,6 +45,12 @@ export const electrumClient = new ElectrumClient(
 export async function withElectrumClient<T = void>(
   cb: (client: ElectrumClient) => Promise<T>
 ): Promise<T> {
+  const electrumConfig = getElectrumConfig();
+  const electrumClient = new ElectrumClient(
+    electrumConfig.host,
+    electrumConfig.port,
+    electrumConfig.protocol
+  );
   const client = electrumClient;
   await client.connect();
   try {
@@ -59,8 +65,9 @@ export async function withElectrumClient<T = void>(
 }
 
 type MintParams = Parameters<BridgeContract['escrowSwap']>;
+type BlocksParam = MintParams[1];
 type BlockParam = MintParams[0];
-type ProofParam = MintParams[2];
+type ProofParam = MintParams[3];
 
 export type TxData = Awaited<ReturnType<typeof getTxData>>;
 
@@ -76,14 +83,14 @@ export function getTxHex(txHex: string) {
 }
 
 export async function getTxData(txid: string, address: string) {
-  await electrumClient.connect();
-  try {
+  return withElectrumClient(async electrumClient => {
     const tx = await electrumClient.blockchain_transaction_get(txid, true);
-
-    const blockHash = tx.blockhash;
-
-    const { burnHeight, stacksHeight } = await getStacksBlock(blockHash);
-    const header = await electrumClient.blockchain_block_header(burnHeight);
+    const burnHeight = await confirmationsToHeight(tx.confirmations);
+    const { header, stacksHeight, prevBlocks } = await findStacksBlockAtHeight(
+      burnHeight,
+      [],
+      electrumClient
+    );
 
     const merkle = await electrumClient.blockchain_transaction_getMerkle(txid, burnHeight);
     const hashes = merkle.merkle.map(hash => {
@@ -113,11 +120,9 @@ export async function getTxData(txid: string, address: string) {
       txHex: txHex,
       proof: proofArg,
       block: blockArg,
+      prevBlocks,
       tx,
       outputIndex,
     };
-  } catch (error) {
-    await electrumClient.close();
-    throw error;
-  }
+  });
 }

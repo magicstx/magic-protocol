@@ -1,11 +1,11 @@
 import { useGaia } from '@micro-stacks/react';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
-import { Operator, publicKeyState, swapperIdState, useSwapperId } from '../store';
+import { Supplier, publicKeyState, swapperIdState, useSwapperId } from '../store';
 import { createInboundSwap, inboundSwapKey } from '../store/swaps';
 
 interface Generate {
-  operator: Operator;
+  supplier: Supplier;
   inputAmount: string;
 }
 
@@ -15,11 +15,11 @@ export function useGenerateInboundSwap() {
 
   const generate = useAtomCallback(
     useCallback(
-      async (get, set, { operator, inputAmount }: Generate) => {
+      async (get, set, { supplier, inputAmount }: Generate) => {
         const publicKey = get(publicKeyState);
         if (!publicKey) throw new Error('Invalid user state');
         const swap = createInboundSwap({
-          operator,
+          supplier,
           publicKey,
           inputAmount,
           swapperId: swapperId === null ? undefined : swapperId,

@@ -1,3 +1,4 @@
+import type ElectrumClient from 'electrum-client-sl';
 import { Configuration, BlocksApi, TransactionsApi, InfoApi } from '@stacks/blockchain-api-client';
 import type {
   AddressBalanceResponse,
@@ -8,7 +9,11 @@ import { deserializeCV } from 'micro-stacks/clarity';
 import { cvToValue } from '@clarigen/core';
 import { network, coreUrl } from '../constants';
 import { getTxId } from '../utils';
-import { fetchBlockByBurnBlockHash } from 'micro-stacks/api';
+import {
+  fetchBlockByBurnBlockHash,
+  fetchBlockByBurnBlockHeight,
+  fetchCoreApiInfo,
+} from 'micro-stacks/api';
 
 export const apiConfig = new Configuration({
   fetchApi: fetch,
@@ -38,11 +43,56 @@ export async function getStacksBlock(
   }
 }
 
+export async function getStacksHeight(burnHeight: number) {
+  try {
+    const url = network.getCoreApiUrl();
+    const block = await fetchBlockByBurnBlockHeight({
+      url,
+      burn_block_height: burnHeight,
+    });
+    return block.height;
+  } catch (error) {
+    return undefined;
+  }
+}
+
+interface StacksBlockByHeight {
+  header: string;
+  prevBlocks: string[];
+  stacksHeight: number;
+}
+export async function findStacksBlockAtHeight(
+  height: number,
+  prevBlocks: string[],
+  electrumClient: ElectrumClient
+): Promise<StacksBlockByHeight> {
+  const [header, stacksHeight] = await Promise.all([
+    electrumClient.blockchain_block_header(height),
+    getStacksHeight(height),
+  ]);
+  if (typeof stacksHeight !== 'undefined') {
+    return {
+      header,
+      prevBlocks,
+      stacksHeight,
+    };
+  }
+  prevBlocks.unshift(header);
+  return findStacksBlockAtHeight(height + 1, prevBlocks, electrumClient);
+}
+
+export async function confirmationsToHeight(confirmations: number) {
+  const url = network.getCoreApiUrl();
+  const nodeInfo = await fetchCoreApiInfo({ url });
+  const curHeight = nodeInfo.burn_block_height;
+  const height = curHeight - confirmations + 1;
+  return height;
+}
+
 export async function fetchAccountNonce(address: string) {
   const url = `${network.getCoreApiUrl()}/extended/v1/address/${address}/nonces`;
   const res = await fetch(url);
   const data = (await res.json()) as AddressNonces;
-  console.log('data', data);
   return data.possible_next_nonce;
 }
 

@@ -39,6 +39,7 @@ async function run() {
 
   const [
     block,
+    prevBlocks,
     txHex,
     proof,
     outputIndex,

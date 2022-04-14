@@ -28,7 +28,7 @@ import { privateKey, publicKey, publicKeys } from './mocks';
 import { script as bScript, Transaction, payments, networks } from 'bitcoinjs-lib';
 import { base58checkDecode } from 'micro-stacks/crypto';
 import { NativeClarityBinProvider } from '@clarigen/native-bin';
-import { ContractReturn } from '@clarigen/core';
+import { ContractReturn, CoreNodeEventType, filterEvents } from '@clarigen/core';
 
 let contract: BridgeContract;
 let xbtcContract: XbtcContract;
@@ -36,12 +36,13 @@ let testUtils: TestUtilsContract;
 let clarityBtc: ClarityBitcoinContract;
 let t: TestProvider;
 
-let bridgeId: string;
-
 const deployer = accounts.deployer.address;
-const operator = accounts.operator.address;
+const supplier = accounts.operator.address;
 const swapper = accounts.swapper.address;
 const alice = accounts.wallet_3.address;
+
+let bridgeId: string;
+const xbtcTokenId = `${deployer}.xbtc::xbtc`;
 
 const feeIn = 300n;
 const feeOut = 100n;
@@ -50,7 +51,7 @@ const startingFunds = 2n * 1000000n;
 // process.env.PRINT_CLARIGEN_STDERR = 'true';
 
 beforeAll(async () => {
-  const { bridge, ...rest } = contracts;
+  const { bridge, supplierWrapper, ...rest } = contracts;
   const { deployed, provider } = await TestProvider.fromContracts(
     {
       ...rest,
@@ -59,6 +60,7 @@ beforeAll(async () => {
         contractFile: 'contracts/test/clarity-bitcoin.clar',
       },
       bridge,
+      supplierWrapper,
     },
     { accounts }
   );
@@ -70,33 +72,33 @@ beforeAll(async () => {
   clarityBtc = deployed.clarityBitcoin.contract;
 });
 
-test('can register as operator', async () => {
+test('can register as supplier', async () => {
   const receipt = await t.txOk(
-    contract.registerOperator(publicKey, feeIn, feeOut, 100, 100, 'first', startingFunds),
-    operator
+    contract.registerSupplier(publicKey, feeIn, feeOut, 100, 100, 'first', startingFunds),
+    supplier
   );
   expect(receipt.value).toEqual(0n);
 
-  expect(await t.rov(contract.getOperatorIdByController(operator))).toEqual(0n);
-  expect(await t.rov(contract.getOperatorIdByPublicKey(publicKey))).toEqual(0n);
+  expect(await t.rov(contract.getSupplierIdByController(supplier))).toEqual(0n);
+  expect(await t.rov(contract.getSupplierIdByPublicKey(publicKey))).toEqual(0n);
 });
 
-test('alice can register as operator', async () => {
-  await t.txOk(xbtcContract.transfer(1000, operator, alice, null), operator);
+test('alice can register as supplier', async () => {
+  await t.txOk(xbtcContract.transfer(1000, supplier, alice, null), supplier);
   const receipt = await t.txOk(
-    contract.registerOperator(publicKeys[2], feeIn, feeOut, 100, 100, 'second', 1000),
+    contract.registerSupplier(publicKeys[2], feeIn, feeOut, 100, 100, 'second', 1000),
     alice
   );
   expect(receipt.value).toEqual(1n);
 
-  expect(await t.rov(contract.getOperatorIdByController(alice))).toEqual(1n);
-  expect(await t.rov(contract.getOperatorIdByPublicKey(publicKeys[2]))).toEqual(1n);
+  expect(await t.rov(contract.getSupplierIdByController(alice))).toEqual(1n);
+  expect(await t.rov(contract.getSupplierIdByPublicKey(publicKeys[2]))).toEqual(1n);
 });
 
 test('cannot set invalid fee', async () => {
   async function expectFeeError(inbound: bigint, outbound: bigint) {
     const receipt = await t.txErr(
-      contract.registerOperator(Buffer.from('asdf', 'hex'), inbound, outbound, 0, 0, 'first', 0),
+      contract.registerSupplier(Buffer.from('asdf', 'hex'), inbound, outbound, 0, 0, 'first', 0),
       deployer
     );
     expect(receipt.value).toEqual(8n);
@@ -109,15 +111,15 @@ test('cannot set invalid fee', async () => {
 
 test('cannot re-register with same controller', async () => {
   const receipt = await t.txErr(
-    contract.registerOperator(Buffer.from('asdf', 'hex'), feeIn, feeOut, 0, 0, 'first', 0),
-    operator
+    contract.registerSupplier(Buffer.from('asdf', 'hex'), feeIn, feeOut, 0, 0, 'first', 0),
+    supplier
   );
   expect(receipt.value).toEqual(2n);
 });
 
 test('cannot register with existing public key', async () => {
   const receipt = await t.txErr(
-    contract.registerOperator(publicKey, feeIn, feeOut, 0, 0, 'first', 0),
+    contract.registerSupplier(publicKey, feeIn, feeOut, 0, 0, 'first', 0),
     deployer
   );
   expect(receipt.value).toEqual(2n);
@@ -126,7 +128,7 @@ test('cannot register with existing public key', async () => {
 test('can add funds', async () => {
   const oldFunds = await t.rov(contract.getFunds(0n));
   const amount = 2n * 1000000n;
-  const receipt = await t.txOk(contract.addFunds(amount), operator);
+  const receipt = await t.txOk(contract.addFunds(amount), supplier);
   expect(receipt.value).toEqual(amount + oldFunds);
 
   const funds = await t.rov(contract.getFunds(0n));
@@ -136,7 +138,7 @@ test('can add funds', async () => {
 test('can remove funds', async () => {
   const oldFunds = await t.rov(contract.getFunds(0n));
   const amount = 1n * 1000000n;
-  const receipt = await t.txOk(contract.removeFunds(amount), operator);
+  const receipt = await t.txOk(contract.removeFunds(amount), supplier);
   expect(receipt.value).toEqual(oldFunds - amount);
 
   const funds = await t.rov(contract.getFunds(0n));
@@ -145,7 +147,7 @@ test('can remove funds', async () => {
 
 test('cannot remove more than funds', async () => {
   const oldFunds = await t.rov(contract.getFunds(0n));
-  const receipt = await t.txErr(contract.removeFunds(oldFunds + 1n), operator);
+  const receipt = await t.txErr(contract.removeFunds(oldFunds + 1n), supplier);
   expect(receipt.value).toEqual(14n);
 
   const funds = await t.rov(contract.getFunds(0n));
@@ -242,15 +244,15 @@ describe('successful inbound swap', () => {
   const txid = hexToBytes(Transaction.fromBuffer(txHex).getId());
 
   let swapperBalanceBefore: bigint;
-  let operatorFundsBefore: bigint;
-  let operatorEscrowBefore: bigint;
+  let supplierFundsBefore: bigint;
+  let supplierEscrowBefore: bigint;
 
   // const xbtcAmount = (sats * (10000n - feeIn)) / 10000n;
   const xbtcAmount = getSwapAmount(sats, feeIn, 100);
   beforeAll(async () => {
     swapperBalanceBefore = await t.rovOk(xbtcContract.getBalance(swapper));
-    operatorFundsBefore = (await t.rov(contract.getFunds(0n)))!;
-    operatorEscrowBefore = (await t.rov(contract.getEscrow(0n)))!;
+    supplierFundsBefore = (await t.rov(contract.getFunds(0n)))!;
+    supplierEscrowBefore = (await t.rov(contract.getEscrow(0n)))!;
 
     await t.txOk(testUtils.setMined(txid), deployer);
   });
@@ -258,6 +260,7 @@ describe('successful inbound swap', () => {
     const receipt = await t.txOk(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -277,7 +280,7 @@ describe('successful inbound swap', () => {
     if (swap === null) throw new Error('Expected swap');
     expect(swap.expiration).toEqual(501n - 200n);
     expect(swap.swapper).toEqual(0n);
-    expect(swap.operator).toEqual(0n);
+    expect(swap.supplier).toEqual(0n);
     expect(swap.hash).toEqual(hash);
     expect(swap.xbtc).toEqual(xbtcAmount);
   });
@@ -296,9 +299,9 @@ describe('successful inbound swap', () => {
     const funds = await t.rov(contract.getFunds(0n));
     const escrow = await t.rov(contract.getEscrow(0n));
     if (escrow === null) throw new Error('Expected escrow');
-    expect(funds).toEqual(operatorFundsBefore - xbtcAmount);
-    expect(escrow).toEqual(operatorEscrowBefore + escrow);
-    expect(operatorEscrowBefore).toEqual(0n);
+    expect(funds).toEqual(supplierFundsBefore - xbtcAmount);
+    expect(escrow).toEqual(supplierEscrowBefore + escrow);
+    expect(supplierEscrowBefore).toEqual(0n);
     expect(escrow).toEqual(xbtcAmount);
   });
 
@@ -311,6 +314,7 @@ describe('successful inbound swap', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -326,15 +330,14 @@ describe('successful inbound swap', () => {
     expect(receipt.value).toEqual(16n);
   });
 
-  let finalizeReceipt: PublicResultOk<boolean>;
+  let finalizeReceipt: PublicResultOk<any>;
 
   test('can finalize an escrow', async () => {
     finalizeReceipt = await t.txOk(contract.finalizeSwap(txid, Buffer.from(preImage)), swapper);
   });
 
   test('validates proper amount of xbtc moved', () => {
-    const tokensMoved =
-      finalizeReceipt.assets.tokens[`${deployer}.bridge`][`${deployer}.xbtc::xbtc`];
+    const tokensMoved = finalizeReceipt.assets.tokens[`${deployer}.bridge`][xbtcTokenId];
     expect(BigInt(tokensMoved)).toEqual(xbtcAmount);
   });
 
@@ -346,7 +349,7 @@ describe('successful inbound swap', () => {
   test('validates that escrow updated', async () => {
     const escrow = await t.rov(contract.getEscrow(0n));
     expect(escrow).toEqual(0n);
-    expect(await t.rov(contract.getFunds(0n))).toEqual(operatorFundsBefore - xbtcAmount);
+    expect(await t.rov(contract.getFunds(0n))).toEqual(supplierFundsBefore - xbtcAmount);
   });
 
   test('validates that preimage is saved', async () => {
@@ -382,15 +385,21 @@ describe('validating inbound swaps', () => {
   const txid = hexToBytes(Transaction.fromBuffer(txHex).getId());
 
   let swapperBalanceBefore: bigint;
-  let operatorFundsBefore: bigint;
-  let operatorEscrowBefore: bigint;
+  let supplierFundsBefore: bigint;
+  let supplierEscrowBefore: bigint;
 
   // const xbtcAmount = (sats * (10000n - feeIn)) / 10000n;
   const xbtcAmount = getSwapAmount(sats, feeIn, 100);
   test('validates that tx was mined', async () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
-        { header: Buffer.from([]), height: 1n },
+        {
+          header: hexToBytes(
+            '046000205b8fe9509c8d5059419ecb0c7d8899ac5a33f4cc075b03000000000000000000d8ec11bb52893d95e8f240c0c44c2e837d239b930ed246f78b140be4841f459df46e3d62c0400a17a9ad0873'
+          ),
+          height: 1n,
+        },
+        [],
         txHex,
         proof,
         0n,
@@ -411,6 +420,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -426,7 +436,7 @@ describe('validating inbound swaps', () => {
     expect(receipt.value).toEqual(11n);
   });
 
-  test('validates that operator pubkey is correct', async () => {
+  test('validates that supplier pubkey is correct', async () => {
     const payment = generateHTLCAddress({
       senderPublicKey: publicKeys[1],
       recipientPublicKey: publicKeys[2],
@@ -440,6 +450,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -462,6 +473,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txBuff,
         proof,
         0n,
@@ -493,6 +505,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -508,7 +521,7 @@ describe('validating inbound swaps', () => {
     expect(receipt.value).toEqual(12n);
   });
 
-  test('validates operator has sufficient funds', async () => {
+  test('validates supplier has sufficient funds', async () => {
     const htlc = {
       senderPublicKey: publicKeys[1],
       recipientPublicKey: publicKeys[2],
@@ -523,6 +536,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -553,6 +567,7 @@ describe('validating inbound swaps', () => {
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
@@ -568,13 +583,14 @@ describe('validating inbound swaps', () => {
     expect(receipt.value).toEqual(15n);
   });
 
-  test.todo('validates that operator allows inbound');
+  test.todo('validates that supplier allows inbound');
 
   describe('after valid escrow', () => {
     beforeAll(async () => {
       await t.txOk(
         contract.escrowSwap(
           { header: Buffer.from([]), height: 1n },
+          [],
           txHex,
           proof,
           0n,
@@ -614,7 +630,7 @@ describe('successful outbound swap', () => {
   const sats = getSwapAmount(xbtcAmount, feeOut, 100);
   let swapperBalanceBefore: bigint;
   let bridgeBalanceBefore: bigint;
-  let operatorFundsBefore: bigint;
+  let supplierFundsBefore: bigint;
   let receipt: PublicResultOk<bigint>;
   const swapId = 0n;
   let prevVolume: bigint;
@@ -626,7 +642,7 @@ describe('successful outbound swap', () => {
   beforeAll(async () => {
     swapperBalanceBefore = await t.rovOk(xbtcContract.getBalance(swapper));
     bridgeBalanceBefore = await t.rovOk(xbtcContract.getBalance(bridgeId));
-    operatorFundsBefore = (await t.rov(contract.getFunds(0n)))!;
+    supplierFundsBefore = (await t.rov(contract.getFunds(0n)))!;
     prevVolume = await t.rov(contract.getTotalVolume());
     await t.txOk(testUtils.setMined(txid), deployer);
   });
@@ -637,7 +653,7 @@ describe('successful outbound swap', () => {
   });
 
   test('tx sent the right amount of xbtc', async () => {
-    const tokensMoved = receipt.assets.tokens[swapper][`${deployer}.xbtc::xbtc`];
+    const tokensMoved = receipt.assets.tokens[swapper][xbtcTokenId];
     expect(tokensMoved).toEqual(xbtcAmount.toString());
     const balance = await t.rovOk(xbtcContract.getBalance(swapper));
     expect(balance).toEqual(swapperBalanceBefore - xbtcAmount);
@@ -652,7 +668,7 @@ describe('successful outbound swap', () => {
     expect(swap.xbtc).toEqual(xbtcAmount);
     const blockHeight = await getBlockHeight(t);
     expect(swap['created-at']).toEqual(blockHeight - 1n);
-    expect(swap.operator).toEqual(0n);
+    expect(swap.supplier).toEqual(0n);
     expect(swap.version).toEqual(version);
     expect(Buffer.from(swap.hash)).toEqual(hash);
   });
@@ -666,12 +682,13 @@ describe('successful outbound swap', () => {
     const receipt = await t.txOk(
       contract.finalizeOutboundSwap(
         { header: Buffer.from([]), height: 1n },
+        [],
         txHex,
         proof,
         0n,
         swapId
       ),
-      operator
+      supplier
     );
   });
 
@@ -685,7 +702,7 @@ describe('successful outbound swap', () => {
 
   test('funds updated', async () => {
     const funds = await t.rov(contract.getFunds(0n));
-    expect(funds).toEqual(operatorFundsBefore + xbtcAmount);
+    expect(funds).toEqual(supplierFundsBefore + xbtcAmount);
   });
 
   test('volume counts are updated', async () => {
@@ -699,36 +716,90 @@ describe('successful outbound swap', () => {
   });
 });
 
+describe('revoking outbound swap', () => {
+  const address = '1AbDToGxjv4TmrouWHfyCRSkQdRM5uujup';
+  const decoded = base58checkDecode(address);
+  const version = hexToBytes(numberToHex(decoded.version));
+  const hash = Buffer.from(decoded.hash);
+  const xbtcAmount = 10000n;
+  const sats = getSwapAmount(xbtcAmount, feeOut, 100);
+  let swapperBalanceBefore: bigint;
+  let bridgeBalanceBefore: bigint;
+  let supplierFundsBefore: bigint;
+  let receipt: PublicResultOk<bigint>;
+  let swapId: bigint;
+  let prevVolume: bigint;
+
+  const payment = payments.p2pkh({ hash, network: networks.regtest });
+  const txHex = makeTxHex(payment, Number(sats));
+  const txid = hexToBytes(Transaction.fromBuffer(txHex).getId());
+
+  beforeAll(async () => {
+    swapperBalanceBefore = await t.rovOk(xbtcContract.getBalance(swapper));
+    bridgeBalanceBefore = await t.rovOk(xbtcContract.getBalance(bridgeId));
+    supplierFundsBefore = (await t.rov(contract.getFunds(0n)))!;
+    prevVolume = await t.rov(contract.getTotalVolume());
+    await t.txOk(testUtils.setMined(txid), deployer);
+    receipt = await t.txOk(contract.initiateOutboundSwap(xbtcAmount, version, hash, 0n), swapper);
+    swapId = receipt.value;
+  });
+
+  test('cannot revoke if not expired', async () => {
+    const receipt = await t.txErr(contract.revokeExpiredOutbound(swapId), swapper);
+    expect(receipt.value).toEqual(25n);
+  });
+
+  describe('after expiration', () => {
+    beforeAll(async () => {
+      await mineBlocks(199n, t);
+    });
+
+    test('can revoke an outbound swap after expiration', async () => {
+      // anyone can call this function
+      const receipt = await t.txOk(contract.revokeExpiredOutbound(swapId), alice);
+      const events = filterEvents(receipt.events, CoreNodeEventType.FtTransferEvent);
+      expect(events.length).toEqual(1);
+      const [ftTransfer] = events;
+      expect(ftTransfer.ft_transfer_event.sender).toEqual(bridgeId);
+      expect(ftTransfer.ft_transfer_event.recipient).toEqual(swapper);
+      expect(ftTransfer.ft_transfer_event.amount).toEqual(xbtcAmount.toString());
+      expect(ftTransfer.ft_transfer_event.asset_identifier).toEqual(xbtcTokenId);
+
+      expect(receipt.assets.tokens[bridgeId][xbtcTokenId]).toEqual(xbtcAmount.toString());
+    });
+  });
+});
+
 describe('validating outbound swaps', () => {
   test.todo('cannot re-use txid');
   test.todo('cannot finalize an expired swap');
 });
 
-test('can update operator info', async () => {
-  const newOperator: NonNullable<ContractReturn<typeof contract.getOperator>> = {
+test('can update supplier info', async () => {
+  const newSupplier: NonNullable<ContractReturn<typeof contract.getSupplier>> = {
     'public-key': publicKeys[3],
     'inbound-base-fee': 123n,
     'outbound-base-fee': 234n,
     'inbound-fee': 10n,
     'outbound-fee': 20n,
     name: 'updated',
-    controller: operator,
+    controller: supplier,
   };
 
   const receipt = await t.txOk(
-    contract.updateOperator(
-      newOperator['public-key'],
-      newOperator['inbound-fee'],
-      newOperator['outbound-fee'],
-      newOperator['outbound-base-fee'],
-      newOperator['inbound-base-fee'],
-      newOperator.name
+    contract.updateSupplier(
+      newSupplier['public-key'],
+      newSupplier['inbound-fee'],
+      newSupplier['outbound-fee'],
+      newSupplier['outbound-base-fee'],
+      newSupplier['inbound-base-fee'],
+      newSupplier.name
     ),
-    operator
+    supplier
   );
 
-  expect(receipt.value).toEqual(newOperator);
+  expect(receipt.value).toEqual(newSupplier);
 
-  const op = await t.rov(contract.getOperator(0n));
-  expect(op).toEqual(newOperator);
+  const op = await t.rov(contract.getSupplier(0n));
+  expect(op).toEqual(newSupplier);
 });

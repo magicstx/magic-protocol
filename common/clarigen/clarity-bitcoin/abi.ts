@@ -1829,6 +1829,196 @@ export const ClarityBitcoinInterface: ClarityAbi = {
         {
           "name": "block",
           "type": {
+            "buffer": {
+              "length": 80
+            }
+          }
+        },
+        {
+          "name": "parent",
+          "type": {
+            "buffer": {
+              "length": 80
+            }
+          }
+        }
+      ],
+      "name": "verify-prev-block",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": "bool"
+          }
+        }
+      }
+    },
+    {
+      "access": "read_only",
+      "args": [
+        {
+          "name": "block",
+          "type": {
+            "buffer": {
+              "length": 80
+            }
+          }
+        },
+        {
+          "name": "prev-blocks",
+          "type": {
+            "list": {
+              "length": 10,
+              "type": {
+                "buffer": {
+                  "length": 80
+                }
+              }
+            }
+          }
+        }
+      ],
+      "name": "verify-prev-blocks",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": {
+              "buffer": {
+                "length": 80
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "access": "read_only",
+      "args": [
+        {
+          "name": "parent",
+          "type": {
+            "buffer": {
+              "length": 80
+            }
+          }
+        },
+        {
+          "name": "next-resp",
+          "type": {
+            "response": {
+              "error": "uint128",
+              "ok": {
+                "buffer": {
+                  "length": 80
+                }
+              }
+            }
+          }
+        }
+      ],
+      "name": "verify-prev-blocks-fold",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": {
+              "buffer": {
+                "length": 80
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "access": "read_only",
+      "args": [
+        {
+          "name": "block",
+          "type": {
+            "tuple": [
+              {
+                "name": "header",
+                "type": {
+                  "buffer": {
+                    "length": 80
+                  }
+                }
+              },
+              {
+                "name": "height",
+                "type": "uint128"
+              }
+            ]
+          }
+        },
+        {
+          "name": "prev-blocks",
+          "type": {
+            "list": {
+              "length": 10,
+              "type": {
+                "buffer": {
+                  "length": 80
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "tx",
+          "type": {
+            "buffer": {
+              "length": 1024
+            }
+          }
+        },
+        {
+          "name": "proof",
+          "type": {
+            "tuple": [
+              {
+                "name": "hashes",
+                "type": {
+                  "list": {
+                    "length": 12,
+                    "type": {
+                      "buffer": {
+                        "length": 32
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "name": "tree-depth",
+                "type": "uint128"
+              },
+              {
+                "name": "tx-index",
+                "type": "uint128"
+              }
+            ]
+          }
+        }
+      ],
+      "name": "was-tx-mined-prev?",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": "bool"
+          }
+        }
+      }
+    },
+    {
+      "access": "read_only",
+      "args": [
+        {
+          "name": "block",
+          "type": {
             "tuple": [
               {
                 "name": "header",
@@ -1914,6 +2104,11 @@ export const ClarityBitcoinInterface: ClarityAbi = {
     {
       "access": "constant",
       "name": "ERR-BAD-HEADER",
+      "type": "uint128"
+    },
+    {
+      "access": "constant",
+      "name": "ERR-INVALID-PARENT",
       "type": "uint128"
     },
     {

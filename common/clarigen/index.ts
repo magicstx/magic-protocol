@@ -1,23 +1,26 @@
 import type { ContractInstances } from '@clarigen/core';
-import { testUtilsInfo } from './test/test-utils';
-import { clarityBitcoinInfo } from './clarity-bitcoin';
 import { ftTraitInfo } from './ft-trait';
 import { xbtcInfo } from './xbtc';
+import { testUtilsInfo } from './test/test-utils';
+import { clarityBitcoinInfo } from './clarity-bitcoin';
 import { bridgeInfo } from './bridge';
-export type { TestUtilsContract } from './test/test-utils';
-export type { ClarityBitcoinContract } from './clarity-bitcoin';
+import { supplierWrapperInfo } from './supplier-wrapper';
 export type { FtTraitContract } from './ft-trait';
 export type { XbtcContract } from './xbtc';
+export type { TestUtilsContract } from './test/test-utils';
+export type { ClarityBitcoinContract } from './clarity-bitcoin';
 export type { BridgeContract } from './bridge';
+export type { SupplierWrapperContract } from './supplier-wrapper';
 
 export type Contracts = ContractInstances<typeof contracts>;
 
 export const contracts = {
-  testUtils: testUtilsInfo,
-  clarityBitcoin: clarityBitcoinInfo,
   ftTrait: ftTraitInfo,
   xbtc: xbtcInfo,
+  testUtils: testUtilsInfo,
+  clarityBitcoin: clarityBitcoinInfo,
   bridge: bridgeInfo,
+  supplierWrapper: supplierWrapperInfo,
 };
 
 // prettier-ignore

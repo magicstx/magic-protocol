@@ -1,14 +1,14 @@
 import React, { Suspense, useCallback, useMemo } from 'react';
 import { Text } from '../text';
 import { Box, Flex, Stack } from '@nelson-ui/react';
-import { Operator, selectedOperatorState } from '../../common/store';
+import { Supplier, selectedSupplierState } from '../../common/store';
 import { styled } from '@stitches/react';
 import { CheckSubdued } from '../icons/check-subdued';
 import { bpsToPercent, satsToBtc } from '../../common/utils';
 import { CheckSelected } from '../icons/check-selected';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { amountState, showOverrideSupplierState } from '../../common/hooks/use-swap-form';
-import { useAutoSelectOperator } from '../../common/hooks/use-auto-select-operator';
+import { useAutoSelectSupplier } from '../../common/hooks/use-auto-select-supplier';
 import { Token } from '../swap-input';
 import { useBtcBalance } from '../../common/store/api';
 import { Spinner } from '../spinner';
@@ -39,30 +39,30 @@ const RowComp = styled(Box, {
   },
 });
 
-export const SupplierRow: React.FC<{ operator: Operator; outputToken: Token }> = ({
-  operator,
+export const SupplierRow: React.FC<{ supplier: Supplier; outputToken: Token }> = ({
+  supplier: operator,
   outputToken,
 }) => {
   if (outputToken === 'btc') {
-    return <OutboundSupplierRow operator={operator} />;
+    return <OutboundSupplierRow supplier={operator} />;
   }
-  return <InboundSupplierRow operator={operator} />;
+  return <InboundSupplierRow supplier={operator} />;
 };
 
 export const SupplierBaseRow: React.FC<{
-  operator: Operator;
+  supplier: Supplier;
   capacity: React.ReactText | JSX.Element;
   fee: number;
   baseFee: number;
-}> = ({ operator, capacity, fee: _fee, baseFee: _baseFee }) => {
+}> = ({ supplier: operator, capacity, fee: _fee, baseFee: _baseFee }) => {
   const amount = useAtomValue(amountState);
-  const { operator: selectedOp } = useAutoSelectOperator(amount);
+  const { supplier: selectedOp } = useAutoSelectSupplier(amount);
   const selected = selectedOp.id === operator.id;
   const color = selected ? '$color-white' : '$color-slate-90';
   const select = useAtomCallback(
     useCallback(
       (get, set) => {
-        set(selectedOperatorState, operator);
+        set(selectedSupplierState, operator);
         set(showOverrideSupplierState, false);
       },
       [operator]
@@ -116,7 +116,7 @@ export const OutboundCapacity: React.FC<{ publicKey: string }> = ({ publicKey })
   return <>{capacity}</>;
 };
 
-export const OutboundSupplierRow: React.FC<{ operator: Operator }> = ({ operator }) => {
+export const OutboundSupplierRow: React.FC<{ supplier: Supplier }> = ({ supplier: operator }) => {
   const Capacity = useMemo(() => {
     return (
       <Suspense fallback={<Spinner />}>
@@ -130,12 +130,12 @@ export const OutboundSupplierRow: React.FC<{ operator: Operator }> = ({ operator
       fee={operator.outboundFee}
       baseFee={operator.outboundBaseFee}
       capacity={Capacity}
-      operator={operator}
+      supplier={operator}
     />
   );
 };
 
-export const InboundSupplierRow: React.FC<{ operator: Operator }> = ({ operator }) => {
+export const InboundSupplierRow: React.FC<{ supplier: Supplier }> = ({ supplier: operator }) => {
   const capacity = useMemo(() => {
     return satsToBtc(operator.funds);
   }, [operator.funds]);
@@ -144,7 +144,7 @@ export const InboundSupplierRow: React.FC<{ operator: Operator }> = ({ operator 
       fee={operator.inboundFee}
       baseFee={operator.inboundBaseFee}
       capacity={capacity}
-      operator={operator}
+      supplier={operator}
     />
   );
 };

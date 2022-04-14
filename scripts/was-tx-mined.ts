@@ -28,7 +28,7 @@ async function run() {
     // data.proof.hashes.forEach(hash => {
     //   console.log('hash', hash.toString('hex'));
     // });
-    console.log('txHex', data.txHex.toString('hex'));
+    console.log('txHex', bytesToHex(data.txHex));
     const reversedTxid = bytesToHex(reverseBuffer(Buffer.from(txid, 'hex')));
     const reversedTxidContract = await provider.ro(clarityBitcoin.getReversedTxid(data.txHex));
     console.log('TxID match?', bytesToHex(reverseBuffer(reversedTxidContract)) === reversedTxid);

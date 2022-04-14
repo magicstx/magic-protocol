@@ -12,7 +12,7 @@ import { useStxAddress } from '../use-stx-address';
 import { useTx } from '../use-tx';
 
 interface OutboundTx {
-  operatorId?: number;
+  supplierId?: number;
   amount: string;
   address: string;
 }
@@ -21,12 +21,12 @@ export const pendingInitOutboundState = atom(false);
 
 const outboundErrorState = atom('');
 
-export const useInitiateOutbound = ({ operatorId, address, amount }: OutboundTx) => {
+export const useInitiateOutbound = ({ supplierId, address, amount }: OutboundTx) => {
   const sender = useStxAddress();
   const [pendingInitOutbound, setPendingOutbound] = useAtom(pendingInitOutboundState);
   const [error, setError] = useAtom(outboundErrorState);
   const { submit, ...tx } = useTx((contracts, submit) => {
-    if (!address || operatorId === undefined || !amount || !sender) {
+    if (!address || supplierId === undefined || !amount || !sender) {
       throw new Error('Invalid tx payload');
     }
     setPendingOutbound(true);
@@ -37,7 +37,7 @@ export const useInitiateOutbound = ({ operatorId, address, amount }: OutboundTx)
       BigInt(amountBN),
       version,
       b58.hash,
-      operatorId
+      supplierId
     );
     const postCondition = makeStandardFungiblePostCondition(
       sender,

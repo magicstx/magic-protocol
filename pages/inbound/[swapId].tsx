@@ -3,7 +3,7 @@ import { makeGetServerSideProps, stacksNetworkFromCtx } from '@micro-stacks/next
 import { NextPage } from 'next';
 import { Layout } from '../../components/layout';
 import { withMicroStacks } from '../../common/utils';
-import { operatorsQuery } from '../../common/store';
+import { suppliersQuery } from '../../common/store';
 import { InboundSwap } from '../../components/inbound';
 
 const InboundSwapPage: NextPage = () => {
@@ -16,7 +16,7 @@ const InboundSwapPage: NextPage = () => {
 
 export const getServerSideProps = makeGetServerSideProps([
   () => {
-    return [operatorsQuery];
+    return [suppliersQuery];
   },
 ]);
 

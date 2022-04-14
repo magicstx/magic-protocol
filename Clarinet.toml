@@ -21,3 +21,7 @@ depends_on = ["test-utils"]
 [contracts.bridge]
 path = "contracts/bridge.clar"
 depends_on = ["xbtc", "clarity-bitcoin"]
+
+[contracts.supplier-wrapper]
+path = "contracts/supplier-wrapper.clar"
+depends_on = ["bridge", "xbtc"]

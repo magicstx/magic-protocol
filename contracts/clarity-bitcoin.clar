@@ -5,6 +5,7 @@
 (define-constant ERR-VARSLICE-TOO-LONG u4)
 (define-constant ERR-BAD-HEADER u5)
 (define-constant ERR-PROOF-TOO-SHORT u6)
+(define-constant ERR-INVALID-PARENT u7)
 
 ;; lookup table for converting 1-byte buffers to uints via index-of
 (define-constant BUFF_TO_BYTE (list 
@@ -745,6 +746,60 @@
       (header-valid (verify-block-header (get header block) (get height block)))
       (reversed-txid (get-reversed-txid tx))
       (parsed-header (try! (parse-block-header (get header block))))
+      (merkle-root (reverse-buff32 (get merkle-root parsed-header)))
+      (merkle-valid (verify-merkle-proof reversed-txid merkle-root proof))
+    )
+    (if header-valid
+      merkle-valid
+      (ok false)
+    )
+  )
+)
+
+(define-read-only (verify-prev-block (block (buff 80)) (parent (buff 80)))
+  (let
+    (
+      (parent-hash (sha256 (sha256 parent)))
+      (parent-reversed (reverse-buff32 parent-hash))
+      (parsed (try! (parse-block-header block)))
+      (parsed-parent (get parent parsed))
+    )
+    (asserts! (is-eq parsed-parent parent-reversed) (err ERR-INVALID-PARENT))
+    (ok true)
+  )
+)
+
+(define-read-only (verify-prev-blocks (block (buff 80)) (prev-blocks (list 10 (buff 80))))
+  (let
+    (
+      (iterator (ok block))
+      (fold-resp (fold verify-prev-blocks-fold prev-blocks iterator))
+      (last-block (try! fold-resp))
+    )
+    (ok last-block)
+  )
+)
+
+(define-read-only (verify-prev-blocks-fold 
+    (parent (buff 80))
+    (next-resp (response (buff 80) uint))
+  )
+  (let
+    (
+      (next (try! next-resp))
+      (is-valid (try! (verify-prev-block next parent)))
+    )
+    (ok parent)
+  )
+)
+
+(define-read-only (was-tx-mined-prev? (block { header: (buff 80), height: uint }) (prev-blocks (list 10 (buff 80))) (tx (buff 1024)) (proof { tx-index: uint, hashes: (list 12 (buff 32)), tree-depth: uint }))
+  (let
+    (
+      (header-valid (verify-block-header (get header block) (get height block)))
+      (previous-block (try! (verify-prev-blocks (get header block) prev-blocks)))
+      (reversed-txid (get-reversed-txid tx))
+      (parsed-header (try! (parse-block-header previous-block)))
       (merkle-root (reverse-buff32 (get merkle-root parsed-header)))
       (merkle-valid (verify-merkle-proof reversed-txid merkle-root proof))
     )

@@ -7,6 +7,32 @@ export const TestUtilsInterface: ClarityAbi = {
       "access": "public",
       "args": [
         {
+          "name": "height",
+          "type": "uint128"
+        },
+        {
+          "name": "header",
+          "type": {
+            "buffer": {
+              "length": 80
+            }
+          }
+        }
+      ],
+      "name": "set-burn-header",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "none",
+            "ok": "bool"
+          }
+        }
+      }
+    },
+    {
+      "access": "public",
+      "args": [
+        {
           "name": "txid",
           "type": {
             "buffer": {
@@ -21,6 +47,25 @@ export const TestUtilsInterface: ClarityAbi = {
           "response": {
             "error": "none",
             "ok": "bool"
+          }
+        }
+      }
+    },
+    {
+      "access": "read_only",
+      "args": [
+        {
+          "name": "height",
+          "type": "uint128"
+        }
+      ],
+      "name": "burn-block-header",
+      "outputs": {
+        "type": {
+          "optional": {
+            "buffer": {
+              "length": 80
+            }
           }
         }
       }
@@ -47,6 +92,15 @@ export const TestUtilsInterface: ClarityAbi = {
   ],
   "fungible_tokens": [],
   "maps": [
+    {
+      "key": "uint128",
+      "name": "burn-block-headers",
+      "value": {
+        "buffer": {
+          "length": 80
+        }
+      }
+    },
     {
       "key": {
         "buffer": {

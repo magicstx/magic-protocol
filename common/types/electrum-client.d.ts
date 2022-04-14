@@ -45,6 +45,7 @@ declare module 'electrum-client-sl' {
       size: number;
       hex: string;
       blockhash: string;
+      confirmations: number;
       vin: {
         txid: string;
         vout: number;

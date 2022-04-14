@@ -7,13 +7,13 @@ import { getRandomBytes } from 'micro-stacks/crypto';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { getFile } from 'micro-stacks/storage';
 import { generateHTLCAddress } from '../htlc';
-import { Operator, QueryKeys } from './index';
+import { Supplier, QueryKeys } from './index';
 import { atomWithQuery } from 'jotai-query-toolkit';
 import { fetchPrivate } from 'micro-stacks/common';
 
 export interface InboundSwapStarted {
   id: string;
-  operator: Operator;
+  supplier: Supplier;
   createdAt: number;
   secret: string;
   publicKey: string;
@@ -67,12 +67,12 @@ export function createId() {
 }
 
 export function createInboundSwap({
-  operator,
+  supplier: supplier,
   swapperId,
   publicKey,
   inputAmount,
 }: {
-  operator: Operator;
+  supplier: Supplier;
   swapperId?: number;
   publicKey: string;
   inputAmount: string;
@@ -82,7 +82,7 @@ export function createInboundSwap({
     id: createId(),
     secret: bytesToHex(secret),
     createdAt: new Date().getTime(),
-    operator,
+    supplier,
     publicKey,
     inputAmount,
   };
@@ -93,11 +93,11 @@ export function createInboundSwap({
 }
 
 export function createReadySwap(swap: InboundSwapStarted, swapperId: number): InboundSwapReady {
-  const { secret, publicKey, operator } = swap;
+  const { secret, publicKey, supplier } = swap;
   const hash = hashSha256(hexToBytes(secret));
   const payment = generateHTLCAddress({
     senderPublicKey: Buffer.from(publicKey, 'hex'),
-    recipientPublicKey: Buffer.from(operator.publicKey, 'hex'),
+    recipientPublicKey: Buffer.from(supplier.publicKey, 'hex'),
     swapper: swapperId,
     hash: Buffer.from(hash),
   });
@@ -108,7 +108,7 @@ export function createReadySwap(swap: InboundSwapStarted, swapperId: number): In
   };
 }
 
-export const SWAP_STORAGE_PREFIX = 'swaps-v3/';
+export const SWAP_STORAGE_PREFIX = 'swaps-v5/';
 export const INBOUND_SWAP_STORAGE_PREFIX = 'inbounds';
 export const OUTBOUND_SWAP_STORAGE_PREFIX = 'outbounds';
 
