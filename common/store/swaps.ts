@@ -108,7 +108,7 @@ export function createReadySwap(swap: InboundSwapStarted, swapperId: number): In
   };
 }
 
-export const SWAP_STORAGE_PREFIX = 'swaps-v4/';
+export const SWAP_STORAGE_PREFIX = 'swaps-v5/';
 export const INBOUND_SWAP_STORAGE_PREFIX = 'inbounds';
 export const OUTBOUND_SWAP_STORAGE_PREFIX = 'outbounds';
 

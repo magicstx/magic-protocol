@@ -37,6 +37,6 @@
   (ok (some u"https://example.com")))
 
 ;; Mint this token to a few people when deployed
-(ft-mint? xbtc u100000000000000 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM)
+(ft-mint? xbtc u100000000000000 'ST1H49Q7KM36Z82MHHWCQ92YANMGPPKSHEC0DW9RW)
 (ft-mint? xbtc u100000000000000 'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5)
 (ft-mint? xbtc u100000000000000 tx-sender)
