@@ -26,9 +26,10 @@ import {
 import { getSwapAmount, logTxCosts, makeTxHex } from './helpers';
 import { privateKey, publicKey, publicKeys } from './mocks';
 import { script as bScript, Transaction, payments, networks } from 'bitcoinjs-lib';
-import { base58checkDecode } from 'micro-stacks/crypto';
+import { base58checkDecode, getPublicKey } from 'micro-stacks/crypto';
 import { NativeClarityBinProvider } from '@clarigen/native-bin';
 import { ContractReturn, CoreNodeEventType, filterEvents } from '@clarigen/core';
+import { makeRandomPrivKey } from 'micro-stacks/transactions';
 
 let contract: BridgeContract;
 let xbtcContract: XbtcContract;
@@ -583,7 +584,48 @@ describe('validating inbound swaps', () => {
     expect(receipt.value).toEqual(15n);
   });
 
-  test.todo('validates that supplier allows inbound');
+  test('validates that supplier allows inbound', async () => {
+    const supplierInfo = (await t.rov(contract.getSupplier(0n)))!;
+
+    await t.txOk(
+      contract.updateSupplierFees(
+        null,
+        supplierInfo['outbound-fee'],
+        supplierInfo['outbound-base-fee'],
+        supplierInfo['inbound-base-fee']
+      ),
+      supplier
+    );
+
+    const receipt = await t.txErr(
+      contract.escrowSwap(
+        { header: Buffer.from([]), height: 1n },
+        [],
+        txHex,
+        proof,
+        0n,
+        htlc.senderPublicKey,
+        htlc.recipientPublicKey,
+        CSV_DELAY_BUFF,
+        hash,
+        swapperHex,
+        0n
+      ),
+      swapper
+    );
+
+    expect(receipt.value).toEqual(13n);
+
+    await t.txOk(
+      contract.updateSupplierFees(
+        supplierInfo['inbound-fee'],
+        supplierInfo['outbound-fee'],
+        supplierInfo['outbound-base-fee'],
+        supplierInfo['inbound-base-fee']
+      ),
+      supplier
+    );
+  });
 
   describe('after valid escrow', () => {
     beforeAll(async () => {
@@ -714,6 +756,27 @@ describe('successful outbound swap', () => {
     expect(await t.rov(contract.getUserTotalVolume(swapper))).toEqual(newTotal);
     expect(await t.rov(contract.getTotalVolume())).toEqual(newTotal);
   });
+
+  test('cannot re-finalize outbound swap', async () => {
+    const proof = {
+      'tree-depth': 1n,
+      'tx-index': 1n,
+      hashes: [],
+    };
+    const receipt = await t.txErr(
+      contract.finalizeOutboundSwap(
+        { header: Buffer.from([]), height: 1n },
+        [],
+        txHex,
+        proof,
+        0n,
+        swapId
+      ),
+      supplier
+    );
+
+    expect(receipt.value).toEqual(17n);
+  });
 });
 
 describe('revoking outbound swap', () => {
@@ -767,39 +830,58 @@ describe('revoking outbound swap', () => {
 
       expect(receipt.assets.tokens[bridgeId][xbtcTokenId]).toEqual(xbtcAmount.toString());
     });
+
+    test('cannot finalize an outbound swap after revoked', async () => {
+      const proof = {
+        'tree-depth': 1n,
+        'tx-index': 1n,
+        hashes: [],
+      };
+      const receipt = await t.txErr(
+        contract.finalizeOutboundSwap(
+          { header: Buffer.from([]), height: 1n },
+          [],
+          txHex,
+          proof,
+          0n,
+          swapId
+        ),
+        supplier
+      );
+
+      expect(receipt.value).toEqual(17n);
+    });
   });
 });
 
-describe('validating outbound swaps', () => {
-  test.todo('cannot re-use txid');
-  test.todo('cannot finalize an expired swap');
+test('can update supplier fees', async () => {
+  const supplierInfo = (await t.rov(contract.getSupplier(0n)))!;
+  const receipt = await t.txOk(contract.updateSupplierFees(null, null, 0n, 0n), supplier);
+  expect(receipt.value).toEqual({
+    ...supplierInfo,
+    'inbound-base-fee': 0n,
+    'outbound-base-fee': 0n,
+    'inbound-fee': null,
+    'outbound-fee': null,
+  });
 });
 
-test('can update supplier info', async () => {
-  const newSupplier: NonNullable<ContractReturn<typeof contract.getSupplier>> = {
-    'public-key': publicKeys[3],
-    'inbound-base-fee': 123n,
-    'outbound-base-fee': 234n,
-    'inbound-fee': 10n,
-    'outbound-fee': 20n,
-    name: 'updated',
-    controller: supplier,
-  };
+test('can update supplier public key', async () => {
+  const supplierInfo = (await t.rov(contract.getSupplier(0n)))!;
+  const newPublicKey = getPublicKey(makeRandomPrivKey().data, true);
+  const receipt = await t.txOk(contract.updateSupplierPublicKey(newPublicKey), supplier);
+  expect(receipt.value).toEqual({
+    ...supplierInfo,
+    'public-key': newPublicKey,
+  });
+});
 
-  const receipt = await t.txOk(
-    contract.updateSupplier(
-      newSupplier['public-key'],
-      newSupplier['inbound-fee'],
-      newSupplier['outbound-fee'],
-      newSupplier['outbound-base-fee'],
-      newSupplier['inbound-base-fee'],
-      newSupplier.name
-    ),
-    supplier
-  );
-
-  expect(receipt.value).toEqual(newSupplier);
-
-  const op = await t.rov(contract.getSupplier(0n));
-  expect(op).toEqual(newSupplier);
+test('can update supplier name', async () => {
+  const supplierInfo = (await t.rov(contract.getSupplier(0n)))!;
+  const newName = 'satoshi';
+  const receipt = await t.txOk(contract.updateSupplierName(newName), supplier);
+  expect(receipt.value).toEqual({
+    ...supplierInfo,
+    name: newName,
+  });
 });

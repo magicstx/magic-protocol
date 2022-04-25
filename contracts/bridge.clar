@@ -14,9 +14,14 @@
 (define-map swapper-by-id uint principal)
 (define-map swapper-by-principal principal uint)
 
+;; amount of xBTC funds per supplier
+;; supplier-id -> xBTC (sats)
 (define-map supplier-funds uint uint)
+;; amount of xBTC funds in escrow per supplier
+;; supplier-id -> xBTC
 (define-map supplier-escrow uint uint)
 
+;; info for inbound swaps
 (define-map inbound-swaps (buff 32) {
   swapper: uint,
   xbtc: uint,
@@ -24,6 +29,7 @@
   expiration: uint,
   hash: (buff 32),
 })
+;; extra info for inbound swaps - not needed for the `finalize` step
 (define-map inbound-meta (buff 32) {
   sender-public-key: (buff 33),
   output-index: uint,
@@ -31,6 +37,7 @@
   sats: uint,
   redeem-script: (buff 120),
 })
+;; mapping of txid -> preimage
 (define-map inbound-preimages (buff 32) (buff 128))
 
 (define-map outbound-swaps uint {
@@ -68,18 +75,18 @@
 (define-constant REVOKED_OUTBOUND_TXID 0x00)
 
 (define-constant ERR_PANIC (err u1)) ;; should never be thrown
-(define-constant ERR_supplier_EXISTS (err u2))
+(define-constant ERR_SUPPLIER_EXISTS (err u2))
 (define-constant ERR_UNAUTHORIZED (err u3))
 (define-constant ERR_ADD_FUNDS (err u4))
 (define-constant ERR_TRANSFER (err u5))
-(define-constant ERR_supplier_NOT_FOUND (err u6))
+(define-constant ERR_SUPPLIER_NOT_FOUND (err u6))
 (define-constant ERR_SWAPPER_NOT_FOUND (err u7))
 (define-constant ERR_FEE_INVALID (err u8))
 (define-constant ERR_SWAPPER_EXISTS (err u9))
 (define-constant ERR_INVALID_TX (err u10))
 (define-constant ERR_INVALID_OUTPUT (err u11))
 (define-constant ERR_INVALID_HASH (err u12))
-(define-constant ERR_INVALID_supplier (err u13))
+(define-constant ERR_INVALID_SUPPLIER (err u13))
 (define-constant ERR_INSUFFICIENT_FUNDS (err u14))
 (define-constant ERR_INVALID_EXPIRATION (err u15))
 (define-constant ERR_TXID_USED (err u16))
@@ -94,6 +101,19 @@
 (define-constant ERR_REVOKE_OUTBOUND_NOT_EXPIRED (err u25))
 (define-constant ERR_REVOKE_OUTBOUND_IS_FINALIZED (err u26))
 
+;; Register a supplier and add funds.
+;; Validates that the public key and "controller" (STX address) are not
+;; in use for another controller.
+;;
+;; @returns the newly generated supplier ID.
+;; 
+;; @param public-key; the public key used in HTLCs
+;; @param inbound-fee; optional fee (in basis points) for inbound swaps
+;; @param outbound-fee; optional fee (in basis points) for outbound
+;; @param outbound-base-fee; fixed fee applied to outbound swaps (in xBTC sats)
+;; @param inbound-base-fee; fixed fee for inbound swaps (in BTC/sats)
+;; @param name; human-readable name for suppliers
+;; @param funds; amount of xBTC (sats) to initially supply
 (define-public (register-supplier
     (public-key (buff 33))
     (inbound-fee (optional int))
@@ -123,15 +143,21 @@
     (try! (validate-fee outbound-fee))
 
     ;; validate that the public key and controller do not exist
-    (asserts! (map-insert supplier-by-public-key public-key id) ERR_supplier_EXISTS)
-    (asserts! (map-insert supplier-by-controller tx-sender id) ERR_supplier_EXISTS)
-    (asserts! (map-insert supplier-by-name name id) ERR_supplier_EXISTS)
+    (asserts! (map-insert supplier-by-public-key public-key id) ERR_SUPPLIER_EXISTS)
+    (asserts! (map-insert supplier-by-controller tx-sender id) ERR_SUPPLIER_EXISTS)
+    (asserts! (map-insert supplier-by-name name id) ERR_SUPPLIER_EXISTS)
     (var-set next-supplier-id (+ id u1))
     (try! (add-funds funds))
     (ok id)
   )
 )
 
+;; As a supplier, add funds.
+;; The `supplier-id` is automatically looked up from the `contract-caller` (tx-sender).
+;;
+;; @returns the new amount of funds pooled for this supplier
+;;
+;; @param amount; the amount of funds to add (in xBTC/sats)
 (define-public (add-funds (amount uint))
   (let
     (
@@ -145,6 +171,11 @@
   )
 )
 
+;; As a supplier, remove funds.
+;;
+;; @returns the new amount of funds pooled for this supplier.
+;;
+;; @param amount; the amount of funds to remove (in xBTC/sats)
 (define-public (remove-funds (amount uint))
   (let
     (
@@ -160,39 +191,84 @@
   )
 )
 
-(define-public (update-supplier
-    (public-key (buff 33))
+;; Update fees for a supplier
+;;
+;; @returns new metadata for supplier
+;;
+;; @param inbound-fee; optional fee (in basis points) for inbound swaps
+;; @param outbound-fee; optional fee (in basis points) for outbound
+;; @param outbound-base-fee; fixed fee applied to outbound swaps (in xBTC sats)
+;; @param inbound-base-fee; fixed fee for inbound swaps (in BTC/sats)
+(define-public (update-supplier-fees
     (inbound-fee (optional int))
     (outbound-fee (optional int))
     (outbound-base-fee int)
     (inbound-base-fee int)
-    (name (string-ascii 18))
   )
   (let
     (
       (supplier-id (unwrap! (get-supplier-id-by-controller contract-caller) ERR_UNAUTHORIZED))
       (existing-supplier (unwrap! (get-supplier supplier-id) ERR_PANIC))
-      (supplier { 
+      (new-supplier (merge existing-supplier {
         inbound-fee: inbound-fee, 
         outbound-fee: outbound-fee, 
-        public-key: public-key, 
-        controller: contract-caller, 
         outbound-base-fee: outbound-base-fee,
         inbound-base-fee: inbound-base-fee,
-        name: name,
-      })
+      }))
     )
-    ;; validate that the public key and name do not exist
-    (asserts! (map-insert supplier-by-public-key public-key supplier-id) ERR_supplier_EXISTS)
-    (asserts! (map-insert supplier-by-name name supplier-id) ERR_supplier_EXISTS)
-    ;; delete old mappings
-    (asserts! (map-delete supplier-by-public-key (get public-key existing-supplier)) ERR_PANIC)
-    (asserts! (map-delete supplier-by-name (get name existing-supplier)) ERR_PANIC)
-    (map-set supplier-by-id supplier-id supplier)
-    (ok supplier)
+    (map-set supplier-by-id supplier-id new-supplier)
+    (ok new-supplier)
   )
 )
 
+;; Update the name for a supplier
+;;
+;; @returns new metadata for the supplier
+;;
+;; @param name; human-readable name for the supplier
+(define-public (update-supplier-name (name (string-ascii 18)))
+  (let
+    (
+      (supplier-id (unwrap! (get-supplier-id-by-controller contract-caller) ERR_UNAUTHORIZED))
+      (existing-supplier (unwrap! (get-supplier supplier-id) ERR_PANIC))
+      (new-supplier (merge existing-supplier {
+        name: name,
+      }))
+    )
+    (asserts! (map-insert supplier-by-name name supplier-id) ERR_SUPPLIER_EXISTS)
+    (asserts! (map-delete supplier-by-name (get name existing-supplier)) ERR_PANIC)
+    (map-set supplier-by-id supplier-id new-supplier)
+    (ok new-supplier)
+  )
+)
+
+;; Update the public-key for a supplier
+;;
+;; @returns new metadata for the supplier
+;;
+;; @param public-key; the public key used in HTLCs
+(define-public (update-supplier-public-key (public-key (buff 33)))
+  (let
+    (
+      (supplier-id (unwrap! (get-supplier-id-by-controller contract-caller) ERR_UNAUTHORIZED))
+      (existing-supplier (unwrap! (get-supplier supplier-id) ERR_PANIC))
+      (new-supplier (merge existing-supplier {
+        public-key: public-key,
+      }))
+    )
+    (asserts! (map-insert supplier-by-public-key public-key supplier-id) ERR_SUPPLIER_EXISTS)
+    (asserts! (map-delete supplier-by-public-key (get public-key existing-supplier)) ERR_PANIC)
+    (map-set supplier-by-id supplier-id new-supplier)
+    (ok new-supplier)
+  )
+)
+
+
+;; As a swapper, register with the contract to generate your `swapper-id`.
+;; This is required to generate BTC deposit addresses that include metadata
+;; that point to a specific STX address as the swapper.
+;;
+;; @returns the newly generated swapper ID.
 (define-public (initialize-swapper)
   (let
     (
@@ -206,6 +282,27 @@
   )
 )
 
+;; Escrow funds for a supplier after sending BTC during an inbound swap.
+;; Validates that the BTC tx is valid by re-constructing the HTLC script
+;; and comparing it to the BTC tx.
+;; Validates that the HTLC data (like expiration) is valid.
+;;
+;; @returns metadata regarding this inbound swap (see `inbound-meta` map)
+;;
+;; @param block; a tuple containing `header` (the Bitcoin block header) and the `height` (Stacks height)
+;; where the BTC tx was confirmed.
+;; @param prev-blocks; because Clarity contracts can't get Bitcoin headers when there is no Stacks block,
+;; this param allows users to specify the chain of block headers going back to the block where the
+;; BTC tx was confirmed.
+;; @param tx; the hex data of the BTC tx
+;; @param proof; a merkle proof to validate inclusion of this tx in the BTC block
+;; @param output-index; the index of the HTLC output in the BTC tx
+;; @param sender; The swapper's public key used in the HTLC
+;; @param recipient; The supplier's public key used in the HTLC
+;; @param expiration-buff; A 4-byte integer the indicated the expiration of the HTLC
+;; @param hash; a hash of the `preimage` used in this swap
+;; @param swapper-buff; a 4-byte integer that indicates the `swapper-id`
+;; @param supplier-id; the supplier used in this swap
 (define-public (escrow-swap
     (block { header: (buff 80), height: uint })
     (prev-blocks (list 10 (buff 80)))
@@ -229,9 +326,9 @@
       (parsed-tx (unwrap! (contract-call? .clarity-bitcoin parse-tx tx) ERR_INVALID_TX))
       (output (unwrap! (element-at (get outs parsed-tx) output-index) ERR_INVALID_TX))
       (output-script (get scriptPubKey output))
-      (supplier (unwrap! (map-get? supplier-by-id supplier-id) ERR_INVALID_supplier))
+      (supplier (unwrap! (map-get? supplier-by-id supplier-id) ERR_INVALID_SUPPLIER))
       (sats (get value output))
-      (fee-rate (unwrap! (get inbound-fee supplier) ERR_INVALID_supplier))
+      (fee-rate (unwrap! (get inbound-fee supplier) ERR_INVALID_SUPPLIER))
       (xbtc (try! (get-swap-amount sats fee-rate (get inbound-base-fee supplier))))
       (funds (get-funds supplier-id))
       (funds-ok (asserts! (>= funds xbtc) ERR_INSUFFICIENT_FUNDS))
@@ -266,11 +363,19 @@
     (unwrap! (map-get? swapper-by-id swapper-id) ERR_SWAPPER_NOT_FOUND)
     (map-set supplier-funds supplier-id new-funds)
     (map-set supplier-escrow supplier-id new-escrow)
-    (print (merge meta { topic: "escrow" }))
+    (print (merge event { topic: "escrow" }))
     (ok meta)
   )
 )
 
+;; Finalize an inbound swap by revealing the preimage.
+;; Validates that `sha256(preimage)` is equal to the `hash` provided when
+;; escrowing the swap.
+;;
+;; @returns metadata relating to the swap (see `inbound-swaps` map)
+;;
+;; @param txid; the txid of the BTC tx used for this inbound swap
+;; @param preimage; the preimage that hashes to the swap's `hash`
 (define-public (finalize-swap (txid (buff 32)) (preimage (buff 128)))
   (match (map-get? inbound-preimages txid)
     existing ERR_ALREADY_FINALIZED
@@ -296,11 +401,20 @@
 
 ;; outbound swaps
 
+;; Initiate an outbound swap.
+;; Swapper provides the amount of xBTC and their withdraw address.
+;;
+;; @returns the auto-generated swap-id of this swap
+;;
+;; @param xbtc; amount of xBTC (sats) to swap
+;; @param btc-version; the address version for the swapper's BTC address
+;; @param btc-hash; the hash for the swapper's BTC address
+;; @param supplier-id; the supplier used for this swap
 (define-public (initiate-outbound-swap (xbtc uint) (btc-version (buff 1)) (btc-hash (buff 20)) (supplier-id uint))
   (let
     (
-      (supplier (unwrap! (map-get? supplier-by-id supplier-id) ERR_INVALID_supplier))
-      (fee-rate (unwrap! (get outbound-fee supplier) ERR_INVALID_supplier))
+      (supplier (unwrap! (map-get? supplier-by-id supplier-id) ERR_INVALID_SUPPLIER))
+      (fee-rate (unwrap! (get outbound-fee supplier) ERR_INVALID_SUPPLIER))
       (sats (try! (get-swap-amount xbtc fee-rate (get outbound-base-fee supplier))))
       (swap {
         sats: sats,
@@ -321,6 +435,20 @@
   )
 )
 
+;; Finalize an outbound swap.
+;; This method is called by the supplier after they've sent the swapper BTC.
+;;
+;; @returns true
+;;
+;; @param block; a tuple containing `header` (the Bitcoin block header) and the `height` (Stacks height)
+;; where the BTC tx was confirmed.
+;; @param prev-blocks; because Clarity contracts can't get Bitcoin headers when there is no Stacks block,
+;; this param allows users to specify the chain of block headers going back to the block where the
+;; BTC tx was confirmed.
+;; @param tx; the hex data of the BTC tx
+;; @param proof; a merkle proof to validate inclusion of this tx in the BTC block
+;; @param output-index; the index of the HTLC output in the BTC tx
+;; @param swap-id; the outbound swap ID they're finalizing
 (define-public (finalize-outbound-swap
     (block { header: (buff 80), height: uint })
     (prev-blocks (list 10 (buff 80)))
@@ -354,6 +482,13 @@
   )
 )
 
+;; Revoke an expired outbound swap.
+;; After an outbound swap has expired without finalizing, a swapper may call this function
+;; to receive the xBTC escrowed.
+;;
+;; @returns the metadata regarding the outbound swap
+;;
+;; @param swap-id; the ID of the outbound swap being revoked.
 (define-public (revoke-expired-outbound (swap-id uint))
   (let
     (
@@ -431,7 +566,7 @@
 (define-read-only (get-full-supplier (id uint))
   (let
     (
-      (supplier (unwrap! (get-supplier id) ERR_INVALID_supplier))
+      (supplier (unwrap! (get-supplier id) ERR_INVALID_SUPPLIER))
       (funds (get-funds id))
       (escrow (unwrap! (get-escrow id) ERR_PANIC))
     )

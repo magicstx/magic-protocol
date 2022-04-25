@@ -49,7 +49,25 @@ export interface BridgeContract {
   "version": Uint8Array;
   "xbtc": bigint
     }, bigint>;
-  updateSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string) => ContractCalls.Public<{
+  updateSupplierFees: (inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint) => ContractCalls.Public<{
+  "controller": string;
+  "inbound-base-fee": bigint;
+  "inbound-fee": bigint | null;
+  "name": string;
+  "outbound-base-fee": bigint;
+  "outbound-fee": bigint | null;
+  "public-key": Uint8Array
+    }, bigint>;
+  updateSupplierName: (name: string) => ContractCalls.Public<{
+  "controller": string;
+  "inbound-base-fee": bigint;
+  "inbound-fee": bigint | null;
+  "name": string;
+  "outbound-base-fee": bigint;
+  "outbound-fee": bigint | null;
+  "public-key": Uint8Array
+    }, bigint>;
+  updateSupplierPublicKey: (publicKey: Uint8Array) => ContractCalls.Public<{
   "controller": string;
   "inbound-base-fee": bigint;
   "inbound-fee": bigint | null;

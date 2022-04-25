@@ -63,7 +63,9 @@
   )
   (begin
     (try! (validate-owner))
-    (as-contract (contract-call? .bridge update-supplier public-key inbound-fee outbound-fee outbound-base-fee inbound-base-fee name))
+    (try! (as-contract (contract-call? .bridge update-supplier-fees inbound-fee outbound-fee outbound-base-fee inbound-base-fee)))
+    (try! (as-contract (contract-call? .bridge update-supplier-public-key public-key)))
+    (as-contract (contract-call? .bridge update-supplier-name name))
   )
 )
 

@@ -602,14 +602,6 @@ export const BridgeInterface: ClarityAbi = {
       "access": "public",
       "args": [
         {
-          "name": "public-key",
-          "type": {
-            "buffer": {
-              "length": 33
-            }
-          }
-        },
-        {
           "name": "inbound-fee",
           "type": {
             "optional": "int128"
@@ -628,7 +620,64 @@ export const BridgeInterface: ClarityAbi = {
         {
           "name": "inbound-base-fee",
           "type": "int128"
-        },
+        }
+      ],
+      "name": "update-supplier-fees",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": {
+              "tuple": [
+                {
+                  "name": "controller",
+                  "type": "principal"
+                },
+                {
+                  "name": "inbound-base-fee",
+                  "type": "int128"
+                },
+                {
+                  "name": "inbound-fee",
+                  "type": {
+                    "optional": "int128"
+                  }
+                },
+                {
+                  "name": "name",
+                  "type": {
+                    "string-ascii": {
+                      "length": 18
+                    }
+                  }
+                },
+                {
+                  "name": "outbound-base-fee",
+                  "type": "int128"
+                },
+                {
+                  "name": "outbound-fee",
+                  "type": {
+                    "optional": "int128"
+                  }
+                },
+                {
+                  "name": "public-key",
+                  "type": {
+                    "buffer": {
+                      "length": 33
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "access": "public",
+      "args": [
         {
           "name": "name",
           "type": {
@@ -638,7 +687,72 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "update-supplier",
+      "name": "update-supplier-name",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": {
+              "tuple": [
+                {
+                  "name": "controller",
+                  "type": "principal"
+                },
+                {
+                  "name": "inbound-base-fee",
+                  "type": "int128"
+                },
+                {
+                  "name": "inbound-fee",
+                  "type": {
+                    "optional": "int128"
+                  }
+                },
+                {
+                  "name": "name",
+                  "type": {
+                    "string-ascii": {
+                      "length": 18
+                    }
+                  }
+                },
+                {
+                  "name": "outbound-base-fee",
+                  "type": "int128"
+                },
+                {
+                  "name": "outbound-fee",
+                  "type": {
+                    "optional": "int128"
+                  }
+                },
+                {
+                  "name": "public-key",
+                  "type": {
+                    "buffer": {
+                      "length": 33
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "access": "public",
+      "args": [
+        {
+          "name": "public-key",
+          "type": {
+            "buffer": {
+              "length": 33
+            }
+          }
+        }
+      ],
+      "name": "update-supplier-public-key",
       "outputs": {
         "type": {
           "response": {
@@ -2162,7 +2276,7 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "constant",
-      "name": "ERR_INVALID_TX",
+      "name": "ERR_INVALID_SUPPLIER",
       "type": {
         "response": {
           "error": "uint128",
@@ -2172,7 +2286,7 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "constant",
-      "name": "ERR_INVALID_supplier",
+      "name": "ERR_INVALID_TX",
       "type": {
         "response": {
           "error": "uint128",
@@ -2213,6 +2327,26 @@ export const BridgeInterface: ClarityAbi = {
     {
       "access": "constant",
       "name": "ERR_REVOKE_OUTBOUND_NOT_EXPIRED",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
+      "name": "ERR_SUPPLIER_EXISTS",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
+      "name": "ERR_SUPPLIER_NOT_FOUND",
       "type": {
         "response": {
           "error": "uint128",
@@ -2283,26 +2417,6 @@ export const BridgeInterface: ClarityAbi = {
     {
       "access": "constant",
       "name": "ERR_UNAUTHORIZED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_supplier_EXISTS",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_supplier_NOT_FOUND",
       "type": {
         "response": {
           "error": "uint128",
