@@ -1,5 +1,13 @@
 # bridge-ui
 
+## 0.3.0
+
+### Minor Changes
+
+- [`dd7c72e`](https://github.com/magicstx/bridge/commit/dd7c72ef3bf21dcc7f545ed7acbd952b9f72b0bc) Thanks [@dumbledope](https://github.com/dumbledope)! - Removed the `update-supplier` method in favor of 3 separate methods: `update-supplier-fees`, `update-supplier-name`, and `update-supplier-public-key`.
+
+  Also added docs for the main public-facing functions in the bridge contract.
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,7 +1,7 @@
 {
   "name": "bridge-ui",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "scripts": {
     "dev": "MICRO_STACKS_DEBUG=true next dev -p 4444",
     "build": "next build",
