@@ -1,0 +1,5 @@
+auth = "devnet:devnet"
+network = "regtest"
+daemon_p2p_addr = "host.docker.internal:18444"
+daemon_rpc_addr = "host.docker.internal:18443"
+electrum_rpc_addr = "0.0.0.0:50001"

@@ -14,7 +14,8 @@
     "server:dev:watch": "nodemon --verbose -x 'yarn server:dev'",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "electrum_server": "docker run -v $(pwd)/Electrum.toml:/src/electrum/Electrum.toml -it -p 50001:50001/tcp ludovic/electrs:devnet electrs --conf /src/electrum/Electrum.toml"
   },
   "prettier": "@stacks/prettier-config",
   "dependencies": {
