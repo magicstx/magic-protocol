@@ -270,7 +270,8 @@ describe('successful inbound swap', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
@@ -324,7 +325,8 @@ describe('successful inbound swap', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
@@ -409,7 +411,8 @@ describe('validating inbound swaps', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
@@ -430,7 +433,8 @@ describe('validating inbound swaps', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
@@ -460,7 +464,8 @@ describe('validating inbound swaps', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
@@ -483,7 +488,8 @@ describe('validating inbound swaps', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
@@ -515,7 +521,8 @@ describe('validating inbound swaps', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
@@ -546,7 +553,8 @@ describe('validating inbound swaps', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        1n
+        1n,
+        xbtcAmount
       ),
       swapper
     );
@@ -577,7 +585,8 @@ describe('validating inbound swaps', () => {
         bScript.number.encode(htlc.expiration),
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
@@ -609,12 +618,91 @@ describe('validating inbound swaps', () => {
         CSV_DELAY_BUFF,
         hash,
         swapperHex,
-        0n
+        0n,
+        xbtcAmount
       ),
       swapper
     );
 
     expect(receipt.value).toEqual(13n);
+
+    await t.txOk(
+      contract.updateSupplierFees(
+        supplierInfo['inbound-fee'],
+        supplierInfo['outbound-fee'],
+        supplierInfo['outbound-base-fee'],
+        supplierInfo['inbound-base-fee']
+      ),
+      supplier
+    );
+  });
+
+  test('validates that supplier cannot frontrun', async () => {
+    const supplierInfo = (await t.rov(contract.getSupplier(0n)))!;
+
+    // Test base fee
+    await t.txOk(
+      contract.updateSupplierFees(
+        supplierInfo['inbound-fee'],
+        supplierInfo['outbound-fee'],
+        supplierInfo['outbound-base-fee'],
+        supplierInfo['inbound-base-fee'] + 10n
+      ),
+      supplier
+    );
+
+    const receipt = await t.txErr(
+      contract.escrowSwap(
+        { header: Buffer.from([]), height: 1n },
+        [],
+        txHex,
+        proof,
+        0n,
+        htlc.senderPublicKey,
+        htlc.recipientPublicKey,
+        CSV_DELAY_BUFF,
+        hash,
+        swapperHex,
+        0n,
+        xbtcAmount
+      ),
+      swapper
+    );
+
+    expect(receipt.value).toEqual(27n);
+
+    // Test inbound fee
+    const inFee = supplierInfo['inbound-fee'];
+    const newInFee = inFee === null ? inFee : inFee + 10n;
+    await t.txOk(
+      contract.updateSupplierFees(
+        newInFee,
+        supplierInfo['outbound-fee'],
+        supplierInfo['outbound-base-fee'],
+        supplierInfo['inbound-base-fee']
+      ),
+      supplier
+    );
+
+    const receipt2 = await t.txErr(
+      contract.escrowSwap(
+        { header: Buffer.from([]), height: 1n },
+        [],
+        txHex,
+        proof,
+        0n,
+        htlc.senderPublicKey,
+        htlc.recipientPublicKey,
+        CSV_DELAY_BUFF,
+        hash,
+        swapperHex,
+        0n,
+        xbtcAmount
+      ),
+      swapper
+    );
+
+    expect(receipt2.value).toEqual(27n);
 
     await t.txOk(
       contract.updateSupplierFees(
@@ -641,7 +729,8 @@ describe('validating inbound swaps', () => {
           CSV_DELAY_BUFF,
           hash,
           swapperHex,
-          0n
+          0n,
+          xbtcAmount
         ),
         swapper
       );
