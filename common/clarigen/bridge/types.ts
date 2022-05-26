@@ -14,7 +14,7 @@ export interface BridgeContract {
   "hashes": Uint8Array[];
   "tree-depth": bigint;
   "tx-index": bigint
-    }, outputIndex: number | bigint, sender: Uint8Array, recipient: Uint8Array, expirationBuff: Uint8Array, hash: Uint8Array, swapperBuff: Uint8Array, supplierId: number | bigint) => ContractCalls.Public<{
+    }, outputIndex: number | bigint, sender: Uint8Array, recipient: Uint8Array, expirationBuff: Uint8Array, hash: Uint8Array, swapperBuff: Uint8Array, supplierId: number | bigint, minToReceive: number | bigint) => ContractCalls.Public<{
   "csv": bigint;
   "output-index": bigint;
   "redeem-script": Uint8Array;

@@ -5,6 +5,7 @@ import { BridgeContract } from '../clarigen';
 import { NETWORK_CONFIG } from '../constants';
 import { Transaction } from 'bitcoinjs-lib';
 import { bytesToHex } from 'micro-stacks/common';
+import { btcToSats } from '../utils';
 
 export function getElectrumConfig() {
   const defaultHost = process.env.ELECTRUM_HOST;
@@ -103,6 +104,7 @@ export async function getTxData(txid: string, address: string) {
       return addressMatch || addressesMatch;
     });
 
+    const amount = btcToSats(tx.vout[outputIndex].value);
     const blockArg = {
       header: header,
       height: stacksHeight,
@@ -123,6 +125,7 @@ export async function getTxData(txid: string, address: string) {
       prevBlocks,
       tx,
       outputIndex,
+      amount,
     };
   });
 }

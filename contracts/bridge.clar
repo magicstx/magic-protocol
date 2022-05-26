@@ -100,6 +100,8 @@
 (define-constant ERR_INSUFFICIENT_AMOUNT (err u24))
 (define-constant ERR_REVOKE_OUTBOUND_NOT_EXPIRED (err u25))
 (define-constant ERR_REVOKE_OUTBOUND_IS_FINALIZED (err u26))
+(define-constant ERR_INCONSISTENT_FEES (err u27))
+
 
 ;; Register a supplier and add funds.
 ;; Validates that the public key and "controller" (STX address) are not
@@ -303,6 +305,7 @@
 ;; @param hash; a hash of the `preimage` used in this swap
 ;; @param swapper-buff; a 4-byte integer that indicates the `swapper-id`
 ;; @param supplier-id; the supplier used in this swap
+;; @param min-to-receive; minimum receivable calculated off-chain to avoid the supplier front-run the swap by adjusting fees
 (define-public (escrow-swap
     (block { header: (buff 80), height: uint })
     (prev-blocks (list 10 (buff 80)))
@@ -315,6 +318,7 @@
     (hash (buff 32))
     (swapper-buff (buff 4))
     (supplier-id uint)
+    (min-to-receive uint)
   )
   (let
     (
@@ -360,6 +364,7 @@
     (asserts! (is-eq (len hash) u32) ERR_INVALID_HASH)
     (asserts! (map-insert inbound-swaps txid escrow) ERR_TXID_USED)
     (asserts! (map-insert inbound-meta txid meta) ERR_PANIC)
+    (asserts! (>= xbtc min-to-receive) ERR_INCONSISTENT_FEES)
     (unwrap! (map-get? swapper-by-id swapper-id) ERR_SWAPPER_NOT_FOUND)
     (map-set supplier-funds supplier-id new-funds)
     (map-set supplier-escrow supplier-id new-escrow)

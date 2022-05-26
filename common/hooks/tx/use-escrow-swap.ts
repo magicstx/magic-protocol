@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai/utils';
-import { hexToBytes } from 'micro-stacks/common';
+import { hexToBytes, intToBigInt } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { fetchTxData } from '../../api';
 import { numberToLE, CSV_DELAY_BUFF } from '../../htlc';
@@ -18,6 +18,9 @@ export const useEscrowSwap = (swap: InboundSwapSent) => {
     const txData = await fetchTxData(btcTxid, address);
     const hash = hashSha256(hexToBytes(secret));
     const swapperHex = numberToLE(swapperId);
+    const amount = txData.amount;
+    const amountWithFeeRate = (amount * (10000n - intToBigInt(supplier.inboundFee))) / 10000n;
+    const minToReceive = amountWithFeeRate - intToBigInt(supplier.inboundBaseFee);
     const escrowTx = contracts.bridge.contract.escrowSwap(
       txData.block,
       txData.prevBlocks,
@@ -29,7 +32,8 @@ export const useEscrowSwap = (swap: InboundSwapSent) => {
       CSV_DELAY_BUFF,
       Buffer.from(hash),
       Buffer.from(swapperHex, 'hex'),
-      supplier.id
+      supplier.id,
+      minToReceive
     );
     return submit(escrowTx);
   });

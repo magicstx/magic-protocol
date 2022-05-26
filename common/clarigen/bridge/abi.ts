@@ -228,6 +228,10 @@ export const BridgeInterface: ClarityAbi = {
         {
           "name": "supplier-id",
           "type": "uint128"
+        },
+        {
+          "name": "min-to-receive",
+          "type": "uint128"
         }
       ],
       "name": "escrow-swap",
@@ -2187,6 +2191,16 @@ export const BridgeInterface: ClarityAbi = {
     {
       "access": "constant",
       "name": "ERR_FEE_INVALID",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
+      "name": "ERR_INCONSISTENT_FEES",
       "type": {
         "response": {
           "error": "uint128",

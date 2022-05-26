@@ -15,13 +15,14 @@ interface TxData {
   txHex: Uint8Array;
   proof: ProofParam;
   outputIndex: number;
+  amount: bigint;
 }
 
 export async function fetchTxData(txid: string, address: string): Promise<TxData> {
   try {
     const url = `${LOCAL_URL || ''}/api/tx-data?txid=${txid}&address=${address}`;
     const res = await fetch(url);
-    const { block, proof, txHex, outputIndex, prevBlocks } =
+    const { block, proof, txHex, outputIndex, prevBlocks, amount } =
       (await res.json()) as unknown as TxDataApi;
     return {
       block: {
@@ -36,6 +37,7 @@ export async function fetchTxData(txid: string, address: string): Promise<TxData
         'tx-index': BigInt(proof['tx-index']),
       },
       outputIndex,
+      amount: BigInt(amount),
     };
   } catch (error) {
     console.error(error);
