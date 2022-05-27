@@ -673,10 +673,9 @@ describe('validating inbound swaps', () => {
 
     // Test inbound fee
     const inFee = supplierInfo['inbound-fee'];
-    const newInFee = inFee === null ? inFee : inFee + 10n;
     await t.txOk(
       contract.updateSupplierFees(
-        newInFee,
+        supplierInfo['inbound-fee']! + 10n,
         supplierInfo['outbound-fee'],
         supplierInfo['outbound-base-fee'],
         supplierInfo['inbound-base-fee']

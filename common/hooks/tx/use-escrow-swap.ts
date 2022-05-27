@@ -20,7 +20,7 @@ export const useEscrowSwap = (swap: InboundSwapSent) => {
     const swapperHex = numberToLE(swapperId);
     const amount = txData.amount;
     const amountWithFeeRate = (amount * (10000n - intToBigInt(supplier.inboundFee))) / 10000n;
-    const minToReceive = amountWithFeeRate - intToBigInt(supplier.inboundBaseFee);
+    const minToReceive = amountWithFeeRate - BigInt(supplier.inboundBaseFee);
     const escrowTx = contracts.bridge.contract.escrowSwap(
       txData.block,
       txData.prevBlocks,
