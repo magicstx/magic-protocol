@@ -71,6 +71,9 @@
 (define-constant P2PKH_VERSION 0x00)
 (define-constant P2SH_VERSION 0x05)
 
+;; set fee to 10% as the upper bound fee
+(define-constant MAX_FEE 1000)
+
 ;; use a placeholder txid to mark as "finalized"
 (define-constant REVOKED_OUTBOUND_TXID 0x00)
 
@@ -218,6 +221,8 @@
         inbound-base-fee: inbound-base-fee,
       }))
     )
+    (try! (validate-fee inbound-fee))
+    (try! (validate-fee outbound-fee))
     (map-set supplier-by-id supplier-id new-supplier)
     (ok new-supplier)
   )
@@ -714,7 +719,7 @@
   (match fee-opt
     fee (let
       (
-        (max-fee 10000)
+        (max-fee MAX_FEE)
         (within-upper (< fee max-fee))
         (within-lower (> fee (* -1 max-fee)))
       )

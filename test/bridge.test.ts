@@ -973,3 +973,10 @@ test('can update supplier name', async () => {
     name: newName,
   });
 });
+
+test('fees are properly validated', async () => {
+  expect(await t.rovErr(contract.validateFee(2000n))).toEqual(8n);
+  expect(await t.rovErr(contract.validateFee(-2000n))).toEqual(8n);
+  expect(await t.rovOk(contract.validateFee(800n))).toBe(true);
+  expect(await t.rovOk(contract.validateFee(-800n))).toBe(true);
+});
