@@ -2445,6 +2445,11 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "constant",
+      "name": "MAX_FEE",
+      "type": "int128"
+    },
+    {
+      "access": "constant",
       "name": "MIN_EXPIRATION",
       "type": "uint128"
     },
