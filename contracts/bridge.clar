@@ -73,6 +73,8 @@
 
 ;; use a placeholder txid to mark as "finalized"
 (define-constant REVOKED_OUTBOUND_TXID 0x00)
+;; placeholder to mark inbound swap as revoked
+(define-constant REVOKED_INBOUND_PREIMAGE 0x00)
 
 (define-constant ERR_PANIC (err u1)) ;; should never be thrown
 (define-constant ERR_SUPPLIER_EXISTS (err u2))
@@ -101,6 +103,8 @@
 (define-constant ERR_REVOKE_OUTBOUND_NOT_EXPIRED (err u25))
 (define-constant ERR_REVOKE_OUTBOUND_IS_FINALIZED (err u26))
 (define-constant ERR_INCONSISTENT_FEES (err u27))
+(define-constant ERR_REVOKE_INBOUND_NOT_EXPIRED (err u28))
+(define-constant ERR_REVOKE_INBOUND_IS_FINALIZED (err u29))
 
 
 ;; Register a supplier and add funds.
@@ -406,6 +410,42 @@
   )
 )
 
+;; Revoke an expired inbound swap.
+;; 
+;; If an inbound swap has expired, and is not finalized, then the `xbtc`
+;; amount of the swap is "stuck" in escrow. Calling this function will:
+;; 
+;; - Update the supplier's funds and escrow
+;; - Mark the swap as finalized
+;; 
+;; To finalize the swap, the pre-image stored for the swap is the constant
+;; REVOKED_INBOUND_PREIMAGE (0x00).
+;; 
+;; @returns the swap's metadata
+;; 
+;; @param txid; the txid of the BTC tx used for this inbound swap
+(define-public (revoke-expired-inbound (txid (buff 32)))
+  (match (map-get? inbound-preimages txid)
+    existing ERR_REVOKE_INBOUND_IS_FINALIZED
+    (let
+      (
+        (swap (unwrap! (map-get? inbound-swaps txid) ERR_INVALID_ESCROW))
+        (xbtc (get xbtc swap))
+        (supplier-id (get supplier swap))
+        (funds (get-funds supplier-id))
+        (escrowed (unwrap! (get-escrow supplier-id) ERR_PANIC))
+        (new-funds (+ funds xbtc))
+        (new-escrow (- escrowed xbtc))
+      )
+      (asserts! (<= (get expiration swap) block-height) ERR_REVOKE_INBOUND_NOT_EXPIRED)
+      (map-insert inbound-preimages txid REVOKED_INBOUND_PREIMAGE)
+      (map-set supplier-escrow supplier-id new-escrow)
+      (map-set supplier-funds supplier-id new-funds)
+      (ok swap)
+    )
+  )
+)
+
 ;; outbound swaps
 
 ;; Initiate an outbound swap.
@@ -528,10 +568,7 @@
 )
 
 (define-read-only (get-funds (id uint))
-  (match (map-get? supplier-funds id)
-    funds funds
-    u0
-  )
+  (default-to u0 (map-get? supplier-funds id))
 )
 
 (define-read-only (get-escrow (id uint))

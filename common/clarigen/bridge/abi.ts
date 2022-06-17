@@ -549,6 +549,55 @@ export const BridgeInterface: ClarityAbi = {
       "access": "public",
       "args": [
         {
+          "name": "txid",
+          "type": {
+            "buffer": {
+              "length": 32
+            }
+          }
+        }
+      ],
+      "name": "revoke-expired-inbound",
+      "outputs": {
+        "type": {
+          "response": {
+            "error": "uint128",
+            "ok": {
+              "tuple": [
+                {
+                  "name": "expiration",
+                  "type": "uint128"
+                },
+                {
+                  "name": "hash",
+                  "type": {
+                    "buffer": {
+                      "length": 32
+                    }
+                  }
+                },
+                {
+                  "name": "supplier",
+                  "type": "uint128"
+                },
+                {
+                  "name": "swapper",
+                  "type": "uint128"
+                },
+                {
+                  "name": "xbtc",
+                  "type": "uint128"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "access": "public",
+      "args": [
+        {
           "name": "swap-id",
           "type": "uint128"
         }
@@ -2330,6 +2379,26 @@ export const BridgeInterface: ClarityAbi = {
     },
     {
       "access": "constant",
+      "name": "ERR_REVOKE_INBOUND_IS_FINALIZED",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
+      "name": "ERR_REVOKE_INBOUND_NOT_EXPIRED",
+      "type": {
+        "response": {
+          "error": "uint128",
+          "ok": "none"
+        }
+      }
+    },
+    {
+      "access": "constant",
       "name": "ERR_REVOKE_OUTBOUND_IS_FINALIZED",
       "type": {
         "response": {
@@ -2465,6 +2534,15 @@ export const BridgeInterface: ClarityAbi = {
     {
       "access": "constant",
       "name": "P2SH_VERSION",
+      "type": {
+        "buffer": {
+          "length": 1
+        }
+      }
+    },
+    {
+      "access": "constant",
+      "name": "REVOKED_INBOUND_PREIMAGE",
       "type": {
         "buffer": {
           "length": 1

@@ -30,6 +30,7 @@ import { base58checkDecode, getPublicKey } from 'micro-stacks/crypto';
 import { NativeClarityBinProvider } from '@clarigen/native-bin';
 import { ContractReturn, CoreNodeEventType, filterEvents } from '@clarigen/core';
 import { makeRandomPrivKey } from 'micro-stacks/transactions';
+import { contracts as contractDef } from '../common/clarigen/single';
 
 let contract: BridgeContract;
 let xbtcContract: XbtcContract;
@@ -48,6 +49,14 @@ const xbtcTokenId = `${deployer}.xbtc::xbtc`;
 const feeIn = 300n;
 const feeOut = 100n;
 const startingFunds = 2n * 1000000n;
+
+const constants = contractDef.bridge.constants;
+
+async function getInboundSwap(txid: Uint8Array) {
+  const swap = await t.rov(contract.getInboundSwap(txid));
+  if (!swap) throw new Error(`Unable to find swap ${bytesToHex(txid)}`);
+  return swap;
+}
 
 // process.env.PRINT_CLARIGEN_STDERR = 'true';
 
@@ -740,14 +749,44 @@ describe('validating inbound swaps', () => {
       expect(receipt.value).toEqual(19n);
     });
 
-    test('cannot finalize swap after expiration', async () => {
-      const height = await getBlockHeight(t);
-      const { expiration } = (await t.rov(contract.getInboundSwap(txid)))!;
-      const blocksToMine = expiration - height + 1n;
-      await mineBlocks(blocksToMine, t);
-      const receipt = await t.txErr(contract.finalizeSwap(txid, preImage), swapper);
-      expect(receipt.value).toEqual(20n);
-    }, 10000);
+    test('cannot inbound before expiration', async () => {
+      const receipt = await t.txErr(contract.revokeExpiredInbound(txid), swapper);
+      expect(receipt.value).toEqual(constants.ERR_REVOKE_INBOUND_NOT_EXPIRED.value);
+    });
+
+    describe('after swap expiration', () => {
+      beforeAll(async () => {
+        const height = await getBlockHeight(t);
+        const { expiration } = await getInboundSwap(txid);
+        const blocksToMine = expiration - height + 1n;
+        await mineBlocks(blocksToMine, t);
+      }, 10000);
+
+      test('cannot finalize swap after expiration', async () => {
+        const receipt = await t.txErr(contract.finalizeSwap(txid, preImage), swapper);
+        expect(receipt.value).toEqual(20n);
+      });
+
+      test('can revoke inbound swap after expiration', async () => {
+        const swap = await getInboundSwap(txid);
+        const { xbtc, supplier } = swap;
+        const fundsBefore = await t.rov(contract.getFunds(supplier));
+        const escrowBefore = (await t.rov(contract.getEscrow(supplier)))!;
+        const receipt = await t.txOk(contract.revokeExpiredInbound(txid), swapper);
+        const preImage = await t.rov(contract.getPreimage(txid));
+        expect(preImage).toEqual(constants.REVOKED_INBOUND_PREIMAGE);
+        expect(receipt.value).toEqual(swap);
+        const funds = await t.rov(contract.getFunds(supplier));
+        const escrow = (await t.rov(contract.getEscrow(supplier)))!;
+        expect(funds).toEqual(fundsBefore + xbtc);
+        expect(escrow).toEqual(escrowBefore - xbtc);
+      });
+
+      test('cannot revoke already revoked inbound swap', async () => {
+        const receipt = await t.txErr(contract.revokeExpiredInbound(txid), swapper);
+        expect(receipt.value).toEqual(constants.ERR_REVOKE_INBOUND_IS_FINALIZED.value);
+      });
+    });
   });
 });
 

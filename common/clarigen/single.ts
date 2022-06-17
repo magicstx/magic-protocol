@@ -4639,6 +4639,39 @@ export const contracts = {
         name: 'remove-funds',
         outputs: { type: { response: { error: 'uint128', ok: 'uint128' } } },
       } as TypedAbiFunction<[amount: number | bigint], Response<bigint, bigint>>,
+      revokeExpiredInbound: {
+        access: 'public',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        name: 'revoke-expired-inbound',
+        outputs: {
+          type: {
+            response: {
+              error: 'uint128',
+              ok: {
+                tuple: [
+                  { name: 'expiration', type: 'uint128' },
+                  { name: 'hash', type: { buffer: { length: 32 } } },
+                  { name: 'supplier', type: 'uint128' },
+                  { name: 'swapper', type: 'uint128' },
+                  { name: 'xbtc', type: 'uint128' },
+                ],
+              },
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [txid: Uint8Array],
+        Response<
+          {
+            expiration: bigint;
+            hash: Uint8Array;
+            supplier: bigint;
+            swapper: bigint;
+            xbtc: bigint;
+          },
+          bigint
+        >
+      >,
       revokeExpiredOutbound: {
         access: 'public',
         args: [{ name: 'swap-id', type: 'uint128' }],
@@ -5664,6 +5697,18 @@ export const contracts = {
         type: { response: { error: 'uint128', ok: 'none' } },
         defaultValue: { isOk: false, value: 100n },
       } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_REVOKE_INBOUND_IS_FINALIZED: {
+        access: 'constant',
+        name: 'ERR_REVOKE_INBOUND_IS_FINALIZED',
+        type: { response: { error: 'uint128', ok: 'none' } },
+        defaultValue: { isOk: false, value: 29n },
+      } as TypedAbiVariable<Response<null, bigint>>,
+      ERR_REVOKE_INBOUND_NOT_EXPIRED: {
+        access: 'constant',
+        name: 'ERR_REVOKE_INBOUND_NOT_EXPIRED',
+        type: { response: { error: 'uint128', ok: 'none' } },
+        defaultValue: { isOk: false, value: 28n },
+      } as TypedAbiVariable<Response<null, bigint>>,
       ERR_REVOKE_OUTBOUND_IS_FINALIZED: {
         access: 'constant',
         name: 'ERR_REVOKE_OUTBOUND_IS_FINALIZED',
@@ -5759,6 +5804,12 @@ export const contracts = {
         name: 'P2SH_VERSION',
         type: { buffer: { length: 1 } },
         defaultValue: Uint8Array.from([5]),
+      } as TypedAbiVariable<Uint8Array>,
+      REVOKED_INBOUND_PREIMAGE: {
+        access: 'constant',
+        name: 'REVOKED_INBOUND_PREIMAGE',
+        type: { buffer: { length: 1 } },
+        defaultValue: Uint8Array.from([0]),
       } as TypedAbiVariable<Uint8Array>,
       REVOKED_OUTBOUND_TXID: {
         access: 'constant',
@@ -6228,6 +6279,8 @@ export const contracts = {
       ERR_INVALID_TX: { isOk: false, value: 10n },
       ERR_PANIC: { isOk: false, value: 1n },
       ERR_READ_UINT: { isOk: false, value: 100n },
+      ERR_REVOKE_INBOUND_IS_FINALIZED: { isOk: false, value: 29n },
+      ERR_REVOKE_INBOUND_NOT_EXPIRED: { isOk: false, value: 28n },
       ERR_REVOKE_OUTBOUND_IS_FINALIZED: { isOk: false, value: 26n },
       ERR_REVOKE_OUTBOUND_NOT_EXPIRED: { isOk: false, value: 25n },
       ERR_SUPPLIER_EXISTS: { isOk: false, value: 2n },
@@ -6244,6 +6297,7 @@ export const contracts = {
       OUTBOUND_EXPIRATION: 200n,
       P2PKH_VERSION: Uint8Array.from([0]),
       P2SH_VERSION: Uint8Array.from([5]),
+      REVOKED_INBOUND_PREIMAGE: Uint8Array.from([0]),
       REVOKED_OUTBOUND_TXID: Uint8Array.from([0]),
     },
     fungible_tokens: [],

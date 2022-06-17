@@ -40,6 +40,13 @@ export interface BridgeContract {
   initiateOutboundSwap: (xbtc: number | bigint, btcVersion: Uint8Array, btcHash: Uint8Array, supplierId: number | bigint) => ContractCalls.Public<bigint, bigint>;
   registerSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string, funds: number | bigint) => ContractCalls.Public<bigint, bigint>;
   removeFunds: (amount: number | bigint) => ContractCalls.Public<bigint, bigint>;
+  revokeExpiredInbound: (txid: Uint8Array) => ContractCalls.Public<{
+  "expiration": bigint;
+  "hash": Uint8Array;
+  "supplier": bigint;
+  "swapper": bigint;
+  "xbtc": bigint
+    }, bigint>;
   revokeExpiredOutbound: (swapId: number | bigint) => ContractCalls.Public<{
   "created-at": bigint;
   "hash": Uint8Array;
