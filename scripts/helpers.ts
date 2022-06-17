@@ -3,7 +3,6 @@ import { accounts } from '../common/clarigen';
 import { StacksMocknet } from 'micro-stacks/network';
 import { NodeProvider } from '@clarigen/node';
 import { publicKeys } from '../test/mocks';
-import { WebTransactionReceipt } from '@clarigen/core';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { hexToBytes } from 'micro-stacks/common';
 import { getPublicKey } from 'noble-secp256k1';
