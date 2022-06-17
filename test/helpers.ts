@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { payments, Psbt, ECPair, networks } from 'bitcoinjs-lib';
-import { TransactionResultOk } from '@clarigen/core';
 import { IntegerType, intToBigInt } from 'micro-stacks/common';
 
 export function makeTxHex(payment: payments.Payment, value = 10000) {
@@ -45,7 +44,7 @@ export const blockLimits: Record<string, number> = {
   runtime: 5_000_000_000,
 };
 
-type ReceiptCosts = TransactionResultOk<boolean>['costs'];
+type ReceiptCosts = Record<string, number>;
 
 function costDisplay(cost: number, limit: number) {
   const percent = ((cost / limit) * 100).toFixed(2);
@@ -55,7 +54,7 @@ function costDisplay(cost: number, limit: number) {
 export function logTxCosts(costs: ReceiptCosts, name?: string) {
   const message: string[] = name ? [`${name} costs:`] : [];
   Object.keys(costs).forEach(key => {
-    const cost = costs[key] as number;
+    const cost = costs[key];
     const limit = blockLimits[key];
     // console.log(key, costDisplay(cost, limit));
     message.push(`${key}: ${cost} (${costDisplay(cost, limit)})`);
