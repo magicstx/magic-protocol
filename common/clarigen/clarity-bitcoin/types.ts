@@ -1,4 +1,4 @@
-import { ClarityTypes, ContractCalls } from '@clarigen/core';
+import { Response, ContractCalls } from '@clarigen/core';
 
 // prettier-ignore
 export interface ClarityBitcoinContract {
@@ -48,7 +48,7 @@ export interface ClarityBitcoinContract {
   "index": bigint
     }>;
   isBitSet: (val: number | bigint, bit: number | bigint) => ContractCalls.ReadOnly<boolean>;
-  parseBlockHeader: (headerbuff: Uint8Array) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+  parseBlockHeader: (headerbuff: Uint8Array) => ContractCalls.ReadOnly<Response<{
   "merkle-root": Uint8Array;
   "nbits": bigint;
   "nonce": bigint;
@@ -56,7 +56,7 @@ export interface ClarityBitcoinContract {
   "timestamp": bigint;
   "version": bigint
     }, bigint>>;
-  parseTx: (tx: Uint8Array) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+  parseTx: (tx: Uint8Array) => ContractCalls.ReadOnly<Response<{
   "ins": {
   "outpoint": {
   "hash": Uint8Array;
@@ -75,14 +75,14 @@ export interface ClarityBitcoinContract {
   readHashslice: (oldCtx: {
   "index": bigint;
   "txbuff": Uint8Array
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
     };
   "hashslice": Uint8Array
     }, bigint>>;
-  readNextTxin: (ignored: boolean, stateRes: ClarityTypes.Response<{
+  readNextTxin: (ignored: boolean, stateRes: Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -96,7 +96,7 @@ export interface ClarityBitcoinContract {
   "scriptSig": Uint8Array;
   "sequence": bigint
     }[]
-    }, bigint>) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }, bigint>) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -111,7 +111,7 @@ export interface ClarityBitcoinContract {
   "sequence": bigint
     }[]
     }, bigint>>;
-  readNextTxout: (ignored: boolean, stateRes: ClarityTypes.Response<{
+  readNextTxout: (ignored: boolean, stateRes: Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -121,7 +121,7 @@ export interface ClarityBitcoinContract {
   "scriptPubKey": Uint8Array;
   "value": bigint
     }[]
-    }, bigint>) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }, bigint>) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -132,7 +132,7 @@ export interface ClarityBitcoinContract {
   "value": bigint
     }[]
     }, bigint>>;
-  readSlice: (data: Uint8Array, offset: number | bigint, size: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<Uint8Array, bigint>>;
+  readSlice: (data: Uint8Array, offset: number | bigint, size: number | bigint) => ContractCalls.ReadOnly<Response<Uint8Array, bigint>>;
   readSlice1: (input: {
   "data": Uint8Array;
   "index": bigint
@@ -176,7 +176,7 @@ export interface ClarityBitcoinContract {
   readTxins: (ctx: {
   "index": bigint;
   "txbuff": Uint8Array
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -194,7 +194,7 @@ export interface ClarityBitcoinContract {
   readTxouts: (ctx: {
   "index": bigint;
   "txbuff": Uint8Array
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -208,7 +208,7 @@ export interface ClarityBitcoinContract {
   readUint16: (ctx: {
   "index": bigint;
   "txbuff": Uint8Array
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -218,7 +218,7 @@ export interface ClarityBitcoinContract {
   readUint32: (ctx: {
   "index": bigint;
   "txbuff": Uint8Array
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -228,7 +228,7 @@ export interface ClarityBitcoinContract {
   readUint64: (ctx: {
   "index": bigint;
   "txbuff": Uint8Array
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -238,7 +238,7 @@ export interface ClarityBitcoinContract {
   readVarint: (ctx: {
   "index": bigint;
   "txbuff": Uint8Array
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -248,7 +248,7 @@ export interface ClarityBitcoinContract {
   readVarslice: (oldCtx: {
   "index": bigint;
   "txbuff": Uint8Array
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+    }) => ContractCalls.ReadOnly<Response<{
   "ctx": {
   "index": bigint;
   "txbuff": Uint8Array
@@ -261,10 +261,10 @@ export interface ClarityBitcoinContract {
   "hashes": Uint8Array[];
   "tree-depth": bigint;
   "tx-index": bigint
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
-  verifyPrevBlock: (block: Uint8Array, parent: Uint8Array) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
-  verifyPrevBlocks: (block: Uint8Array, prevBlocks: Uint8Array[]) => ContractCalls.ReadOnly<ClarityTypes.Response<Uint8Array, bigint>>;
-  verifyPrevBlocksFold: (parent: Uint8Array, nextResp: ClarityTypes.Response<Uint8Array, bigint>) => ContractCalls.ReadOnly<ClarityTypes.Response<Uint8Array, bigint>>;
+    }) => ContractCalls.ReadOnly<Response<boolean, bigint>>;
+  verifyPrevBlock: (block: Uint8Array, parent: Uint8Array) => ContractCalls.ReadOnly<Response<boolean, bigint>>;
+  verifyPrevBlocks: (block: Uint8Array, prevBlocks: Uint8Array[]) => ContractCalls.ReadOnly<Response<Uint8Array, bigint>>;
+  verifyPrevBlocksFold: (parent: Uint8Array, nextResp: Response<Uint8Array, bigint>) => ContractCalls.ReadOnly<Response<Uint8Array, bigint>>;
   wasTxMinedPrev: (block: {
   "header": Uint8Array;
   "height": bigint
@@ -272,7 +272,7 @@ export interface ClarityBitcoinContract {
   "hashes": Uint8Array[];
   "tree-depth": bigint;
   "tx-index": bigint
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
+    }) => ContractCalls.ReadOnly<Response<boolean, bigint>>;
   wasTxMined: (block: {
   "header": Uint8Array;
   "height": bigint
@@ -280,5 +280,5 @@ export interface ClarityBitcoinContract {
   "hashes": Uint8Array[];
   "tree-depth": bigint;
   "tx-index": bigint
-    }) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
+    }) => ContractCalls.ReadOnly<Response<boolean, bigint>>;
 }

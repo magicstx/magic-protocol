@@ -747,7 +747,7 @@ describe('validating inbound swaps', () => {
       await mineBlocks(blocksToMine, t);
       const receipt = await t.txErr(contract.finalizeSwap(txid, preImage), swapper);
       expect(receipt.value).toEqual(20n);
-    });
+    }, 10000);
   });
 });
 
@@ -903,7 +903,7 @@ describe('revoking outbound swap', () => {
   describe('after expiration', () => {
     beforeAll(async () => {
       await mineBlocks(199n, t);
-    });
+    }, 10000);
 
     test('can revoke an outbound swap after expiration', async () => {
       // anyone can call this function
@@ -975,8 +975,8 @@ test('can update supplier name', async () => {
 });
 
 test('fees are properly validated', async () => {
-  expect(await t.rovErr(contract.validateFee(2000n))).toEqual(8n);
-  expect(await t.rovErr(contract.validateFee(-2000n))).toEqual(8n);
+  expect(await t.rovErr(contract.validateFee(10001n))).toEqual(8n);
+  expect(await t.rovErr(contract.validateFee(-10001n))).toEqual(8n);
   expect(await t.rovOk(contract.validateFee(800n))).toBe(true);
   expect(await t.rovOk(contract.validateFee(-800n))).toBe(true);
 });

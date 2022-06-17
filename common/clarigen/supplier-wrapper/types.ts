@@ -1,8 +1,8 @@
-import { ClarityTypes, ContractCalls } from '@clarigen/core';
+import { Response, ContractCalls } from '@clarigen/core';
 
 // prettier-ignore
 export interface SupplierWrapperContract {
-  withdrawFunds: (amount: number | bigint) => ContractCalls.Private<ClarityTypes.Response<bigint, bigint>>;
+  withdrawFunds: (amount: number | bigint) => ContractCalls.Private<Response<bigint, bigint>>;
   addFunds: (amount: number | bigint) => ContractCalls.Public<bigint, bigint>;
   finalizeSwap: (txid: Uint8Array, preimage: Uint8Array) => ContractCalls.Public<{
   "csv": bigint;
@@ -30,5 +30,5 @@ export interface SupplierWrapperContract {
   "public-key": Uint8Array
     }, bigint>;
   getOwner: () => ContractCalls.ReadOnly<string>;
-  validateOwner: () => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
+  validateOwner: () => ContractCalls.ReadOnly<Response<boolean, bigint>>;
 }
