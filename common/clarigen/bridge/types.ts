@@ -1,9 +1,9 @@
-import { ClarityTypes, ContractCalls } from '@clarigen/core';
+import { Response, ContractCalls } from '@clarigen/core';
 
 // prettier-ignore
 export interface BridgeContract {
   concatBuffsFold: (b: Uint8Array, result: Uint8Array) => ContractCalls.Private<Uint8Array>;
-  transfer: (amount: number | bigint, sender: string, recipient: string) => ContractCalls.Private<ClarityTypes.Response<boolean, bigint>>;
+  transfer: (amount: number | bigint, sender: string, recipient: string) => ContractCalls.Private<Response<boolean, bigint>>;
   updateUserInboundVolume: (user: string, amount: number | bigint) => ContractCalls.Private<boolean>;
   updateUserOutboundVolume: (user: string, amount: number | bigint) => ContractCalls.Private<boolean>;
   addFunds: (amount: number | bigint) => ContractCalls.Public<bigint, bigint>;
@@ -89,7 +89,7 @@ export interface BridgeContract {
   getCompletedOutboundSwapByTxid: (txid: Uint8Array) => ContractCalls.ReadOnly<bigint | null>;
   getCompletedOutboundSwapTxid: (id: number | bigint) => ContractCalls.ReadOnly<Uint8Array | null>;
   getEscrow: (id: number | bigint) => ContractCalls.ReadOnly<bigint | null>;
-  getFullInbound: (txid: Uint8Array) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+  getFullInbound: (txid: Uint8Array) => ContractCalls.ReadOnly<Response<{
   "csv": bigint;
   "expiration": bigint;
   "hash": Uint8Array;
@@ -102,7 +102,7 @@ export interface BridgeContract {
   "swapper-principal": string;
   "xbtc": bigint
     }, bigint>>;
-  getFullSupplier: (id: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+  getFullSupplier: (id: number | bigint) => ContractCalls.ReadOnly<Response<{
   "controller": string;
   "escrow": bigint;
   "funds": bigint;
@@ -153,7 +153,7 @@ export interface BridgeContract {
   getSupplierByName: (name: string) => ContractCalls.ReadOnly<bigint | null>;
   getSupplierIdByController: (controller: string) => ContractCalls.ReadOnly<bigint | null>;
   getSupplierIdByPublicKey: (publicKey: Uint8Array) => ContractCalls.ReadOnly<bigint | null>;
-  getSwapAmount: (amount: number | bigint, feeRate: number | bigint, baseFee: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<bigint, bigint>>;
+  getSwapAmount: (amount: number | bigint, feeRate: number | bigint, baseFee: number | bigint) => ContractCalls.ReadOnly<Response<bigint, bigint>>;
   getSwapperId: (swapper: string) => ContractCalls.ReadOnly<bigint | null>;
   getSwapperPrincipal: (id: number | bigint) => ContractCalls.ReadOnly<string | null>;
   getTotalInboundVolume: () => ContractCalls.ReadOnly<bigint>;
@@ -162,11 +162,11 @@ export interface BridgeContract {
   getUserInboundVolume: (user: string) => ContractCalls.ReadOnly<bigint>;
   getUserOutboundVolume: (user: string) => ContractCalls.ReadOnly<bigint>;
   getUserTotalVolume: (user: string) => ContractCalls.ReadOnly<bigint>;
-  readUint32: (num: Uint8Array, length: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<bigint, bigint>>;
-  validateBtcAddr: (version: Uint8Array, hash: Uint8Array) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
-  validateExpiration: (expiration: number | bigint, minedHeight: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
-  validateFee: (feeOpt: bigint | null) => ContractCalls.ReadOnly<ClarityTypes.Response<boolean, bigint>>;
-  validateOutboundRevocable: (swapId: number | bigint) => ContractCalls.ReadOnly<ClarityTypes.Response<{
+  readUint32: (num: Uint8Array, length: number | bigint) => ContractCalls.ReadOnly<Response<bigint, bigint>>;
+  validateBtcAddr: (version: Uint8Array, hash: Uint8Array) => ContractCalls.ReadOnly<Response<boolean, bigint>>;
+  validateExpiration: (expiration: number | bigint, minedHeight: number | bigint) => ContractCalls.ReadOnly<Response<boolean, bigint>>;
+  validateFee: (feeOpt: bigint | null) => ContractCalls.ReadOnly<Response<boolean, bigint>>;
+  validateOutboundRevocable: (swapId: number | bigint) => ContractCalls.ReadOnly<Response<{
   "created-at": bigint;
   "hash": Uint8Array;
   "sats": bigint;

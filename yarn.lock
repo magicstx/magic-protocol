@@ -583,13 +583,22 @@
     human-id "^1.0.2"
     prettier "^1.19.1"
 
-"@clarigen/cli@1.0.0-next.9":
-  version "1.0.0-next.9"
-  resolved "https://registry.yarnpkg.com/@clarigen/cli/-/cli-1.0.0-next.9.tgz#64d46e222da2feb0f645a79d7a8cbb9611c5fe1d"
-  integrity sha512-wns2QXUlSx1CBiew7TheqoZP8ObbryjjoOrsyfMxCW6H99RQBPeNDpYRttLzyB5nsxrBCvxcu2jMwFqsZxZysQ==
+"@clarigen/claridocs@1.0.0-next.19":
+  version "1.0.0-next.19"
+  resolved "https://registry.yarnpkg.com/@clarigen/claridocs/-/claridocs-1.0.0-next.19.tgz#8cd96877ed3a392d74c03ad37693d812caac222b"
+  integrity sha512-YNW9ihowDo1uOg+oZBmEyLwISUT+ledEDLMjQKoNvsTd//Cvv2FRIZhfj/K0r4ugvdZaOwCfQzc2IHF1qC3U4w==
   dependencies:
-    "@clarigen/core" "1.0.0-next.9"
-    "@clarigen/native-bin" "1.0.0-next.9"
+    "@clarigen/core" "1.0.0-next.19"
+    micro-stacks "^0.2.0"
+
+"@clarigen/cli@1.0.0-next.20":
+  version "1.0.0-next.20"
+  resolved "https://registry.yarnpkg.com/@clarigen/cli/-/cli-1.0.0-next.20.tgz#6ad37e5e4082b3f0bd80e7c78ea402d9a6a9d1ac"
+  integrity sha512-0MA2I1cALoWGTb8FvXZza0XpKXzSAiWsUMngBaFHBB5CiodCYmY7OFjzSwwe6cIu3o1afcR6nhWobWPfQpaJNg==
+  dependencies:
+    "@clarigen/claridocs" "1.0.0-next.19"
+    "@clarigen/core" "1.0.0-next.19"
+    "@clarigen/native-bin" "1.0.0-next.19"
     "@ltd/j-toml" "1.12.2"
     "@oclif/command" "^1.8.0"
     "@oclif/config" "^1.17.0"
@@ -598,50 +607,50 @@
     chokidar "3.5.1"
     micro-stacks "^0.2.0"
     ora "5.4.0"
+    prettier "2.6.2"
     reserved-words "0.1.2"
     toposort "2.0.2"
 
-"@clarigen/core@1.0.0-next.9":
-  version "1.0.0-next.9"
-  resolved "https://registry.yarnpkg.com/@clarigen/core/-/core-1.0.0-next.9.tgz#0fe50aaf387fe892340c567aaccf614426913221"
-  integrity sha512-1fC+9DIWkWBGjl9Ms0tdSY9LclO1drX9kZ2+u1uVpH0VyX4feZAnmR9EFkt17tpIByxvWhq3vN7BV3vmoD8njQ==
+"@clarigen/core@1.0.0-next.19":
+  version "1.0.0-next.19"
+  resolved "https://registry.yarnpkg.com/@clarigen/core/-/core-1.0.0-next.19.tgz#d59c751bc7c068ccf72964b0e3287fd4abeaf822"
+  integrity sha512-y2uFYwqc452Y9mbY4NMsqx7VYkRQsWlsF68WQ33fSFhqhsB9eZAY0N0F8REumvS29WRgQ231UADRG6ImyXYavg==
   dependencies:
     micro-stacks "^0.2.0"
-    neverthrow "4.2.1"
 
-"@clarigen/native-bin@1.0.0-next.9":
-  version "1.0.0-next.9"
-  resolved "https://registry.yarnpkg.com/@clarigen/native-bin/-/native-bin-1.0.0-next.9.tgz#74f06df0693c83551c3b807b1ca8b1a3e261daa6"
-  integrity sha512-vbl4TIeAbFKjjaq5hoXN+w97Kw3b7Tl2x2708ylFWhawnQh/9x/DRp3bgIuxdSgcc6TI440O3Jl7eV47/buALQ==
+"@clarigen/native-bin@1.0.0-next.19":
+  version "1.0.0-next.19"
+  resolved "https://registry.yarnpkg.com/@clarigen/native-bin/-/native-bin-1.0.0-next.19.tgz#602974e92aa58aca70c07b0d840cb1dc2a0c5100"
+  integrity sha512-56Jl+7tCfIXQbBIAt5EgdWhfy1C8sLVo2haniK/FCOhjE3GDda4Fm6Ed3NalOpmtTYJXCyr1Ao9QbYheTAjwSA==
   dependencies:
-    "@clarigen/core" "1.0.0-next.9"
+    "@clarigen/core" "1.0.0-next.19"
     fs-extra "^10.0.0"
     node-fetch "^2.6.0"
     unzipper "^0.10.11"
 
-"@clarigen/node@1.0.0-next.9":
-  version "1.0.0-next.9"
-  resolved "https://registry.yarnpkg.com/@clarigen/node/-/node-1.0.0-next.9.tgz#4c6e7f00693ac7bd663eebb9613cf7c537521200"
-  integrity sha512-KwgxZqedr4AxuXJnKfjZdzASZwpgau0LuWPKzvhO050XmV1XUYjkOZJDeiMmKrtTImbXYe3Xm+MfsfoUGrBJCw==
+"@clarigen/node@1.0.0-next.19":
+  version "1.0.0-next.19"
+  resolved "https://registry.yarnpkg.com/@clarigen/node/-/node-1.0.0-next.19.tgz#77d14522b1f0c4a24dc85c6e47613a3f66215110"
+  integrity sha512-o23b4iJyjbjJ4yROdfkbdHWaCI2kgwO9R9YKJjpePHs5HmqJOnVjV18qed+0V3lWxM6ih1H83QYsubaeCmLpcA==
   dependencies:
-    "@clarigen/core" "1.0.0-next.9"
+    "@clarigen/core" "1.0.0-next.19"
     micro-stacks "^0.2.0"
 
-"@clarigen/test@1.0.0-next.9":
-  version "1.0.0-next.9"
-  resolved "https://registry.yarnpkg.com/@clarigen/test/-/test-1.0.0-next.9.tgz#58730d1304bce2578146a96200e0e6214cd5ac23"
-  integrity sha512-6tOKZOccoONpql5BsXq0jek8D9zrIkUz4X1FWjWtHRBb8MLZiM31jH6vvxZMGdN1DiINov1XFTDAkf8PL5VetQ==
+"@clarigen/test@1.0.0-next.19":
+  version "1.0.0-next.19"
+  resolved "https://registry.yarnpkg.com/@clarigen/test/-/test-1.0.0-next.19.tgz#c28e37b40f2780e0eea47d766d91d0bb1b0f9b5d"
+  integrity sha512-fzF82W1M3xO5fH9yiC0cB/rXauDGxfYzS9lbdrTQge1vq/nSWg7eCjkiZxmFdsy2u54BzAzXs/7/Oodq1XumXg==
   dependencies:
-    "@clarigen/core" "1.0.0-next.9"
-    "@clarigen/native-bin" "1.0.0-next.9"
+    "@clarigen/core" "1.0.0-next.19"
+    "@clarigen/native-bin" "1.0.0-next.19"
     micro-stacks "^0.2.0"
 
-"@clarigen/web@1.0.0-next.9":
-  version "1.0.0-next.9"
-  resolved "https://registry.yarnpkg.com/@clarigen/web/-/web-1.0.0-next.9.tgz#cdd3a1267dcd77eb08cae90b295e8da7d659b95e"
-  integrity sha512-VEb/Uy0J3ykK3aHPy3rljXviKh/pbp/jeZ0Bz4LTlnfF8m/CYvF2BA+oxlCxizc6X41mq6wN1fQIpJe6atIXsA==
+"@clarigen/web@1.0.0-next.19":
+  version "1.0.0-next.19"
+  resolved "https://registry.yarnpkg.com/@clarigen/web/-/web-1.0.0-next.19.tgz#e96f808f00e65e5f81eee5c180d4e660f3002b4f"
+  integrity sha512-W9P5yD7TgsJYaFBq+dh86ukTy6ELPo2vU8E8atLUO6TE1t0FIm+FJRPDIniJXQ7BbPBq3mVxjjB5NcasaG2vXQ==
   dependencies:
-    "@clarigen/core" "1.0.0-next.9"
+    "@clarigen/core" "1.0.0-next.19"
     micro-stacks "^0.2.0"
 
 "@emotion/cache@^11.6.0":
@@ -6752,12 +6761,7 @@ nano-time@1.0.0:
   dependencies:
     big-integer "^1.6.16"
 
-nanoid@^3.1.23:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.2.tgz#c89622fafb4381cd221421c69ec58547a1eec557"
-  integrity sha512-CuHBogktKwpm5g2sRgv83jEy2ijFzBwMoYA60orPDR7ynsLijJDqgsi4RDGj3OJpy3Ieb+LYwiRmIOGyytgITA==
-
-nanoid@^3.1.30:
+nanoid@^3.1.23, nanoid@^3.1.30:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.2.tgz#c89622fafb4381cd221421c69ec58547a1eec557"
   integrity sha512-CuHBogktKwpm5g2sRgv83jEy2ijFzBwMoYA60orPDR7ynsLijJDqgsi4RDGj3OJpy3Ieb+LYwiRmIOGyytgITA==
@@ -6766,11 +6770,6 @@ natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
-
-neverthrow@4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/neverthrow/-/neverthrow-4.2.1.tgz#c582dee4772528d15c9a170599c5382d366fd419"
-  integrity sha512-faWQGNqVQrXOuG8K7E0PRzsfBHzfVqeDX9nwawKDseuH/qEGIH02Nrq03OJOs5eTFML03xeol3otzagPoHyEPA==
 
 next-tick@~1.0.0:
   version "1.0.0"
@@ -7489,6 +7488,11 @@ prettier@2.4.1, prettier@^2.3.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.4.1.tgz#671e11c89c14a4cfc876ce564106c4a6726c9f5c"
   integrity sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==
+
+prettier@2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.6.2.tgz#e26d71a18a74c3d0f0597f55f01fb6c06c206032"
+  integrity sha512-PkUpF+qoXTqhOeWL9fu7As8LXsIUZ1WYaJiY/a7McAQzxjk82OF0tibkFXVCDImZtWxbvojFjerkiLb0/q8mew==
 
 prettier@^1.19.1:
   version "1.19.1"
