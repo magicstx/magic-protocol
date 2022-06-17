@@ -71,9 +71,6 @@
 (define-constant P2PKH_VERSION 0x00)
 (define-constant P2SH_VERSION 0x05)
 
-;; set fee to 10% as the upper bound fee
-(define-constant MAX_FEE 1000)
-
 ;; use a placeholder txid to mark as "finalized"
 (define-constant REVOKED_OUTBOUND_TXID 0x00)
 
@@ -719,7 +716,7 @@
   (match fee-opt
     fee (let
       (
-        (max-fee MAX_FEE)
+        (max-fee 10000)
         (within-upper (< fee max-fee))
         (within-lower (> fee (* -1 max-fee)))
       )
