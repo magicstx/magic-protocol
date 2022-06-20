@@ -10,8 +10,7 @@ import { PostConditionMode } from 'micro-stacks/transactions';
 import { CONTRACT_ADDRESS } from '../common/constants';
 import { hexToBytes } from 'micro-stacks/common';
 
-const [pubKey, name, amt, inboundFee, outboundFee, inboundBase, outboundBase] =
-  process.argv.slice(2);
+const [pubKey, amt, inboundFee, outboundFee, inboundBase, outboundBase] = process.argv.slice(2);
 
 async function run() {
   console.log('CONTRACT_ADDRESS', CONTRACT_ADDRESS);
@@ -30,7 +29,6 @@ async function run() {
     BigInt(outboundFee || 30n),
     BigInt(inboundBase || 1000n),
     BigInt(outboundBase || 1000n),
-    name || 'Alice',
     BigInt(amt || amount)
   );
 

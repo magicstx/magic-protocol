@@ -505,14 +505,6 @@ export const BridgeInterface: ClarityAbi = {
           "type": "int128"
         },
         {
-          "name": "name",
-          "type": {
-            "string-ascii": {
-              "length": 18
-            }
-          }
-        },
-        {
           "name": "funds",
           "type": "uint128"
         }
@@ -697,79 +689,6 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 },
                 {
-                  "name": "name",
-                  "type": {
-                    "string-ascii": {
-                      "length": 18
-                    }
-                  }
-                },
-                {
-                  "name": "outbound-base-fee",
-                  "type": "int128"
-                },
-                {
-                  "name": "outbound-fee",
-                  "type": {
-                    "optional": "int128"
-                  }
-                },
-                {
-                  "name": "public-key",
-                  "type": {
-                    "buffer": {
-                      "length": 33
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    {
-      "access": "public",
-      "args": [
-        {
-          "name": "name",
-          "type": {
-            "string-ascii": {
-              "length": 18
-            }
-          }
-        }
-      ],
-      "name": "update-supplier-name",
-      "outputs": {
-        "type": {
-          "response": {
-            "error": "uint128",
-            "ok": {
-              "tuple": [
-                {
-                  "name": "controller",
-                  "type": "principal"
-                },
-                {
-                  "name": "inbound-base-fee",
-                  "type": "int128"
-                },
-                {
-                  "name": "inbound-fee",
-                  "type": {
-                    "optional": "int128"
-                  }
-                },
-                {
-                  "name": "name",
-                  "type": {
-                    "string-ascii": {
-                      "length": 18
-                    }
-                  }
-                },
-                {
                   "name": "outbound-base-fee",
                   "type": "int128"
                 },
@@ -824,14 +743,6 @@ export const BridgeInterface: ClarityAbi = {
                   "name": "inbound-fee",
                   "type": {
                     "optional": "int128"
-                  }
-                },
-                {
-                  "name": "name",
-                  "type": {
-                    "string-ascii": {
-                      "length": 18
-                    }
                   }
                 },
                 {
@@ -1309,14 +1220,6 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 },
                 {
-                  "name": "name",
-                  "type": {
-                    "string-ascii": {
-                      "length": 18
-                    }
-                  }
-                },
-                {
                   "name": "outbound-base-fee",
                   "type": "int128"
                 },
@@ -1578,14 +1481,6 @@ export const BridgeInterface: ClarityAbi = {
                 }
               },
               {
-                "name": "name",
-                "type": {
-                  "string-ascii": {
-                    "length": 18
-                  }
-                }
-              },
-              {
                 "name": "outbound-base-fee",
                 "type": "int128"
               },
@@ -1605,25 +1500,6 @@ export const BridgeInterface: ClarityAbi = {
               }
             ]
           }
-        }
-      }
-    },
-    {
-      "access": "read_only",
-      "args": [
-        {
-          "name": "name",
-          "type": {
-            "string-ascii": {
-              "length": 18
-            }
-          }
-        }
-      ],
-      "name": "get-supplier-by-name",
-      "outputs": {
-        "type": {
-          "optional": "uint128"
         }
       }
     },
@@ -2114,14 +1990,6 @@ export const BridgeInterface: ClarityAbi = {
             }
           },
           {
-            "name": "name",
-            "type": {
-              "string-ascii": {
-                "length": 18
-              }
-            }
-          },
-          {
             "name": "outbound-base-fee",
             "type": "int128"
           },
@@ -2141,15 +2009,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         ]
       }
-    },
-    {
-      "key": {
-        "string-ascii": {
-          "length": 18
-        }
-      },
-      "name": "supplier-by-name",
-      "value": "uint128"
     },
     {
       "key": {
