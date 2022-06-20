@@ -5,11 +5,9 @@
   outbound-fee: (optional int),
   outbound-base-fee: int,
   inbound-base-fee: int,
-  name: (string-ascii 18)
 })
 (define-map supplier-by-public-key (buff 33) uint)
 (define-map supplier-by-controller principal uint)
-(define-map supplier-by-name (string-ascii 18) uint)
 
 (define-map swapper-by-id uint principal)
 (define-map swapper-by-principal principal uint)
@@ -118,7 +116,6 @@
 ;; @param outbound-fee; optional fee (in basis points) for outbound
 ;; @param outbound-base-fee; fixed fee applied to outbound swaps (in xBTC sats)
 ;; @param inbound-base-fee; fixed fee for inbound swaps (in BTC/sats)
-;; @param name; human-readable name for suppliers
 ;; @param funds; amount of xBTC (sats) to initially supply
 (define-public (register-supplier
     (public-key (buff 33))
@@ -126,7 +123,6 @@
     (outbound-fee (optional int))
     (outbound-base-fee int)
     (inbound-base-fee int)
-    (name (string-ascii 18))
     (funds uint)
   )
   (let
@@ -139,7 +135,6 @@
         controller: tx-sender, 
         outbound-base-fee: outbound-base-fee,
         inbound-base-fee: inbound-base-fee,
-        name: name,
       })
     )
     (asserts! (map-insert supplier-by-id id supplier) ERR_PANIC)
@@ -151,7 +146,6 @@
     ;; validate that the public key and controller do not exist
     (asserts! (map-insert supplier-by-public-key public-key id) ERR_SUPPLIER_EXISTS)
     (asserts! (map-insert supplier-by-controller tx-sender id) ERR_SUPPLIER_EXISTS)
-    (asserts! (map-insert supplier-by-name name id) ERR_SUPPLIER_EXISTS)
     (var-set next-supplier-id (+ id u1))
     (try! (add-funds funds))
     (ok id)
@@ -224,27 +218,6 @@
     )
     (try! (validate-fee inbound-fee))
     (try! (validate-fee outbound-fee))
-    (map-set supplier-by-id supplier-id new-supplier)
-    (ok new-supplier)
-  )
-)
-
-;; Update the name for a supplier
-;;
-;; @returns new metadata for the supplier
-;;
-;; @param name; human-readable name for the supplier
-(define-public (update-supplier-name (name (string-ascii 18)))
-  (let
-    (
-      (supplier-id (unwrap! (get-supplier-id-by-controller contract-caller) ERR_UNAUTHORIZED))
-      (existing-supplier (unwrap! (get-supplier supplier-id) ERR_PANIC))
-      (new-supplier (merge existing-supplier {
-        name: name,
-      }))
-    )
-    (asserts! (map-insert supplier-by-name name supplier-id) ERR_SUPPLIER_EXISTS)
-    (asserts! (map-delete supplier-by-name (get name existing-supplier)) ERR_PANIC)
     (map-set supplier-by-id supplier-id new-supplier)
     (ok new-supplier)
   )
@@ -557,10 +530,6 @@
 
 (define-read-only (get-supplier-id-by-public-key (public-key (buff 33)))
   (map-get? supplier-by-public-key public-key)
-)
-
-(define-read-only (get-supplier-by-name (name (string-ascii 18)))
-  (map-get? supplier-by-name name)
 )
 
 (define-read-only (get-supplier (id uint))

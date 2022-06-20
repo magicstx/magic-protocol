@@ -30,12 +30,11 @@
     (outbound-fee (optional int))
     (outbound-base-fee int)
     (inbound-base-fee int)
-    (name (string-ascii 18))
     (funds uint)
   )
   (begin
     (try! (validate-owner))
-    (as-contract (contract-call? .bridge register-supplier public-key inbound-fee outbound-fee outbound-base-fee inbound-base-fee name funds))
+    (as-contract (contract-call? .bridge register-supplier public-key inbound-fee outbound-fee outbound-base-fee inbound-base-fee funds))
   )
 )
 
@@ -64,8 +63,7 @@
   (begin
     (try! (validate-owner))
     (try! (as-contract (contract-call? .bridge update-supplier-fees inbound-fee outbound-fee outbound-base-fee inbound-base-fee)))
-    (try! (as-contract (contract-call? .bridge update-supplier-public-key public-key)))
-    (as-contract (contract-call? .bridge update-supplier-name name))
+    (as-contract (contract-call? .bridge update-supplier-public-key public-key))
   )
 )
 
