@@ -267,6 +267,9 @@
 ;; Validates that the BTC tx is valid by re-constructing the HTLC script
 ;; and comparing it to the BTC tx.
 ;; Validates that the HTLC data (like expiration) is valid.
+;; 
+;; `tx-sender` must be equal to the swapper embedded in the HTLC. This ensures
+;; that the `min-to-receive` parameter is provided by the end-user.
 ;;
 ;; @returns metadata regarding this inbound swap (see `inbound-meta` map)
 ;;
@@ -338,13 +341,14 @@
       })
       (event (merge escrow meta))
     )
+    ;; assert tx-sender is swapper
+    (asserts! (is-eq tx-sender (unwrap! (map-get? swapper-by-id swapper-id) ERR_SWAPPER_NOT_FOUND)) ERR_UNAUTHORIZED)
     (asserts! (is-eq (get public-key supplier) recipient) ERR_INVALID_OUTPUT)
     (asserts! (is-eq output-script htlc-output) ERR_INVALID_OUTPUT)
     (asserts! (is-eq (len hash) u32) ERR_INVALID_HASH)
     (asserts! (map-insert inbound-swaps txid escrow) ERR_TXID_USED)
     (asserts! (map-insert inbound-meta txid meta) ERR_PANIC)
     (asserts! (>= xbtc min-to-receive) ERR_INCONSISTENT_FEES)
-    (unwrap! (map-get? swapper-by-id swapper-id) ERR_SWAPPER_NOT_FOUND)
     (map-set supplier-funds supplier-id new-funds)
     (map-set supplier-escrow supplier-id new-escrow)
     (print (merge event { topic: "escrow" }))
