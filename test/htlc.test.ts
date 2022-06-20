@@ -25,9 +25,6 @@ import { bytesToHex, hexToBytes, numberToHex } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { expectBuffers, makeTxHex } from './helpers';
 import { getTxHex } from '../common/api/electrum';
-import { createInboundSwap } from '../common/store/swaps';
-import { cvToValue } from '@clarigen/core';
-import { deserializeCV, responseOkCV, serializeCV, uintCV } from 'micro-stacks/clarity';
 
 let clarityBtc: ClarityBitcoinContract;
 let htlcContract: BridgeContract;

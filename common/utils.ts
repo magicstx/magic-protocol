@@ -1,8 +1,7 @@
-import { wrapWithMicroStacks } from '@micro-stacks/nextjs';
 import { bytesToBigInt, IntegerType, intToBigInt } from 'micro-stacks/common';
 import BigNumber from 'bignumber.js';
-import { address as bAddress, networks, payments } from 'bitcoinjs-lib';
-import { network, coreUrl, btcNetwork, NETWORK_CONFIG, LOCAL_URL } from './constants';
+import { address as bAddress, networks, payments, Transaction } from 'bitcoinjs-lib';
+import { coreUrl, btcNetwork, NETWORK_CONFIG } from './constants';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { base58checkEncode, hashRipemd160 } from 'micro-stacks/crypto';
 
@@ -19,17 +18,6 @@ export function getBtcTxUrl(txId: string) {
   const base = `https://mempool.space/`;
   return `${base}${NETWORK_CONFIG === 'mainnet' ? '' : 'testnet/'}tx/${txId}`;
 }
-
-export const withMicroStacks = wrapWithMicroStacks({
-  authOptions: {
-    appDetails: {
-      name: 'Magic Bridge',
-      icon: `${LOCAL_URL}/burst.svg`,
-    },
-  },
-  network,
-  useCookies: true,
-});
 
 export function intToString(int: IntegerType) {
   const str = typeof int === 'bigint' ? int.toString() : String(int);

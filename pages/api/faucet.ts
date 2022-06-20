@@ -5,7 +5,7 @@ import { ECPair, networks, Psbt, address as bAddress, payments } from 'bitcoinjs
 import ElectrumClient from 'electrum-client-sl';
 import { getScriptHash, reverseBuffer } from '../../common/htlc';
 import { network } from '../../common/constants';
-import { electrumClient } from '../../common/api/electrum';
+import { withElectrumClient } from '../../common/api/electrum';
 import { bytesToHex } from 'micro-stacks/common';
 
 type Data = {
@@ -36,9 +36,7 @@ async function sendBtc(address: string) {
   if (!pk) throw new Error('Missing BTC private key');
   // const signer = ECPair.fromPrivateKey(Buffer.from(pk, 'hex'));
   const signer = ECPair.fromWIF(pk, networks.regtest);
-
-  await electrumClient.connect();
-  try {
+  return withElectrumClient(async electrumClient => {
     const sender = payments.p2pkh({
       pubkey: signer.publicKey,
       network: networks.regtest,
@@ -73,10 +71,7 @@ async function sendBtc(address: string) {
     const finalTx = psbt.extractTransaction(true);
     const txid = await electrumClient.blockchain_transaction_broadcast(finalTx.toHex());
     return txid;
-  } catch (error) {
-    await electrumClient.close();
-    throw error;
-  }
+  });
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {

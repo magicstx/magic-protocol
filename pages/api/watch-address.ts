@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { address as bAddress } from 'bitcoinjs-lib';
 import { btcNetwork } from '../../common/constants';
 import { getScriptHash } from '../../common/htlc';
-import { electrumClient, getTxData, TxData } from '../../common/api/electrum';
+import { getTxData, listUnspent, TxData } from '../../common/api/electrum';
 import { bytesToHex } from 'micro-stacks/common';
 
 // export interface WatchAddressApi = {
@@ -43,8 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
   const output = bAddress.toOutputScript(address, btcNetwork);
   const scriptHash = getScriptHash(output);
-  await electrumClient.connect();
-  const [unspent] = await electrumClient.blockchain_scripthash_listunspent(bytesToHex(scriptHash));
+  const [unspent] = await listUnspent(scriptHash);
   if (unspent === undefined) {
     return res.status(200).send({ status: 'unsent' });
   }

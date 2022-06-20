@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { address as bAddress } from 'bitcoinjs-lib';
 import { btcNetwork } from '../../common/constants';
 import { getScriptHash } from '../../common/htlc';
-import { electrumClient, getTxData, TxData } from '../../common/api/electrum';
+import { getTxData, listUnspent, TxData, withElectrumClient } from '../../common/api/electrum';
 import { infoApi } from '../../common/api/stacks';
 import { Unspent } from 'electrum-client-sl';
 import { bytesToHex } from 'micro-stacks/common';
@@ -21,11 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
   const output = bAddress.toOutputScript(address, btcNetwork);
   const scriptHash = getScriptHash(output);
-  await electrumClient.connect();
-  const [unspents, info] = await Promise.all([
-    electrumClient.blockchain_scripthash_listunspent(bytesToHex(scriptHash)),
-    infoApi.getCoreApiInfo(),
-  ]);
+  const [unspents, info] = await Promise.all([listUnspent(scriptHash), infoApi.getCoreApiInfo()]);
   const sorted = unspents.sort((a, b) => {
     if (a.height === 0) return -1;
     return a.height > b.height ? -1 : 1;
