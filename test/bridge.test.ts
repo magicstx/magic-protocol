@@ -266,6 +266,28 @@ describe('successful inbound swap', () => {
 
     await t.txOk(testUtils.setMined(txid), deployer);
   });
+
+  test('only swapper can escrow', async () => {
+    const receipt = await t.txErr(
+      contract.escrowSwap(
+        { header: Buffer.from([]), height: 1n },
+        [],
+        txHex,
+        proof,
+        0n,
+        htlc.senderPublicKey,
+        htlc.recipientPublicKey,
+        CSV_DELAY_BUFF,
+        hash,
+        swapperHex,
+        0n,
+        xbtcAmount
+      ),
+      supplier
+    );
+    expect(receipt.value).toEqual(constants.ERR_UNAUTHORIZED.value);
+  });
+
   test('can escrow with a valid transaction', async () => {
     const receipt = await t.txOk(
       contract.escrowSwap(
