@@ -7,7 +7,7 @@ import { Box } from '@nelson-ui/react';
 import { Text } from '../components/text';
 import { Button } from '../components/button';
 import { useState } from 'react';
-import { withMicroStacks } from '../common/utils';
+import { withMicroStacks } from '../common/with-micro-stacks';
 import { useAuth } from '@micro-stacks/react';
 import { Layout } from '../components/layout';
 import { CenterBox } from '../components/center-box';

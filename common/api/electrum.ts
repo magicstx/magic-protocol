@@ -1,7 +1,6 @@
 import ElectrumClient from 'electrum-client-sl';
 import { reverseBuffer } from '../htlc';
-import { confirmationsToHeight, findStacksBlockAtHeight, getStacksBlock } from './stacks';
-import { BridgeContract } from '../clarigen';
+import { confirmationsToHeight, findStacksBlockAtHeight } from './stacks';
 import { NETWORK_CONFIG } from '../constants';
 import { Transaction } from 'bitcoinjs-lib';
 import { bytesToHex } from 'micro-stacks/common';
@@ -35,23 +34,16 @@ export function getElectrumConfig() {
   }
 }
 
-const electrumConfig = getElectrumConfig();
-
-export const electrumClient = new ElectrumClient(
-  electrumConfig.host,
-  electrumConfig.port,
-  electrumConfig.protocol
-);
+export function getElectrumClient() {
+  console.log('getting electrum');
+  const electrumConfig = getElectrumConfig();
+  return new ElectrumClient(electrumConfig.host, electrumConfig.port, electrumConfig.protocol);
+}
 
 export async function withElectrumClient<T = void>(
   cb: (client: ElectrumClient) => Promise<T>
 ): Promise<T> {
-  const electrumConfig = getElectrumConfig();
-  const electrumClient = new ElectrumClient(
-    electrumConfig.host,
-    electrumConfig.port,
-    electrumConfig.protocol
-  );
+  const electrumClient = getElectrumClient();
   const client = electrumClient;
   await client.connect();
   try {
@@ -64,11 +56,6 @@ export async function withElectrumClient<T = void>(
     throw error;
   }
 }
-
-type MintParams = Parameters<BridgeContract['escrowSwap']>;
-type BlocksParam = MintParams[1];
-type BlockParam = MintParams[0];
-type ProofParam = MintParams[3];
 
 export type TxData = Awaited<ReturnType<typeof getTxData>>;
 
@@ -127,5 +114,11 @@ export async function getTxData(txid: string, address: string) {
       outputIndex,
       amount,
     };
+  });
+}
+
+export async function listUnspent(scriptHash: Uint8Array) {
+  return withElectrumClient(async electrumClient => {
+    return electrumClient.blockchain_scripthash_listunspent(bytesToHex(scriptHash));
   });
 }

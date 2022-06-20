@@ -1,7 +1,7 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { Layout } from '../components/layout';
-import { withMicroStacks } from '../common/utils';
+import { withMicroStacks } from '../common/with-micro-stacks';
 import { Button, ButtonComp } from '../components/button';
 import { Box, Stack } from '@nelson-ui/react';
 import { Text } from '../components/text';
