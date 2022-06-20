@@ -160,14 +160,6 @@ export const SupplierWrapperInterface: ClarityAbi = {
           "type": "int128"
         },
         {
-          "name": "name",
-          "type": {
-            "string-ascii": {
-              "length": 18
-            }
-          }
-        },
-        {
           "name": "funds",
           "type": "uint128"
         }
@@ -248,14 +240,6 @@ export const SupplierWrapperInterface: ClarityAbi = {
         {
           "name": "inbound-base-fee",
           "type": "int128"
-        },
-        {
-          "name": "name",
-          "type": {
-            "string-ascii": {
-              "length": 18
-            }
-          }
         }
       ],
       "name": "update-supplier",
@@ -277,14 +261,6 @@ export const SupplierWrapperInterface: ClarityAbi = {
                   "name": "inbound-fee",
                   "type": {
                     "optional": "int128"
-                  }
-                },
-                {
-                  "name": "name",
-                  "type": {
-                    "string-ascii": {
-                      "length": 18
-                    }
                   }
                 },
                 {

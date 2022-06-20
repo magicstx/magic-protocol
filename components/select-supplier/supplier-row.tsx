@@ -4,7 +4,7 @@ import { Box, Flex, Stack } from '@nelson-ui/react';
 import { Supplier, selectedSupplierState } from '../../common/store';
 import { styled } from '@stitches/react';
 import { CheckSubdued } from '../icons/check-subdued';
-import { bpsToPercent, satsToBtc } from '../../common/utils';
+import { bpsToPercent, satsToBtc, truncateMiddle } from '../../common/utils';
 import { CheckSelected } from '../icons/check-selected';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { amountState, showOverrideSupplierState } from '../../common/hooks/use-swap-form';
@@ -83,7 +83,7 @@ export const SupplierBaseRow: React.FC<{
           <Stack spacing="16px" isInline>
             {selected ? <CheckSelected /> : <CheckSubdued />}
             <Text variant="Label02" color={color}>
-              {operator.name}
+              {truncateMiddle(operator.controller, 6)}
             </Text>
           </Stack>
         </Box>

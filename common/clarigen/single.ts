@@ -4616,7 +4616,6 @@ export const contracts = {
           { name: 'outbound-fee', type: { optional: 'int128' } },
           { name: 'outbound-base-fee', type: 'int128' },
           { name: 'inbound-base-fee', type: 'int128' },
-          { name: 'name', type: { 'string-ascii': { length: 18 } } },
           { name: 'funds', type: 'uint128' },
         ],
         name: 'register-supplier',
@@ -4628,7 +4627,6 @@ export const contracts = {
           outboundFee: bigint | null,
           outboundBaseFee: number | bigint,
           inboundBaseFee: number | bigint,
-          name: string,
           funds: number | bigint
         ],
         Response<bigint, bigint>
@@ -4727,7 +4725,6 @@ export const contracts = {
                   { name: 'controller', type: 'principal' },
                   { name: 'inbound-base-fee', type: 'int128' },
                   { name: 'inbound-fee', type: { optional: 'int128' } },
-                  { name: 'name', type: { 'string-ascii': { length: 18 } } },
                   { name: 'outbound-base-fee', type: 'int128' },
                   { name: 'outbound-fee', type: { optional: 'int128' } },
                   { name: 'public-key', type: { buffer: { length: 33 } } },
@@ -4748,44 +4745,6 @@ export const contracts = {
             controller: string;
             'inbound-base-fee': bigint;
             'inbound-fee': bigint | null;
-            name: string;
-            'outbound-base-fee': bigint;
-            'outbound-fee': bigint | null;
-            'public-key': Uint8Array;
-          },
-          bigint
-        >
-      >,
-      updateSupplierName: {
-        access: 'public',
-        args: [{ name: 'name', type: { 'string-ascii': { length: 18 } } }],
-        name: 'update-supplier-name',
-        outputs: {
-          type: {
-            response: {
-              error: 'uint128',
-              ok: {
-                tuple: [
-                  { name: 'controller', type: 'principal' },
-                  { name: 'inbound-base-fee', type: 'int128' },
-                  { name: 'inbound-fee', type: { optional: 'int128' } },
-                  { name: 'name', type: { 'string-ascii': { length: 18 } } },
-                  { name: 'outbound-base-fee', type: 'int128' },
-                  { name: 'outbound-fee', type: { optional: 'int128' } },
-                  { name: 'public-key', type: { buffer: { length: 33 } } },
-                ],
-              },
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [name: string],
-        Response<
-          {
-            controller: string;
-            'inbound-base-fee': bigint;
-            'inbound-fee': bigint | null;
-            name: string;
             'outbound-base-fee': bigint;
             'outbound-fee': bigint | null;
             'public-key': Uint8Array;
@@ -4806,7 +4765,6 @@ export const contracts = {
                   { name: 'controller', type: 'principal' },
                   { name: 'inbound-base-fee', type: 'int128' },
                   { name: 'inbound-fee', type: { optional: 'int128' } },
-                  { name: 'name', type: { 'string-ascii': { length: 18 } } },
                   { name: 'outbound-base-fee', type: 'int128' },
                   { name: 'outbound-fee', type: { optional: 'int128' } },
                   { name: 'public-key', type: { buffer: { length: 33 } } },
@@ -4822,7 +4780,6 @@ export const contracts = {
             controller: string;
             'inbound-base-fee': bigint;
             'inbound-fee': bigint | null;
-            name: string;
             'outbound-base-fee': bigint;
             'outbound-fee': bigint | null;
             'public-key': Uint8Array;
@@ -5004,7 +4961,6 @@ export const contracts = {
                   { name: 'funds', type: 'uint128' },
                   { name: 'inbound-base-fee', type: 'int128' },
                   { name: 'inbound-fee', type: { optional: 'int128' } },
-                  { name: 'name', type: { 'string-ascii': { length: 18 } } },
                   { name: 'outbound-base-fee', type: 'int128' },
                   { name: 'outbound-fee', type: { optional: 'int128' } },
                   { name: 'public-key', type: { buffer: { length: 33 } } },
@@ -5022,7 +4978,6 @@ export const contracts = {
             funds: bigint;
             'inbound-base-fee': bigint;
             'inbound-fee': bigint | null;
-            name: string;
             'outbound-base-fee': bigint;
             'outbound-fee': bigint | null;
             'public-key': Uint8Array;
@@ -5156,7 +5111,6 @@ export const contracts = {
                 { name: 'controller', type: 'principal' },
                 { name: 'inbound-base-fee', type: 'int128' },
                 { name: 'inbound-fee', type: { optional: 'int128' } },
-                { name: 'name', type: { 'string-ascii': { length: 18 } } },
                 { name: 'outbound-base-fee', type: 'int128' },
                 { name: 'outbound-fee', type: { optional: 'int128' } },
                 { name: 'public-key', type: { buffer: { length: 33 } } },
@@ -5170,18 +5124,11 @@ export const contracts = {
           controller: string;
           'inbound-base-fee': bigint;
           'inbound-fee': bigint | null;
-          name: string;
           'outbound-base-fee': bigint;
           'outbound-fee': bigint | null;
           'public-key': Uint8Array;
         } | null
       >,
-      getSupplierByName: {
-        access: 'read_only',
-        args: [{ name: 'name', type: { 'string-ascii': { length: 18 } } }],
-        name: 'get-supplier-by-name',
-        outputs: { type: { optional: 'uint128' } },
-      } as TypedAbiFunction<[name: string], bigint | null>,
       getSupplierIdByController: {
         access: 'read_only',
         args: [{ name: 'controller', type: 'principal' }],
@@ -5947,7 +5894,6 @@ export const contracts = {
             { name: 'controller', type: 'principal' },
             { name: 'inbound-base-fee', type: 'int128' },
             { name: 'inbound-fee', type: { optional: 'int128' } },
-            { name: 'name', type: { 'string-ascii': { length: 18 } } },
             { name: 'outbound-base-fee', type: 'int128' },
             { name: 'outbound-fee', type: { optional: 'int128' } },
             { name: 'public-key', type: { buffer: { length: 33 } } },
@@ -5959,17 +5905,11 @@ export const contracts = {
           controller: string;
           'inbound-base-fee': bigint;
           'inbound-fee': bigint | null;
-          name: string;
           'outbound-base-fee': bigint;
           'outbound-fee': bigint | null;
           'public-key': Uint8Array;
         }
       >,
-      supplierByName: {
-        key: { 'string-ascii': { length: 18 } },
-        name: 'supplier-by-name',
-        value: 'uint128',
-      } as TypedAbiMap<string, bigint>,
       supplierByPublicKey: {
         key: { buffer: { length: 33 } },
         name: 'supplier-by-public-key',
@@ -6375,7 +6315,6 @@ export const contracts = {
           { name: 'outbound-fee', type: { optional: 'int128' } },
           { name: 'outbound-base-fee', type: 'int128' },
           { name: 'inbound-base-fee', type: 'int128' },
-          { name: 'name', type: { 'string-ascii': { length: 18 } } },
           { name: 'funds', type: 'uint128' },
         ],
         name: 'register-supplier',
@@ -6387,7 +6326,6 @@ export const contracts = {
           outboundFee: bigint | null,
           outboundBaseFee: number | bigint,
           inboundBaseFee: number | bigint,
-          name: string,
           funds: number | bigint
         ],
         Response<bigint, bigint>
@@ -6412,7 +6350,6 @@ export const contracts = {
           { name: 'outbound-fee', type: { optional: 'int128' } },
           { name: 'outbound-base-fee', type: 'int128' },
           { name: 'inbound-base-fee', type: 'int128' },
-          { name: 'name', type: { 'string-ascii': { length: 18 } } },
         ],
         name: 'update-supplier',
         outputs: {
@@ -6424,7 +6361,6 @@ export const contracts = {
                   { name: 'controller', type: 'principal' },
                   { name: 'inbound-base-fee', type: 'int128' },
                   { name: 'inbound-fee', type: { optional: 'int128' } },
-                  { name: 'name', type: { 'string-ascii': { length: 18 } } },
                   { name: 'outbound-base-fee', type: 'int128' },
                   { name: 'outbound-fee', type: { optional: 'int128' } },
                   { name: 'public-key', type: { buffer: { length: 33 } } },
@@ -6439,15 +6375,13 @@ export const contracts = {
           inboundFee: bigint | null,
           outboundFee: bigint | null,
           outboundBaseFee: number | bigint,
-          inboundBaseFee: number | bigint,
-          name: string
+          inboundBaseFee: number | bigint
         ],
         Response<
           {
             controller: string;
             'inbound-base-fee': bigint;
             'inbound-fee': bigint | null;
-            name: string;
             'outbound-base-fee': bigint;
             'outbound-fee': bigint | null;
             'public-key': Uint8Array;

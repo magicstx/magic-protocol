@@ -45,7 +45,6 @@ export async function fetchSupplierWithContract(id: number, bridge: BridgeContra
       inboundBaseFee: Number(supplier['inbound-base-fee']),
       publicKey: bytesToHex(supplier['public-key']),
       funds: Number(funds),
-      name: supplier.name,
       id,
     };
   }

@@ -17,14 +17,13 @@ export interface SupplierWrapperContract {
   "swapper-principal": string;
   "xbtc": bigint
     }, bigint>;
-  registerSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string, funds: number | bigint) => ContractCalls.Public<bigint, bigint>;
+  registerSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, funds: number | bigint) => ContractCalls.Public<bigint, bigint>;
   removeFunds: (amount: number | bigint) => ContractCalls.Public<bigint, bigint>;
   transferOwner: (newOwner: string) => ContractCalls.Public<string, bigint>;
-  updateSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint, name: string) => ContractCalls.Public<{
+  updateSupplier: (publicKey: Uint8Array, inboundFee: bigint | null, outboundFee: bigint | null, outboundBaseFee: number | bigint, inboundBaseFee: number | bigint) => ContractCalls.Public<{
   "controller": string;
   "inbound-base-fee": bigint;
   "inbound-fee": bigint | null;
-  "name": string;
   "outbound-base-fee": bigint;
   "outbound-fee": bigint | null;
   "public-key": Uint8Array

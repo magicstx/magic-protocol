@@ -84,7 +84,7 @@ beforeAll(async () => {
 
 test('can register as supplier', async () => {
   const receipt = await t.txOk(
-    contract.registerSupplier(publicKey, feeIn, feeOut, 100, 100, 'first', startingFunds),
+    contract.registerSupplier(publicKey, feeIn, feeOut, 100, 100, startingFunds),
     supplier
   );
   expect(receipt.value).toEqual(0n);
@@ -96,7 +96,7 @@ test('can register as supplier', async () => {
 test('alice can register as supplier', async () => {
   await t.txOk(xbtcContract.transfer(1000, supplier, alice, null), supplier);
   const receipt = await t.txOk(
-    contract.registerSupplier(publicKeys[2], feeIn, feeOut, 100, 100, 'second', 1000),
+    contract.registerSupplier(publicKeys[2], feeIn, feeOut, 100, 100, 1000),
     alice
   );
   expect(receipt.value).toEqual(1n);
@@ -108,7 +108,7 @@ test('alice can register as supplier', async () => {
 test('cannot set invalid fee', async () => {
   async function expectFeeError(inbound: bigint, outbound: bigint) {
     const receipt = await t.txErr(
-      contract.registerSupplier(Buffer.from('asdf', 'hex'), inbound, outbound, 0, 0, 'first', 0),
+      contract.registerSupplier(Buffer.from('asdf', 'hex'), inbound, outbound, 0, 0, 0),
       deployer
     );
     expect(receipt.value).toEqual(8n);
@@ -121,7 +121,7 @@ test('cannot set invalid fee', async () => {
 
 test('cannot re-register with same controller', async () => {
   const receipt = await t.txErr(
-    contract.registerSupplier(Buffer.from('asdf', 'hex'), feeIn, feeOut, 0, 0, 'first', 0),
+    contract.registerSupplier(Buffer.from('asdf', 'hex'), feeIn, feeOut, 0, 0, 0),
     supplier
   );
   expect(receipt.value).toEqual(2n);
@@ -129,7 +129,7 @@ test('cannot re-register with same controller', async () => {
 
 test('cannot register with existing public key', async () => {
   const receipt = await t.txErr(
-    contract.registerSupplier(publicKey, feeIn, feeOut, 0, 0, 'first', 0),
+    contract.registerSupplier(publicKey, feeIn, feeOut, 0, 0, 0),
     deployer
   );
   expect(receipt.value).toEqual(2n);
@@ -1000,16 +1000,6 @@ test('can update supplier public key', async () => {
   expect(receipt.value).toEqual({
     ...supplierInfo,
     'public-key': newPublicKey,
-  });
-});
-
-test('can update supplier name', async () => {
-  const supplierInfo = (await t.rov(contract.getSupplier(0n)))!;
-  const newName = 'satoshi';
-  const receipt = await t.txOk(contract.updateSupplierName(newName), supplier);
-  expect(receipt.value).toEqual({
-    ...supplierInfo,
-    name: newName,
   });
 });
 
