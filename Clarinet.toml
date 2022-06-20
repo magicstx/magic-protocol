@@ -2,6 +2,10 @@
 name = "bridge"
 requirements = []
 
+[clarigen]
+output_dir = "common/clarigen"
+docs = "docs"
+
 [contracts.ft-trait]
 path = "contracts/ft-trait.clar"
 depends_on = []

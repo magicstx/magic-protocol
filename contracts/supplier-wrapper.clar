@@ -58,7 +58,6 @@
     (outbound-fee (optional int))
     (outbound-base-fee int)
     (inbound-base-fee int)
-    (name (string-ascii 18))
   )
   (begin
     (try! (validate-owner))

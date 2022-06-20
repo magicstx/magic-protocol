@@ -240,14 +240,6 @@ export const SupplierWrapperInterface: ClarityAbi = {
         {
           "name": "inbound-base-fee",
           "type": "int128"
-        },
-        {
-          "name": "name",
-          "type": {
-            "string-ascii": {
-              "length": 18
-            }
-          }
         }
       ],
       "name": "update-supplier",
