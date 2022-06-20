@@ -6350,6 +6350,7 @@ export const contracts = {
           { name: 'outbound-fee', type: { optional: 'int128' } },
           { name: 'outbound-base-fee', type: 'int128' },
           { name: 'inbound-base-fee', type: 'int128' },
+          { name: 'name', type: { 'string-ascii': { length: 18 } } },
         ],
         name: 'update-supplier',
         outputs: {
@@ -6375,7 +6376,8 @@ export const contracts = {
           inboundFee: bigint | null,
           outboundFee: bigint | null,
           outboundBaseFee: number | bigint,
-          inboundBaseFee: number | bigint
+          inboundBaseFee: number | bigint,
+          name: string
         ],
         Response<
           {
