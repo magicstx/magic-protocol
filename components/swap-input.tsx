@@ -125,7 +125,7 @@ export const SwapField: React.FC<SwapFieldProps> = ({ dir }) => {
 
   return (
     <Stack spacing="$2">
-      <Text variant="Label01">
+      <Text variant="Label02" color="$onSurface-text-subdued">
         {capitalize(dir)} {token === 'btc' ? 'Bitcoin chain' : 'Stacks chain'}
       </Text>
       <SwapFieldComp

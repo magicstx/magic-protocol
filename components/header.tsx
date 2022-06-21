@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import { useAuth } from '@micro-stacks/react';
 import { NETWORK_CONFIG } from '../common/constants';
 import { BurstIcon } from './icons/burst';
+import { StarIcon } from './icons/star';
 
 export const Balance: React.FC<{ label: string; amount: string; decimals: number }> = ({
   amount,
@@ -20,10 +21,10 @@ export const Balance: React.FC<{ label: string; amount: string; decimals: number
   }, [amount, decimals]);
   return (
     <SpaceBetween spacing="$1">
-      <Text variant="Label01" color="$color-slate-85">
+      <Text variant="Label01" color="$onSurface-text">
         {formatted}
       </Text>
-      <Text variant="Label01" color="$color-slate-75">
+      <Text variant="Label01" color="$onSurface-text-subdued">
         {label}
       </Text>
     </SpaceBetween>
@@ -47,7 +48,7 @@ export function Header() {
     <SpaceBetween pt="30px" px="$extra-loose" maxWidth="1100px" mx="auto" width="100vw">
       <SpaceBetween spacing="40px">
         <SpaceBetween spacing="12px">
-          <BurstIcon />
+          <StarIcon />
           <Link href="/" variant="Label01">
             Magic Bridge
           </Link>

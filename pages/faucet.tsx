@@ -22,16 +22,16 @@ const Faucet: NextPage = () => {
     if (!stxAddress) return;
     const url = `/api/faucet?stxAddress=${stxAddress}&btcAddress=${btcAddress}`;
     const res = await fetch(url);
-    const data = (await res.json()) as { stxTxid: string; btcTxid: string };
-    setBtcTx(data.btcTxid);
+    const data = (await res.json()) as { stxTxid: string };
+    // setBtcTx(data.btcTxid);
     setStxTx(data.stxTxid);
-  }, [btcAddress, stxAddress, setBtcTx, setStxTx]);
+  }, [btcAddress, stxAddress, setStxTx]);
   return (
     <Layout>
       <CenterBox>
         <Text variant="Heading05">Faucet</Text>
-        <Text variant="Label01">BTC Address:</Text>
-        <Input value={btcAddress} onChange={e => setBtcAddress(e.currentTarget.value)} />
+        {/* <Text variant="Label01">BTC Address:</Text>
+        <Input value={btcAddress} onChange={e => setBtcAddress(e.currentTarget.value)} /> */}
         {stxTx ? (
           <Box as="a" href={`http://localhost:3999/extended/v1/tx/${stxTx}`} target="_blank">
             <Text>STX Transaction</Text>

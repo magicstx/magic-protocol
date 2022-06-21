@@ -84,7 +84,7 @@ export const SwapContainer: React.FC = () => {
             width="100%"
             position="absolute"
             top="18px"
-            border="1px solid $color-border-subdued"
+            border="1px solid $onSurface-border-subdued"
             borderWidth="1px 0 0 0"
             zIndex="-1"
           />

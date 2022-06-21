@@ -9,7 +9,6 @@ import { withElectrumClient } from '../../common/api/electrum';
 import { bytesToHex } from 'micro-stacks/common';
 
 type Data = {
-  btcTxid: string;
   stxTxid: string;
 };
 
@@ -75,12 +74,13 @@ async function sendBtc(address: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  const btcAddress = req.query.btcAddress;
+  // const btcAddress = req.query.btcAddress;
   const stxAddress = req.query.stxAddress;
 
-  const [btcTxid, stxTxid] = await Promise.all([
-    sendBtc(btcAddress as string),
-    sendStx(stxAddress as string),
-  ]);
-  res.status(200).json({ btcTxid, stxTxid });
+  const stxTxid = await sendStx(stxAddress as string);
+  // const [btcTxid, stxTxid] = await Promise.all([
+  //   sendBtc(btcAddress as string),
+  //   sendStx(stxAddress as string),
+  // ]);
+  res.status(200).json({ stxTxid });
 }

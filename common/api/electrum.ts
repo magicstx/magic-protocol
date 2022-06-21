@@ -35,7 +35,6 @@ export function getElectrumConfig() {
 }
 
 export function getElectrumClient() {
-  console.log('getting electrum');
   const electrumConfig = getElectrumConfig();
   return new ElectrumClient(electrumConfig.host, electrumConfig.port, electrumConfig.protocol);
 }

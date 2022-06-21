@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, BoxProps } from '@nelson-ui/react';
-import { generatedTheme, baseTheme } from '../common/theme';
-import figma from '../common/theme/figma';
+import { baseTheme, textStyles, TextVariant } from '../common/theme';
 import clsx from 'clsx';
+import { CSSTypes } from '@nelson-ui/core';
 
-const { textStyles } = generatedTheme;
+// const { textStyles } = generatedTheme;
 const { colors } = baseTheme;
 
 const getDefaultColor = (type?: keyof typeof textStyles): string => {
@@ -31,26 +31,31 @@ const getDefaultColor = (type?: keyof typeof textStyles): string => {
   return '$text';
 };
 
-export type TextVariant =
-  | keyof typeof figma['Body']
-  | keyof typeof figma['Caption']
-  | keyof typeof figma['Heading']
-  | keyof typeof figma['Label']
-  | keyof typeof figma['Display'];
-
 export type TextProps = BoxProps & { variant?: TextVariant };
+
+function getVariantStyles(variant?: TextVariant): CSSTypes {
+  if (typeof variant === 'undefined') return {};
+  const lower = variant.slice(0, 1).toLowerCase() + variant.slice(1);
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+  const styles = textStyles[lower] || textStyles[variant];
+  if (!textStyles.hasOwnProperty(lower)) {
+    console.warn('Only found old theme styles for text variant:', variant);
+  }
+  return styles;
+}
 
 export const Text = React.forwardRef<HTMLElement, TextProps>(
   ({ variant, className, css = {}, ...props }, ref) => {
     const color = getDefaultColor(variant);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const styles = variant ? textStyles[variant] : {};
+    const styles = getVariantStyles(variant);
+    if (typeof variant === 'undefined') {
+      console.warn('No text style found for variant:', variant);
+    }
     return (
       <Box
         className={clsx([className])}
         ref={ref}
         color={color}
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         css={{
           ...styles,
           ...css,
@@ -60,3 +65,4 @@ export const Text = React.forwardRef<HTMLElement, TextProps>(
     );
   }
 );
+Text.displayName = 'Text';

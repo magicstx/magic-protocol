@@ -9,14 +9,17 @@ import {
   lineHeights,
   sizes,
 } from '@nelson-ui/theme';
-import { makeColors, createTheme, getCssText as nelsonCss } from '@nelson-ui/core';
+import { makeColors, createTheme, getCssText as nelsonCss, CSSTypes } from '@nelson-ui/core';
 import figma from './theme/figma';
+import { tokens } from './theme/figma-2';
 import { PropertyValue, createStitches } from '@stitches/react';
+import fsTokens from './theme/fs-tokens2.json';
 
-function transformProps(props: Record<string, { value: string }>, suffix = '') {
+function transformProps(props: Record<string, { value: any }>, suffix = '') {
   return Object.fromEntries(
     Object.entries(props).map(([key, val]) => {
-      return [key, `${val.value}${suffix}`];
+      const v = suffix ? `${String(val.value)}${suffix}` : val.value;
+      return [key, v];
     })
   );
 }
@@ -80,13 +83,87 @@ export function makeTheme() {
   };
 }
 
+export function newFsColors() {
+  const colors: Record<string, string> = {};
+  Object.entries(fsTokens.dark).forEach(([key, group]) => {
+    Object.entries(group).forEach(([color, data]) => {
+      const item = `${key}-${color}`;
+      colors[item] = data.value;
+    });
+  });
+  return colors;
+}
+
+export function makeNewTheme() {
+  const { color } = tokens;
+  const colors: Record<string, string> = {};
+
+  // let key: keyof typeof color;
+  // for (key in color) {
+  //   colors[key] = color[key].value;
+  // }
+  const { label, caption, body, display, heading, ...fonts } = tokens.font;
+  const textStyles: Record<string, CSSTypes> = {};
+  [label, caption, body, display, heading].forEach(group => {
+    Object.entries(group).forEach(([key, val]) => {
+      const style = val.value;
+      textStyles[key] = {
+        ...style,
+        fontSize: `${style.fontSize}px`,
+        lineHeight: `${style.lineHeight}px`,
+        letterSpacing: `${style.letterSpacing}px`,
+      };
+      // const val: CSSTypes = group[key as keyof ].value;
+    });
+  });
+  return {
+    colors: transformProps(tokens.color),
+    textStyles,
+    // textStyles: {
+    //   ...transformProps(caption),
+    //   ...transformProps(label),
+    //   ...transformProps(body),
+    //   ...transformProps(display),
+    //   ...transformProps(heading),
+    // },
+  };
+}
+
+export type OldTextVariant =
+  | keyof typeof figma['Body']
+  | keyof typeof figma['Caption']
+  | keyof typeof figma['Heading']
+  | keyof typeof figma['Label']
+  | keyof typeof figma['Display'];
+
+export type NewTextVariant =
+  | Capitalize<keyof typeof tokens['font']['body']>
+  | Capitalize<keyof typeof tokens['font']['caption']>
+  | Capitalize<keyof typeof tokens['font']['heading']>
+  | Capitalize<keyof typeof tokens['font']['label']>
+  | Capitalize<keyof typeof tokens['font']['display']>;
+
+export type TextVariant = OldTextVariant | NewTextVariant;
+
 export const generatedTheme = makeTheme();
+export const newTheme = makeNewTheme();
+
+export const textStyles: Record<string, CSSTypes> = {
+  ...generatedTheme.textStyles,
+  ...newTheme.textStyles,
+};
+
+const fsColors = newFsColors();
 
 export const baseTheme = {
   colors: {
     ...colors.foundation,
     ...makeColors('dark'),
     ...generatedTheme.colors,
+    ...newTheme.colors,
+    ...fsColors,
+    text: fsColors['onSurface-text'],
+    background: '#0c0c0d',
   },
   space: {
     ...sizes,
