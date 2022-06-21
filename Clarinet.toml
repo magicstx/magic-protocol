@@ -1,31 +1,45 @@
 [project]
 name = "bridge"
-requirements = []
+authors = []
+description = ""
+telemetry = false
+cache_dir = "/Users/hankstoever/magic/bridge/.clarinet"
+boot_contracts = ["pox", "costs-v2", "bns"]
 
-[clarigen]
-output_dir = "common/clarigen"
-docs = "docs"
-
-[contracts.ft-trait]
-path = "contracts/ft-trait.clar"
-depends_on = []
-
-[contracts.test-utils]
-path = "contracts/test/test-utils.clar"
-depends_on = []
-
-[contracts.xbtc]
-path = "contracts/xbtc.clar"
-depends_on = ["ft-trait"]
-
-[contracts.clarity-bitcoin]
-path = "contracts/clarity-bitcoin.clar"
-depends_on = ["test-utils"]
+[[project.requirements]]
+contract_id = "SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin"
 
 [contracts.bridge]
 path = "contracts/bridge.clar"
 depends_on = ["xbtc", "clarity-bitcoin"]
 
+[contracts.clarity-bitcoin]
+path = "contracts/clarity-bitcoin.clar"
+depends_on = ["test-utils"]
+
+[contracts.ft-trait]
+path = "contracts/ft-trait.clar"
+
 [contracts.supplier-wrapper]
 path = "contracts/supplier-wrapper.clar"
-depends_on = ["bridge", "xbtc"]
+depends_on = ["bridge"]
+
+[contracts.test-utils]
+path = "contracts/test/test-utils.clar"
+
+[contracts.xbtc]
+path = "contracts/xbtc.clar"
+depends_on = ["ft-trait"]
+
+[repl]
+costs_version = 2
+parser_version = 2
+
+[repl.analysis]
+passes = []
+
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false

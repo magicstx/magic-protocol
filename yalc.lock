@@ -51,9 +51,9 @@
       "file": true
     },
     "@clarigen/cli": {
-      "signature": "bd9da83ad494513043d991a9183312c9",
+      "signature": "5572ca10bf178c48f2f37518883bca54",
       "file": true,
-      "replaced": "1.0.0-next.19"
+      "replaced": "1.0.0-next.21"
     }
   }
 }
