@@ -17,10 +17,10 @@ export const ButtonComp = styled(Box, {
   borderRadius: '50px',
   textAlign: 'center',
   cursor: 'pointer',
-  backgroundColor: '$color-primary',
-  color: '$color-base-white',
+  backgroundColor: '$color-grey-100',
+  color: '$surface-surface',
   '&:hover': {
-    backgroundColor: '$color-primary-text',
+    backgroundColor: '$color-slate-300',
   },
   variants: {
     size: {
@@ -34,11 +34,8 @@ export const ButtonComp = styled(Box, {
     },
     disabled: {
       true: {
-        backgroundColor: '$color-primary-disabled',
-        '&:hover': {
-          background: '$color-primary-disabled',
-          cursor: 'default',
-        },
+        backgroundColor: '$primary-action-subdued',
+        color: '$onSurface-text-subdued',
       },
     },
     connected: {
@@ -56,11 +53,12 @@ export const ButtonComp = styled(Box, {
     },
     magicBg: {
       true: {
+        backgroundColor: '$grey-100',
         // backgroundImage: '$color-primary-magic-hover',
         // backgroundSize: '150% 150%',
         // animation: `${magicBg()} 5s ease infinite`,
         '&:hover': {
-          backgroundImage: '$color-primary-magic-hover',
+          backgroundColor: '$color-grey-300',
           // animation: `${magicBg()} 5s ease infinite`,
         },
       },
@@ -80,14 +78,18 @@ export const Button: React.FC<
         borderRadius="50px"
         padding="2px"
         maxWidth="244px"
-        background="$color-primary-magic-hover"
-        // backgroundSize="150% 150%"
+        backgroundImage="$foil"
+        backgroundSize="150% 150%"
         mx="auto"
-        // animation={`${magicBg()} 5s ease infinite`}
+        animation={`${magicBg()} 5s ease infinite`}
         {...props}
       >
         <ButtonComp size={size} connected={connected} disabled={disabled} magicBg>
-          <Text className="button-text" variant={size === 'big' ? 'Label01' : 'Label02'}>
+          <Text
+            className="button-text"
+            variant={size === 'big' ? 'Label01' : 'Label02'}
+            color="inherit"
+          >
             {children}
           </Text>
         </ButtonComp>
@@ -96,7 +98,11 @@ export const Button: React.FC<
   }
   return (
     <ButtonComp disabled={disabled} {...props} size={size} connected={connected}>
-      <Text className="button-text" variant={size === 'big' ? 'Label01' : 'Label02'}>
+      <Text
+        className="button-text"
+        variant={size === 'big' ? 'Label01' : 'Label02'}
+        color="inherit"
+      >
         {children}
       </Text>
     </ButtonComp>

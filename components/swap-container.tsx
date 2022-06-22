@@ -18,6 +18,7 @@ import { useSwapperId } from '../common/store';
 import { useAtomValue } from 'jotai/utils';
 import { SelectSupplier } from './select-supplier';
 import { RegisterSwap } from './inbound/register';
+import { CSSTypes } from '@nelson-ui/core';
 
 export const SwapContainer: React.FC = () => {
   const {
@@ -46,20 +47,20 @@ export const SwapContainer: React.FC = () => {
     if (swapperId === null && outputToken === 'xbtc') {
       return (
         <Button onClick={submit} size="big">
-          Initialize
+          Authorize
         </Button>
       );
     }
     if (!isValid) {
       return (
         <Button onClick={submit} size="big" disabled={true}>
-          ✨ Swap ✨
+          Swap
         </Button>
       );
     }
     return (
       <Button onClick={submit} size="big" magic={true}>
-        ✨ Swap ✨
+        Swap
       </Button>
     );
   }, [isSignedIn, swapperId, submit, isValid, outputToken, signIn]);
@@ -92,8 +93,21 @@ export const SwapContainer: React.FC = () => {
         <Stack spacing="$6" px="$row-x">
           <SwapField dir="to" />
           {isOutbound ? (
-            <Stack spacing="$2">
-              <Text variant="Label01">Your BTC Address</Text>
+            <Stack
+              spacing="$2"
+              css={
+                {
+                  '&:focus-within': {
+                    '.btc-label': {
+                      color: '$onSurface-text-subdued',
+                    },
+                  },
+                } as CSSTypes
+              }
+            >
+              <Text variant="Label02" color="$onSurface-text-dim" className="btc-label">
+                Your BTC Address
+              </Text>
               <Input {...btcAddress} placeholder="Enter a non-Segwit Bitcoin address" />
               {btcAddress.value && !validBtc ? (
                 <Text variant="Caption02" color="#ED5653">
@@ -106,8 +120,8 @@ export const SwapContainer: React.FC = () => {
         </Stack>
       </CenterBox>
       {isSignedIn && !isOutbound && swapperId === null ? (
-        <Text variant="Caption01" textAlign="center" color="$color-base-white">
-          Before you can swap, you need to initialize the bridge contract
+        <Text variant="Caption01" textAlign="center" color="$text-subdued">
+          Before you can swap, you need to authorize the bridge contract
         </Text>
       ) : null}
       {swapButton}

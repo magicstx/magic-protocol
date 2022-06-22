@@ -26,6 +26,7 @@ export const SwapInput = styled('input', {
   lineHeight: 1,
   color: '$color-base-white',
   boxSizing: 'border-box',
+  // background: '$dark-surface-very-subdued',
   // background: '$color-surface',
 });
 
@@ -38,11 +39,11 @@ export const SwapLabel: React.FC<{ token: Token }> = ({ token }) => {
       borderRadius="7px"
       spacing="$2"
       minWidth="104px"
-      border="1px solid $color-border-subdued"
+      border="1px solid $onSurface-border-subdued"
       className="swap-label"
     >
       {token === 'btc' ? <BtcIcon /> : <XBtcIcon />}
-      <Text variant="Label02" color={undefined}>
+      <Text variant="Label02" color="$text">
         {token === 'btc' ? 'BTC' : 'xBTC'}
       </Text>
     </SpaceBetween>
@@ -61,41 +62,45 @@ const SwapBalance: React.FC = () => {
   }, [maxBalance, amount]);
 
   return (
-    <Flex>
-      <Text variant="Caption02" color="$text-subdued">
-        Balance: {maxBalance.toFormat()} xBTC
-      </Text>
-      <Text
-        variant="Caption02"
-        color="$action-primary"
-        ml="$1"
-        cursor="pointer"
-        _hover={{ textDecoration: 'underline' }}
-        onClick={setMaxAmount}
-      >
-        (Max)
-      </Text>
-    </Flex>
+    <Text
+      variant="Label02"
+      color="$light-onSurface-text-dim"
+      ml="15px"
+      onClick={setMaxAmount}
+      cursor="pointer"
+    >
+      Max
+    </Text>
   );
 };
 
 const SwapFieldComp = styled(SpaceBetween, {
-  background: '$color-surface',
-  borderColor: '$color-border-subdued',
+  background: '$dark-surface-very-subdued',
+  borderColor: '$onSurface-border-subdued',
   borderRadius: '$medium',
-  borderWidth: '1px',
+  borderWidth: '0px',
   borderStyle: 'solid',
   width: '100%',
   padding: '8px',
   '.swap-label': {
     color: '$color-slate-85 !important',
   },
+});
+
+const SwapStack = styled(Stack, {
   '&:focus-within': {
-    borderColor: '$color-primary',
-    '.swap-label': {
-      borderColor: '$color-primary',
-      color: '$color-base-white !important',
+    '.swap-title': {
+      color: '$onSurface-text-subdued',
     },
+  },
+});
+
+const SwapFieldBorder = styled(Box, {
+  padding: '1px',
+  background: '$onSurface-border-subdued',
+  borderRadius: '$medium',
+  '&:focus-within': {
+    background: '$foil',
   },
 });
 
@@ -124,21 +129,23 @@ export const SwapField: React.FC<SwapFieldProps> = ({ dir }) => {
   }, [amount, dir, outputAmount]);
 
   return (
-    <Stack spacing="$2">
-      <Text variant="Label02" color="$onSurface-text-subdued">
+    <SwapStack spacing="$2">
+      <Text variant="Label02" className="swap-title" color="$onSurface-text-dim">
         {capitalize(dir)} {token === 'btc' ? 'Bitcoin chain' : 'Stacks chain'}
       </Text>
-      <SwapFieldComp
-        background="$color-surface"
-        borderRadius="$medium"
-        borderWidth="1px"
-        borderStyle="solid"
-        width="100%"
-      >
-        <SwapLabel token={token} />
-        <SwapInput placeholder="0.0" {...inputProps} />
-      </SwapFieldComp>
-      {dir === 'from' && inputToken === 'xbtc' && isSignedIn ? <SwapBalance /> : null}
-    </Stack>
+      <SwapFieldBorder>
+        <SwapFieldComp
+          background="$color-surface"
+          borderRadius="$medium"
+          borderWidth="1px"
+          borderStyle="solid"
+          width="100%"
+        >
+          <SwapLabel token={token} />
+          {dir === 'from' && inputToken === 'xbtc' && isSignedIn ? <SwapBalance /> : null}
+          <SwapInput placeholder="0.0" {...inputProps} />
+        </SwapFieldComp>
+      </SwapFieldBorder>
+    </SwapStack>
   );
 };

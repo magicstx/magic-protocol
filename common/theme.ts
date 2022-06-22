@@ -12,6 +12,7 @@ import {
 import { makeColors, createTheme, getCssText as nelsonCss, CSSTypes } from '@nelson-ui/core';
 import figma from './theme/figma';
 import { tokens } from './theme/figma-2';
+import { colors as colors3 } from './theme/figma-3';
 import { PropertyValue, createStitches } from '@stitches/react';
 import fsTokens from './theme/fs-tokens2.json';
 
@@ -88,7 +89,28 @@ export function newFsColors() {
   Object.entries(fsTokens.dark).forEach(([key, group]) => {
     Object.entries(group).forEach(([color, data]) => {
       const item = `${key}-${color}`;
+      colors[`dark-${item}`] = data.value;
       colors[item] = data.value;
+      if (key === 'onSurface') {
+        colors[color] = data.value;
+      }
+    });
+  });
+  Object.entries(fsTokens.light).forEach(([key, group]) => {
+    Object.entries(group).forEach(([color, data]) => {
+      const item = `light-${key}-${color}`;
+      colors[item] = data.value;
+    });
+  });
+  Object.entries(fsTokens.base).forEach(([key, val]) => {
+    colors[`color-${key}`] = val.value;
+    colors[key] = val.value;
+  });
+  ['slate', 'grey', 'blue', 'green', 'orange', 'red'].forEach(base => {
+    const items = fsTokens[base as keyof typeof fsTokens];
+    Object.entries(items).forEach(([layer, val]) => {
+      colors[`color-${base}-${layer}`] = val.value;
+      colors[`${base}-${layer}`] = val.value;
     });
   });
   return colors;
@@ -162,8 +184,11 @@ export const baseTheme = {
     ...generatedTheme.colors,
     ...newTheme.colors,
     ...fsColors,
+    ...colors3,
     text: fsColors['onSurface-text'],
     background: '#0c0c0d',
+    'foil-radial':
+      'conic-gradient(from 134.29deg at 51.84% 49.4%, #F8A4E5 0deg, #5E7FFF 114.38deg, #38FBFC 219.37deg, #FFEFC5 236.25deg, #F8A4E5 360deg)',
   },
   space: {
     ...sizes,

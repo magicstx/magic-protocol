@@ -8,13 +8,16 @@ import { base58checkEncode, hashRipemd160 } from 'micro-stacks/crypto';
 export function getTxUrl(txId: string) {
   const id = getTxId(txId);
   if (coreUrl.includes('http://localhost')) {
-    return `${coreUrl}/extended/v1/tx/${id}?unanchored=true`;
+    return `http://localhost:8000/txid/${id}`;
   }
   const network = coreUrl.includes('testnet') ? 'testnet' : 'mainnet';
   return `https://explorer.stacks.co/txid/${id}?chain=${network}`;
 }
 
 export function getBtcTxUrl(txId: string) {
+  if (NETWORK_CONFIG === 'mocknet') {
+    return `http://localhost:8001/tx/${txId}`;
+  }
   const base = `https://mempool.space/`;
   return `${base}${NETWORK_CONFIG === 'mainnet' ? '' : 'testnet/'}tx/${txId}`;
 }

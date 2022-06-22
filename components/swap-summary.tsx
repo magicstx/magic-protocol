@@ -6,7 +6,7 @@ import { Text } from './text';
 import { useAtomCallback } from 'jotai/utils';
 
 export const SwapSummary: React.FC = () => {
-  const { feePercent, outputAmount, outputToken } = useSwapForm();
+  const { feePercent, outputAmount, outputToken, txFeePercent, txFeeBtc } = useSwapForm();
   const receiveToken = outputToken === 'btc' ? 'BTC' : 'xBTC';
   const showOverride = useAtomCallback(
     useCallback((get, set) => {
@@ -18,21 +18,21 @@ export const SwapSummary: React.FC = () => {
     return null;
   }
   return (
-    <SpaceBetween
-      backgroundColor="$color-surface"
-      spacing="$3"
-      padding="8px 24px 8px 13px"
-      borderRadius="$medium"
-    >
-      <Stack spacing="0px">
-        <Text variant="Label03" color="$color-primary-text">
-          Supplier fee: {feePercent}%
-        </Text>
-        <Text variant="Label02">
-          You will receive {outputAmount} {receiveToken}
-        </Text>
-      </Stack>
-      <GearIcon onClick={showOverride} cursor="pointer" />
+    <SpaceBetween padding="8px 24px" backgroundColor="$dark-surface-very-subdued">
+      <Text variant="Label02" color="$onSurface-text">
+        Fees
+      </Text>
+      <SpaceBetween spacing="$2">
+        <SpaceBetween spacing="$1">
+          <Text variant="Label02">
+            {txFeeBtc} {receiveToken}
+          </Text>
+          <Text variant="Label02" color="$text-subdued">
+            (-{txFeePercent}%)
+          </Text>
+        </SpaceBetween>
+        <GearIcon onClick={showOverride} cursor="pointer" />
+      </SpaceBetween>
     </SpaceBetween>
   );
 };

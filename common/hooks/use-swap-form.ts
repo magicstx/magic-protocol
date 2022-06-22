@@ -40,16 +40,31 @@ export function useSwapForm() {
     return inputToken === 'btc' ? supplier.inboundFee : supplier.outboundFee;
   }, [inputToken, supplier]);
 
+  const supplierBaseFee = inputToken === 'btc' ? supplier.inboundBaseFee : supplier.outboundBaseFee;
+
   const feePercent = useMemo(() => {
     return bpsToPercent(fee);
   }, [fee]);
 
-  const outputAmount = useMemo(() => {
+  const { outputAmount, txFeeBtc, txFeePercent } = useMemo(() => {
     const amountBN = new BigNumber(amount.value).shiftedBy(8).decimalPlaces(0);
-    if (amountBN.isNaN()) return '0';
-    const output = getSwapAmount(amountBN.toString(), fee);
-    return satsToBtc(output);
-  }, [amount.value, fee]);
+    if (amountBN.isNaN()) {
+      return {
+        outputAmount: '0',
+        txFeeBtc: '0',
+        txFeePercent: '0',
+      };
+    }
+    const output = getSwapAmount(amountBN.toString(), fee, supplierBaseFee);
+    const txFeeSats = amountBN.minus(output.toString());
+    const txFeeBtc = satsToBtc(txFeeSats.toString());
+    const txFeePercent = txFeeSats.decimalPlaces(6).dividedBy(amountBN).multipliedBy(100);
+    return {
+      outputAmount: satsToBtc(output),
+      txFeeBtc,
+      txFeePercent: txFeePercent.decimalPlaces(3).toFormat(),
+    };
+  }, [amount.value, fee, supplierBaseFee]);
 
   const switchDirection = useAtomCallback(
     useCallback(
@@ -152,5 +167,7 @@ export function useSwapForm() {
     error: outboundTx.error,
     isValid,
     validBtc,
+    txFeeBtc,
+    txFeePercent,
   };
 }

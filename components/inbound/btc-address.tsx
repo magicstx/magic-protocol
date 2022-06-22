@@ -16,18 +16,18 @@ export const BtcAddress: React.FC = () => {
       <Text variant="Label01">Send Bitcoin to:</Text>
       <Box
         p="$5"
-        backgroundColor="$color-surface"
+        backgroundColor="$surface-very-subdued"
         borderRadius="$medium"
-        border="1px solid $color-border-subdued"
+        border="1px solid $border-subdued"
       >
         <SpaceBetween>
-          <Text variant="Caption01" color="$color-primary-text">
+          <Text variant="Caption01" color="$text">
             {swap.address}
           </Text>
           <DuplicateIcon clipboardText={swap.address} />
         </SpaceBetween>
       </Box>
-      <Text variant="Caption02" color="$color-slate-85">
+      <Text variant="Caption02" color="$text-subdued">
         Send one transaction. Do not send more than {maxBtc} BTC
       </Text>
     </Stack>

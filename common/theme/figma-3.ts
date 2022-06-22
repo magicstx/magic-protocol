@@ -742,3 +742,11 @@ const theme = {
 } as const;
 
 export const figma = theme.global;
+
+export const colors: Record<string, string> = {};
+
+Object.entries(figma).forEach(([color, data]) => {
+  if ('type' in data && data.type === 'color') {
+    colors[color] = data.value;
+  }
+});

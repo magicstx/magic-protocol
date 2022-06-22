@@ -1,7 +1,14 @@
+const { resolve } = require('path');
+
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
   webpack: config => {
+    const alias = config.resolve.alias || (config.resolve.alias = {});
+    alias['jotai'] = resolve(__dirname, 'node_modules', 'jotai');
+    alias['react-query'] = resolve(__dirname, 'node_modules', 'react-query');
+    alias['@stitches/react'] = resolve(__dirname, 'node_modules', '@stitches/react');
+    alias['@stitches/core'] = resolve(__dirname, 'node_modules', '@stitches/core');
     return {
       ...config,
       watchOptions: {

@@ -14,7 +14,7 @@ export const Spinner: React.FC<BoxProps> = props => {
   return (
     <Box
       size={size}
-      backgroundImage="$color-primary-magic-hover"
+      backgroundImage="$foil-radial"
       p="2px"
       borderRadius={radius}
       animation={`${spin()} 1s linear infinite`}
