@@ -21,7 +21,7 @@ export function useGenerateInboundSwap() {
       async (get, set, { supplier, inputAmount }: Generate) => {
         const publicKey = get(publicKeyState);
         if (!publicKey) throw new Error('Invalid user state');
-        const expiration = testQuery === 'error' ? 200 : undefined;
+        const expiration = testQuery === 'error' ? 10 : undefined;
         const swap = createInboundSwap({
           supplier,
           publicKey,
