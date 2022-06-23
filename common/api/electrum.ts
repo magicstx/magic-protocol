@@ -112,6 +112,7 @@ export async function getTxData(txid: string, address: string) {
       tx,
       outputIndex,
       amount,
+      burnHeight,
     };
   });
 }

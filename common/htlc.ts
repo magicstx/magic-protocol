@@ -36,6 +36,10 @@ export const CSV_DELAY = 500;
 export const CSV_DELAY_BUFF = script.number.encode(CSV_DELAY);
 export const CSV_DELAY_HEX = CSV_DELAY_BUFF.toString('hex');
 
+export function encodeExpiration(expiration?: number): Buffer {
+  return typeof expiration === 'undefined' ? CSV_DELAY_BUFF : script.number.encode(expiration);
+}
+
 export function htlcASM({ hash, senderPublicKey, recipientPublicKey, expiration, swapper }: HTLC) {
   const swapperHex = numberToLE(swapper);
   return `
@@ -45,7 +49,7 @@ export function htlcASM({ hash, senderPublicKey, recipientPublicKey, expiration,
     OP_EQUALVERIFY
 		${bytesToHex(recipientPublicKey)}
 	OP_ELSE
-		${expiration !== undefined ? script.number.encode(expiration).toString('hex') : CSV_DELAY_HEX}
+		${encodeExpiration(expiration).toString('hex')}
 		OP_CHECKSEQUENCEVERIFY
 		OP_DROP
 		${bytesToHex(senderPublicKey)}

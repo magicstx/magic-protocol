@@ -29,6 +29,8 @@ export enum QueryKeys {
   OUTBOUND_SWAPS_STORAGE = 'outboundSwapsStorage',
   BALANCES = 'balances',
   BTC_BALANCES = 'btcBalances',
+  BTC_TX = 'btcTxData',
+  CORE_INFO = 'coreInfo',
 }
 
 export async function fetchSupplierWithContract(id: number, bridge: BridgeContract) {
@@ -75,7 +77,6 @@ export async function fetchAllSuppliersApi() {
 export async function fetchSwapperId(address: string) {
   try {
     const _id = await webProvider.ro(bridge.getSwapperId(address));
-    console.log('Swapper ID from contract:', _id);
     const id = _id === null ? null : Number(_id);
     return { id };
   } catch (error) {

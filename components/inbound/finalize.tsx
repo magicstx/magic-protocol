@@ -7,11 +7,13 @@ import { getSwapAmount, satsToBtc } from '../../common/utils';
 import { useFinalizeInbound } from '../../common/hooks/tx/use-finalize-inbound';
 import { ExternalTx } from '../icons/external-tx';
 import { Text } from '../text';
+import type { TransactionStatus } from '../../common/api/stacks';
+import { SwapRedeem } from './recover';
 
-export const FinalizeRow: React.FC<{ txId?: string }> = ({ txId = '' }) => {
-  const [tx] = useStxTx(txId);
-  const status = tx?.status || 'pending';
-
+export const FinalizeRow: React.FC<{ txId?: string; status?: TransactionStatus }> = ({
+  txId = '',
+  status = 'pending',
+}) => {
   if (status === 'pending') {
     return <PendingRow txId={txId}>Waiting for your Stacks transaction</PendingRow>;
   }
@@ -21,8 +23,8 @@ export const FinalizeRow: React.FC<{ txId?: string }> = ({ txId = '' }) => {
 
   return (
     <SpaceBetween px="$row-x">
-      <Text variant="Label01" color="$text-critical">
-        There was an error when escrowing your transaction.
+      <Text variant="Label01" color="$text-alert-red">
+        Escrow transaction failed
       </Text>
       <ExternalTx txId={txId} />
     </SpaceBetween>
@@ -62,12 +64,19 @@ export const SwapFinalize: React.FC = () => {
   }, [setTxid]);
 
   return (
-    <Stack spacing="$row-y">
+    <Stack spacing="$row-y" justifyContent="center" alignItems="center">
       <CenterBox noPadding>
         <DoneRow btcTxId={swap.btcTxid}>Sent {satsToBtc(swap.satsAmount)} BTC</DoneRow>
         <Divider />
-        <FinalizeRow txId={swap.escrowTxid} />
+        <FinalizeRow txId={swap.escrowTxid} status={escrowTx?.status} />
+        {'recoveryTxid' in swap ? (
+          <>
+            <Divider />
+            <DoneRow btcTxId={swap.recoveryTxid}>BTC recovered</DoneRow>
+          </>
+        ) : null}
       </CenterBox>
+      <SwapRedeem />
     </Stack>
   );
 };

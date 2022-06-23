@@ -7,9 +7,11 @@ import { currentStxAddressState, QueryKeys } from '.';
 import { BtcBalanceResponse } from '../../pages/api/btc-balance';
 import { ListUnspentApiOk } from '../../pages/api/list-unspent';
 import { WatchAddressApi } from '../../pages/api/watch-address';
+import { fetchTxData, TxData } from '../api';
 import { getBalances, getTx, getTxResult, Transaction } from '../api/stacks';
-import { LOCAL_URL } from '../constants';
+import { LOCAL_URL, network } from '../constants';
 import { pubKeyToBtcAddress } from '../utils';
+import { fetchCoreApiInfo } from 'micro-stacks/api';
 
 export const stxTxState = atomFamilyWithQuery<string | undefined, Transaction | null>(
   (get, txId) => [QueryKeys.STX_TX, txId],
@@ -72,12 +74,30 @@ export const btcBalanceState = atomFamilyWithQuery<string, string>(
   }
 );
 
+export const btcTxState = atomFamilyWithQuery<[string, string], TxData>(
+  (get, [txid, addr]) => [QueryKeys.BTC_TX, txid, addr],
+  async (get, [txid, addr]) => {
+    const txData = await fetchTxData(txid, addr);
+    return txData;
+  }
+);
+
+export const coreApiInfoState = atomWithQuery(QueryKeys.CORE_INFO, async () => {
+  const info = await fetchCoreApiInfo({ url: network.getCoreApiUrl() });
+  return info;
+});
+
 // hooks
 
 export const useWatchAddress = (address: string) => useQueryAtom(watchAddressState(address));
 export const useListUnspent = (address: string) => useQueryAtom(listUnspentState(address));
 
 export const useStxTx = (txId: string | undefined) => useQueryAtom(stxTxState(txId));
+
+export const useBtcTx = (txid: string, address: string) =>
+  useQueryAtom(btcTxState([txid, address]));
+
+export const useCoreApiInfo = () => useQueryAtom(coreApiInfoState);
 
 export function useStxTxResult<T>(txId: string | undefined) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

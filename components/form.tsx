@@ -17,5 +17,5 @@ export const Input = styled('input', {
   lineHeight: 1,
   color: '$text',
   boxSizing: 'border-box',
-  backgroundColor: '$surface-very-subdued',
+  backgroundColor: '$dark-surface-very-subdued',
 });

@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
             variant="Caption02"
             display="inline-block"
             textDecoration="underline !important"
-            color="$color-slate-85"
+            color="$text-dim"
             href="https://docs.magic.fun"
             target="_blank"
             as="a"

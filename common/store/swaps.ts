@@ -16,6 +16,7 @@ export interface InboundSwapStarted {
   supplier: Supplier;
   createdAt: number;
   secret: string;
+  expiration: number;
   publicKey: string;
   inputAmount: string;
 }
@@ -39,6 +40,10 @@ export interface InboundSwapEscrowed extends InboundSwapSent {
   escrowTxid: string;
 }
 
+export interface InboundSwapRecovered extends InboundSwapEscrowed {
+  recoveryTxid: string;
+}
+
 export interface InboundSwapFinalized extends InboundSwapEscrowed {
   finalizeTxid: string;
 }
@@ -49,6 +54,7 @@ export type InboundSwap =
   | InboundSwapWarned
   | InboundSwapSent
   | InboundSwapEscrowed
+  | InboundSwapRecovered
   | InboundSwapFinalized;
 
 export function getSwapStep(swap: InboundSwap) {
@@ -71,11 +77,13 @@ export function createInboundSwap({
   swapperId,
   publicKey,
   inputAmount,
+  expiration = 500,
 }: {
   supplier: Supplier;
   swapperId?: number;
   publicKey: string;
   inputAmount: string;
+  expiration?: number;
 }): InboundSwapStarted | InboundSwapReady {
   const secret = getRandomBytes(32);
   const swap = {
@@ -85,6 +93,7 @@ export function createInboundSwap({
     supplier,
     publicKey,
     inputAmount,
+    expiration,
   };
   if (swapperId !== undefined) {
     return createReadySwap(swap, swapperId);
@@ -100,6 +109,7 @@ export function createReadySwap(swap: InboundSwapStarted, swapperId: number): In
     recipientPublicKey: Buffer.from(supplier.publicKey, 'hex'),
     swapper: swapperId,
     hash: Buffer.from(hash),
+    expiration: swap.expiration,
   });
   return {
     ...swap,
@@ -108,7 +118,7 @@ export function createReadySwap(swap: InboundSwapStarted, swapperId: number): In
   };
 }
 
-export const SWAP_STORAGE_PREFIX = 'swaps-v5/';
+export const SWAP_STORAGE_PREFIX = 'swaps-v6/';
 export const INBOUND_SWAP_STORAGE_PREFIX = 'inbounds';
 export const OUTBOUND_SWAP_STORAGE_PREFIX = 'outbounds';
 

@@ -1,4 +1,5 @@
 import { hexToBytes } from 'micro-stacks/common';
+import { BroadcastResponse } from '../../pages/api/btc-broadcast';
 import type { SponsorResult } from '../../pages/api/sponsor';
 import type { BridgeContract } from '../clarigen';
 import { LOCAL_URL } from '../constants';
@@ -9,21 +10,22 @@ type BlockParam = MintParams[0];
 type PrevBlocksParam = MintParams[1];
 type ProofParam = MintParams[3];
 
-interface TxData {
+export interface TxData {
   block: BlockParam;
   prevBlocks: PrevBlocksParam;
   txHex: Uint8Array;
   proof: ProofParam;
   outputIndex: number;
   amount: bigint;
+  burnHeight: number;
 }
 
 export async function fetchTxData(txid: string, address: string): Promise<TxData> {
   try {
     const url = `${LOCAL_URL || ''}/api/tx-data?txid=${txid}&address=${address}`;
     const res = await fetch(url);
-    const { block, proof, txHex, outputIndex, prevBlocks, amount } =
-      (await res.json()) as unknown as TxDataApi;
+    const apiTx = (await res.json()) as unknown as TxDataApi;
+    const { block, proof, txHex, outputIndex, prevBlocks, amount, burnHeight } = apiTx;
     return {
       block: {
         height: BigInt(block.height),
@@ -38,6 +40,7 @@ export async function fetchTxData(txid: string, address: string): Promise<TxData
       },
       outputIndex,
       amount: BigInt(amount),
+      burnHeight,
     };
   } catch (error) {
     console.error(error);
@@ -59,4 +62,17 @@ export async function sponsorTransaction(txHex: string): Promise<string> {
     throw new Error(data.error);
   }
   return data.txId;
+}
+
+export async function broadcastBtc(txHex: string) {
+  const url = `${LOCAL_URL}/api/btc-broadcast`;
+  const res = await fetch(url, {
+    method: 'POST',
+    body: txHex,
+  });
+  const data = (await res.json()) as BroadcastResponse;
+  if ('error' in data) {
+    throw new Error(data.error);
+  }
+  return data.txid;
 }

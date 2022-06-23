@@ -96,7 +96,11 @@ export async function fetchAccountNonce(address: string) {
   return data.possible_next_nonce;
 }
 
-type TransactionStatus = 'success' | 'abort_by_response' | 'abort_by_post_condition' | 'pending';
+export type TransactionStatus =
+  | 'success'
+  | 'abort_by_response'
+  | 'abort_by_post_condition'
+  | 'pending';
 export type Transaction = Awaited<ReturnType<typeof getTx>>;
 
 export async function getTx(txId: string) {

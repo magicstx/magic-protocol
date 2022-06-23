@@ -125,6 +125,10 @@ const StatusButtonComp = styled(Box, {
         backgroundColor: '#21180A',
         color: '$color-warning',
       },
+      error: {
+        border: '1px solid $text-alert-red',
+        color: '$text-alert-red',
+      },
     },
   },
 });
