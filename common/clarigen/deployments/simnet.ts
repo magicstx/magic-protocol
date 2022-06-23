@@ -64,16 +64,16 @@ export const simnetDeployment = {
         transactions: [
           {
             'emulated-contract-publish': {
-              'contract-name': 'restricted-token-trait',
+              'contract-name': 'ft-trait',
               'emulated-sender': 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR',
-              path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait.clar',
+              path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar',
             },
           },
           {
             'emulated-contract-publish': {
-              'contract-name': 'ft-trait',
+              'contract-name': 'restricted-token-trait',
               'emulated-sender': 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR',
-              path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar',
+              path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait.clar',
             },
           },
           {
@@ -87,42 +87,42 @@ export const simnetDeployment = {
             'emulated-contract-publish': {
               'contract-name': 'clarity-bitcoin',
               'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              path: 'contracts/clarity-bitcoin.clar',
-            },
-          },
-          {
-            'emulated-contract-publish': {
-              'contract-name': 'ft-trait',
-              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              path: 'contracts/ft-trait.clar',
-            },
-          },
-          {
-            'emulated-contract-publish': {
-              'contract-name': 'xbtc',
-              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              path: 'contracts/xbtc.clar',
-            },
-          },
-          {
-            'emulated-contract-publish': {
-              'contract-name': 'bridge',
-              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              path: 'contracts/bridge.clar',
-            },
-          },
-          {
-            'emulated-contract-publish': {
-              'contract-name': 'supplier-wrapper',
-              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              path: 'contracts/supplier-wrapper.clar',
+              path: '/Users/hankstoever/magic/bridge/contracts/test/clarity-bitcoin.clar',
             },
           },
           {
             'emulated-contract-publish': {
               'contract-name': 'test-utils',
               'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              path: 'contracts/test/test-utils.clar',
+              path: '/Users/hankstoever/magic/bridge/contracts/test/test-utils.clar',
+            },
+          },
+          {
+            'emulated-contract-publish': {
+              'contract-name': 'ft-trait',
+              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              path: '/Users/hankstoever/magic/bridge/contracts/ft-trait.clar',
+            },
+          },
+          {
+            'emulated-contract-publish': {
+              'contract-name': 'xbtc',
+              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              path: '/Users/hankstoever/magic/bridge/contracts/xbtc.clar',
+            },
+          },
+          {
+            'emulated-contract-publish': {
+              'contract-name': 'bridge',
+              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              path: '/Users/hankstoever/magic/bridge/contracts/bridge.clar',
+            },
+          },
+          {
+            'emulated-contract-publish': {
+              'contract-name': 'supplier-wrapper',
+              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              path: '/Users/hankstoever/magic/bridge/contracts/supplier-wrapper.clar',
             },
           },
         ],

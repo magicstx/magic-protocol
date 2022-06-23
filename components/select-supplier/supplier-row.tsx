@@ -1,9 +1,8 @@
 import React, { Suspense, useCallback, useMemo } from 'react';
 import { Text } from '../text';
-import { Box, Flex, Stack } from '@nelson-ui/react';
+import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
 import { Supplier, selectedSupplierState } from '../../common/store';
 import { styled } from '@stitches/react';
-import { CheckSubdued } from '../icons/check-subdued';
 import { bpsToPercent, satsToBtc, truncateMiddle } from '../../common/utils';
 import { CheckSelected } from '../icons/check-selected';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
@@ -14,30 +13,30 @@ import { useBtcBalance } from '../../common/store/api';
 import { Spinner } from '../spinner';
 
 const RowComp = styled(Box, {
-  borderBottom: '1px solid $color-border-subdued',
-  borderLeft: '1px solid $color-border-subdued',
-  borderRight: '1px solid $color-border-subdued',
-  padding: '20px 28px',
+  borderBottom: '1px solid $border-subdued',
+  // borderLeft: '1px solid $border-subdued',
+  // borderRight: '1px solid $border-subdued',
+  padding: '34px 0',
   width: '100%',
   cursor: 'pointer',
-  '&:first-child': {
-    borderTop: '1px solid $color-border-subdued',
-    borderTopLeftRadius: '$extra-large',
-    borderTopRightRadius: '$extra-large',
-    // borderRadius: '$extra-large $extra-large 0 0',
+  '.supplier-controller': {
+    color: '$text-dim',
   },
-  '&:last-child': {
-    borderBottomLeftRadius: '$extra-large',
-    borderBottomRightRadius: '$extra-large',
+  '&:first-child': {
+    borderTop: '1px solid $border-subdued',
   },
   variants: {
     selected: {
       true: {
-        backgroundColor: '$color-surface-200',
+        '.supplier-controller': {
+          color: '$text',
+        },
       },
     },
   },
 });
+
+export const ROW_WIDTHS = [438 + 10, 98 + 149, 218, 145 + 62];
 
 export const SupplierRow: React.FC<{ supplier: Supplier; outputToken: Token }> = ({
   supplier: operator,
@@ -49,58 +48,73 @@ export const SupplierRow: React.FC<{ supplier: Supplier; outputToken: Token }> =
   return <InboundSupplierRow supplier={operator} />;
 };
 
+const CheckSubdued = styled(Box, {
+  width: '19px',
+  height: '19px',
+  border: '3px solid $border-subdued',
+  borderRadius: '50%',
+});
+
 export const SupplierBaseRow: React.FC<{
   supplier: Supplier;
   capacity: React.ReactText | JSX.Element;
+  outputToken: string;
   fee: number;
   baseFee: number;
-}> = ({ supplier: operator, capacity, fee: _fee, baseFee: _baseFee }) => {
+}> = ({ supplier, capacity, fee: _fee, baseFee, outputToken }) => {
   const amount = useAtomValue(amountState);
   const { supplier: selectedOp } = useAutoSelectSupplier(amount);
-  const selected = selectedOp.id === operator.id;
+  const selected = selectedOp.id === supplier.id;
   const color = selected ? '$color-white' : '$color-slate-90';
   const select = useAtomCallback(
     useCallback(
       (get, set) => {
-        set(selectedSupplierState, operator);
+        set(selectedSupplierState, supplier);
         set(showOverrideSupplierState, false);
       },
-      [operator]
+      [supplier]
     )
   );
 
   const fee = useMemo(() => {
     return bpsToPercent(_fee);
   }, [_fee]);
-  const baseFee = useMemo(() => {
-    return satsToBtc(_baseFee);
-  }, [_baseFee]);
 
   return (
     <RowComp selected={selected} onClick={select}>
       <Flex flexDirection="row" alignItems="center">
-        <Box width="225px" flexGrow={1}>
+        <Box width={`${ROW_WIDTHS[0]}px`}>
           <Stack spacing="16px" isInline>
             {selected ? <CheckSelected /> : <CheckSubdued />}
-            <Text variant="Label02" color={color}>
-              {truncateMiddle(operator.controller, 6)}
+            <Text variant="Label02" className="supplier-controller">
+              {/* {truncateMiddle(operator.controller, 12)} */}
+              {supplier.controller}
             </Text>
           </Stack>
         </Box>
-        <Box width="150px">
-          <Text variant="Caption02" color={color}>
-            {capacity}
-          </Text>
+        <Box width={`${ROW_WIDTHS[1]}px`}>
+          <Stack spacing="$1" isInline>
+            <Text variant="Label02">{capacity}</Text>
+            <Text variant="Label02" color="$text-subdued">
+              {outputToken.toUpperCase()}
+            </Text>
+          </Stack>
         </Box>
-        <Box width="150px">
-          <Text variant="Caption02" color={color}>
-            {fee}%
-          </Text>
+        <Box width={`${ROW_WIDTHS[2]}px`}>
+          <Stack spacing="$1" isInline>
+            <Text variant="Label02">{baseFee}</Text>
+            <Text variant="Label02" color="$text-subdued">
+              SATS
+            </Text>
+          </Stack>
         </Box>
-        <Box width="150px">
-          <Text variant="Caption02" color={color}>
-            {baseFee}
-          </Text>
+        <Box width={`${ROW_WIDTHS[3]}px`}>
+          <Stack spacing="0" isInline>
+            <Text variant="Label02">{fee}</Text>
+            <Text variant="Label02" color="$text-subdued">
+              %
+            </Text>
+          </Stack>
         </Box>
       </Flex>
     </RowComp>
@@ -128,6 +142,7 @@ export const OutboundSupplierRow: React.FC<{ supplier: Supplier }> = ({ supplier
   return (
     <SupplierBaseRow
       fee={operator.outboundFee}
+      outputToken="BTC"
       baseFee={operator.outboundBaseFee}
       capacity={Capacity}
       supplier={operator}
@@ -141,6 +156,7 @@ export const InboundSupplierRow: React.FC<{ supplier: Supplier }> = ({ supplier:
   }, [operator.funds]);
   return (
     <SupplierBaseRow
+      outputToken="xBTC"
       fee={operator.inboundFee}
       baseFee={operator.inboundBaseFee}
       capacity={capacity}

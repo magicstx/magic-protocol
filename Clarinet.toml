@@ -6,8 +6,8 @@ telemetry = false
 cache_dir = "/Users/hankstoever/magic/bridge/.clarinet"
 boot_contracts = ["pox", "costs-v2", "bns"]
 
-[[project.requirements]]
-contract_id = "SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin"
+# [[project.requirements]]
+# contract_id = "SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin"
 
 [contracts.bridge]
 path = "contracts/bridge.clar"

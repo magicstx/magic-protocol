@@ -1,9 +1,9 @@
-export const devnetDeployment = {
+export const testnetDeployment = {
   id: 0,
-  name: 'Devnet deployment',
-  network: 'devnet',
-  'stacks-node': 'http://localhost:20443',
-  'bitcoin-node': 'http://devnet:devnet@0.0.0.0:18443',
+  name: 'Testnet deployment',
+  network: 'testnet',
+  'stacks-node': 'http://stacks-node-api.testnet.stacks.co',
+  'bitcoin-node': 'http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332',
   plan: {
     batches: [
       {
@@ -12,7 +12,7 @@ export const devnetDeployment = {
           {
             'requirement-publish': {
               'contract-id': 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait',
-              'remap-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              'remap-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
               'remap-principals': {},
               cost: 5480,
               path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait.clar',
@@ -21,7 +21,7 @@ export const devnetDeployment = {
           {
             'requirement-publish': {
               'contract-id': 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait',
-              'remap-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              'remap-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
               'remap-principals': {},
               cost: 8350,
               path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar',
@@ -30,7 +30,7 @@ export const devnetDeployment = {
           {
             'requirement-publish': {
               'contract-id': 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin',
-              'remap-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              'remap-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
               'remap-principals': {},
               cost: 104220,
               path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin.clar',
@@ -38,24 +38,8 @@ export const devnetDeployment = {
           },
           {
             'contract-publish': {
-              'contract-name': 'ft-trait',
-              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              cost: 8400,
-              path: '/Users/hankstoever/magic/bridge/contracts/ft-trait.clar',
-            },
-          },
-          {
-            'contract-publish': {
-              'contract-name': 'xbtc',
-              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              cost: 11570,
-              path: '/Users/hankstoever/magic/bridge/contracts/xbtc.clar',
-            },
-          },
-          {
-            'contract-publish': {
               'contract-name': 'clarity-bitcoin',
-              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              'expected-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
               cost: 412540,
               path: '/Users/hankstoever/magic/bridge/contracts/clarity-bitcoin.clar',
             },
@@ -63,15 +47,31 @@ export const devnetDeployment = {
           {
             'contract-publish': {
               'contract-name': 'bridge',
-              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              cost: 301490,
+              'expected-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
+              cost: 302020,
               path: '/Users/hankstoever/magic/bridge/contracts/bridge.clar',
             },
           },
           {
             'contract-publish': {
+              'contract-name': 'ft-trait',
+              'expected-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
+              cost: 8400,
+              path: '/Users/hankstoever/magic/bridge/contracts/ft-trait.clar',
+            },
+          },
+          {
+            'contract-publish': {
+              'contract-name': 'xbtc',
+              'expected-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
+              cost: 11570,
+              path: '/Users/hankstoever/magic/bridge/contracts/xbtc.clar',
+            },
+          },
+          {
+            'contract-publish': {
               'contract-name': 'supplier-wrapper',
-              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              'expected-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
               cost: 23340,
               path: '/Users/hankstoever/magic/bridge/contracts/supplier-wrapper.clar',
             },
@@ -79,7 +79,7 @@ export const devnetDeployment = {
           {
             'contract-publish': {
               'contract-name': 'test-utils',
-              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              'expected-sender': 'ST2WBR71TSWP5S3WZYFC3VERBS3P134FB69QJXSFJ',
               cost: 4970,
               path: '/Users/hankstoever/magic/bridge/contracts/test/test-utils.clar',
             },

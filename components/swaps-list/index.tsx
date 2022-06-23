@@ -3,7 +3,7 @@ import React, { Suspense, useMemo } from 'react';
 import { useSwapKeys } from '../../common/store/swaps';
 import { useSetTitle } from '../head';
 import { Text } from '../text';
-import { SwapItem, LoadingRow, EmptyRow } from './swap-item';
+import { SwapItem, LoadingRow, EmptyRow, ROW_WIDTHS } from './swap-item';
 
 export const SwapsList: React.FC = () => {
   const [swaps] = useSwapKeys();
@@ -23,19 +23,22 @@ export const SwapsList: React.FC = () => {
   }, [swaps]);
   return (
     <Flex>
-      <Box width="800px">
-        <Flex flexDirection="row" px="28px" py="15px" width="100%">
-          <Box width="225px">
-            <Text variant="Caption02">Swap</Text>
+      <Box width="1120px">
+        <Flex flexDirection="row" py="15px" width="100%">
+          <Box width={`${ROW_WIDTHS[0]}px`}>
+            <Text variant="Label02" color="$text-dim">
+              Swap
+            </Text>
           </Box>
-          <Box width="125px">
-            <Text variant="Caption02">Start Date</Text>
+          <Box width={`${ROW_WIDTHS[1]}px`}>
+            <Text variant="Label02" color="$text-dim">
+              Start Date
+            </Text>
           </Box>
-          <Box width="250px">
-            <Text variant="Caption02">Swap ID</Text>
-          </Box>
-          <Box width="150px">
-            <Text variant="Caption02">Status</Text>
+          <Box width={`${ROW_WIDTHS[2]}px`} flexGrow={1}>
+            <Text variant="Label02" color="$text-dim">
+              Swap ID
+            </Text>
           </Box>
         </Flex>
         <Flex width="100%" flexDirection="column">

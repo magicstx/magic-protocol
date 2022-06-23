@@ -2,38 +2,47 @@
 id: 0
 name: Devnet deployment
 network: devnet
-node: "http://localhost:20443"
+stacks-node: "http://localhost:20443"
+bitcoin-node: "http://devnet:devnet@0.0.0.0:18443"
 plan:
   batches:
     - id: 0
       transactions:
-        - contract-publish:
-            contract-name: clarity-bitcoin
-            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/clarity-bitcoin.clar
-            cost: 412540
+        # - requirement-publish:
+        #     contract-id: SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait
+        #     remap-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     remap-principals: {}
+        #     cost: 5480
+        #     path: /Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait.clar
+        # - requirement-publish:
+        #     contract-id: SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait
+        #     remap-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     remap-principals: {}
+        #     cost: 8350
+        #     path: /Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar
+        # - requirement-publish:
+        #     contract-id: SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin
+        #     remap-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     remap-principals: {}
+        #     cost: 104220
+        #     path: /Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin.clar
         - contract-publish:
             contract-name: ft-trait
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/ft-trait.clar
             cost: 8400
+            path: /Users/hankstoever/magic/bridge/contracts/ft-trait.clar
         - contract-publish:
             contract-name: xbtc
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/xbtc.clar
             cost: 11570
+            path: /Users/hankstoever/magic/bridge/contracts/xbtc.clar
+        - contract-publish:
+            contract-name: clarity-bitcoin
+            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            cost: 412540
+            path: /Users/hankstoever/magic/bridge/contracts/clarity-bitcoin.clar
         - contract-publish:
             contract-name: bridge
             expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/bridge.clar
             cost: 301490
-        - contract-publish:
-            contract-name: test-utils
-            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/test/test-utils.clar
-            cost: 4970
-        - contract-publish:
-            contract-name: supplier-wrapper
-            expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: contracts/supplier-wrapper.clar
-            cost: 23340
+            path: /Users/hankstoever/magic/bridge/contracts/bridge.clar

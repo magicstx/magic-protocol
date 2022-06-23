@@ -1,0 +1,22 @@
+---
+id: 0
+name: Devnet deployment
+network: devnet
+stacks-node: "http://localhost:20443"
+bitcoin-node: "http://devnet:devnet@0.0.0.0:18443"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-call:
+            contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.bridge
+            method: register-supplier
+            expected-sender: ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5
+            parameters:
+              - 0xcMrFQf6KopVeU8nnba5389CKixMRhZ37fExxS8wBgPoQCUA9uW53
+              - (some 10)
+              - (some 10)
+              - 500
+              - 500
+              - u10000000000
+            cost: 1000000

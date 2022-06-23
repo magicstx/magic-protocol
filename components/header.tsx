@@ -45,7 +45,7 @@ export function Header() {
   const { isSignedIn, session } = useAuth();
 
   return (
-    <SpaceBetween pt="30px" px="$extra-loose" maxWidth="1100px" mx="auto" width="100vw">
+    <SpaceBetween pt="30px" maxWidth="1120px" mx="auto" width="100vw">
       <SpaceBetween spacing="40px">
         <SpaceBetween spacing="12px">
           <StarIcon />

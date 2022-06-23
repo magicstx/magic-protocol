@@ -18,22 +18,15 @@ import { useFinalizedOutboundSwap } from '../../common/store';
 import { DuplicateIcon } from '../icons/duplicate';
 
 const SwapRowComp = styled(Box, {
-  borderBottom: '1px solid $color-border-subdued',
-  borderLeft: '1px solid $color-border-subdued',
-  borderRight: '1px solid $color-border-subdued',
-  padding: '20px 28px',
+  borderBottom: '1px solid $border-subdued',
+  padding: '34px 0',
   width: '100%',
   '&:first-child': {
-    borderTop: '1px solid $color-border-subdued',
-    borderTopLeftRadius: '$extra-large',
-    borderTopRightRadius: '$extra-large',
-    // borderRadius: '$extra-large $extra-large 0 0',
-  },
-  '&:last-child': {
-    borderBottomLeftRadius: '$extra-large',
-    borderBottomRightRadius: '$extra-large',
+    borderTop: '1px solid $border-subdued',
   },
 });
+
+export const ROW_WIDTHS = [349, 233, 142 + 263, 123];
 
 interface RowProps {
   id: string;
@@ -72,23 +65,45 @@ export const SwapRow: React.FC<RowProps> = ({
   return (
     <SwapRowComp cursor="pointer" onClick={route}>
       <Flex flexDirection="row" alignItems="center">
-        <Box width="225px">
-          <Text variant="Label02">
-            {maxBtc} {tokens[0]} -&gt; {tokens[1]}
-          </Text>
+        <Box width={`${ROW_WIDTHS[0]}px`}>
+          <Stack isInline spacing="4px">
+            <Text variant="Label02">
+              {maxBtc} {tokens[0]}
+            </Text>
+            <Text variant="Label02" color="$icon-subdued">
+              {'\u279E'}
+            </Text>
+            <Text variant="Label02">{tokens[1]}</Text>
+          </Stack>
         </Box>
-        <Box width="125px">
-          <Text variant="Caption02">{date}</Text>
+        <Box width={`${ROW_WIDTHS[1]}px`}>
+          <Stack isInline spacing="1px">
+            <Text variant="Label02">{date.split('-')[0]}</Text>
+            <Text variant="Label02" color="$icon-subdued">
+              {'-'}
+            </Text>
+            <Text variant="Label02">{date.split('-')[1]}</Text>
+            <Text variant="Label02" color="$icon-subdued">
+              {'-'}
+            </Text>
+            <Text variant="Label02">{date.split('-')[2]}</Text>
+          </Stack>
+          {/* <Text variant="Label02">
+            {date}
+            </Text> */}
         </Box>
-        <Box width="250px">
+        <Box width={`${ROW_WIDTHS[2]}px`}>
           {swapId ? (
             <Stack alignItems="center" isInline spacing="12px">
-              <Text variant="Caption02">{truncateMiddle(swapId.replace('0x', ''), 8)}</Text>
-              <DuplicateIcon clipboardText={swapId} />
+              <Text variant="Label02">
+                {truncateMiddle(swapId.replace('0x', ''), 15)}
+                {/* {swapId.replace('0x', '')} */}
+              </Text>
+              {/* <DuplicateIcon clipboardText={swapId} /> */}
             </Stack>
           ) : null}
         </Box>
-        <Box width="150px">
+        <Box width={`${ROW_WIDTHS[3]}px`}>
           <StatusButton status={status}>{_buttonText || buttonText}</StatusButton>
         </Box>
       </Flex>

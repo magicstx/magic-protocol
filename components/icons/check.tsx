@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, BoxProps } from '@nelson-ui/react';
 
 export const CheckIcon: React.FC<BoxProps & { color?: string }> = ({
-  color = '#E7E6F2',
+  color = '#efefef',
   ...props
 }) => {
   return (

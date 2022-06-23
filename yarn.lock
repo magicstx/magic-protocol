@@ -583,20 +583,22 @@
     human-id "^1.0.2"
     prettier "^1.19.1"
 
-"@clarigen/claridocs@1.0.0-next.21":
-  version "1.0.0-next.21"
-  resolved "https://registry.yarnpkg.com/@clarigen/claridocs/-/claridocs-1.0.0-next.21.tgz#53ae81126ef64d3a08d03275279de71e4acd3133"
-  integrity sha512-caIljVEha9h4LXLyVgGW9cjmyx8xWG+1VeYa4un1pvkjLWZj+NkBRkAhOCvZKhUkuxyAWorKXzDu1QhBqmkpVA==
+"@clarigen/claridocs@1.0.0-next.24":
+  version "1.0.0-next.24"
+  resolved "https://registry.yarnpkg.com/@clarigen/claridocs/-/claridocs-1.0.0-next.24.tgz#14d48189443ecaa7c7a6230a015022d783b03f74"
+  integrity sha512-vSmtH/yW1O8wfm2HRahookZBjHUCVWRQD3MxfOqB1e3mke8d1Abn7xaX1dj7xTMqUeGbZ3EXQWM816hzjAhw5A==
   dependencies:
-    "@clarigen/core" "1.0.0-next.21"
-    micro-stacks "^0.2.0"
+    "@clarigen/core" "1.0.0-next.24"
+    micro-stacks "^0.5.2"
 
-"@clarigen/cli@file:.yalc/@clarigen/cli":
-  version "1.0.0-next.21"
+"@clarigen/cli@1.0.0-next.24":
+  version "1.0.0-next.24"
+  resolved "https://registry.yarnpkg.com/@clarigen/cli/-/cli-1.0.0-next.24.tgz#46c4e0a1bd28ef7daa967120f0691d0cba0c48bd"
+  integrity sha512-1fFAAK1DLOJa6oZLq6BG3d6IoEPmzqoSUfsInE+jTCXt+d98Z9VX7S24pmzWYSzOlnSGg5VNoVOBdBq9ddFcHQ==
   dependencies:
-    "@clarigen/claridocs" "1.0.0-next.21"
-    "@clarigen/core" "1.0.0-next.21"
-    "@clarigen/native-bin" "1.0.0-next.21"
+    "@clarigen/claridocs" "1.0.0-next.24"
+    "@clarigen/core" "1.0.0-next.24"
+    "@clarigen/native-bin" "1.0.0-next.24"
     "@iarna/toml" "^2.2.5"
     "@oclif/command" "^1.8.0"
     "@oclif/config" "^1.17.0"
@@ -612,47 +614,47 @@
     reserved-words "0.1.2"
     toposort "2.0.2"
 
-"@clarigen/core@1.0.0-next.21":
-  version "1.0.0-next.21"
-  resolved "https://registry.yarnpkg.com/@clarigen/core/-/core-1.0.0-next.21.tgz#2cac55495430b9db7511a3bd762818193825c6ac"
-  integrity sha512-Zm7wIi6PWAUFHiJV/tJIn60uRvNB0u6KzOAoMXfBJEc3EWdG0cLanpRMRCuGpNd1NYKRg9UZTkoMECp/d6Z7Sg==
+"@clarigen/core@1.0.0-next.24":
+  version "1.0.0-next.24"
+  resolved "https://registry.yarnpkg.com/@clarigen/core/-/core-1.0.0-next.24.tgz#6af65f4805eb529c1a176c029c285da94c72294b"
+  integrity sha512-gij8yXh6pYY1vR8ykDvp9LwyeOWu5dUBvROXmGLwKS8mLFbVFFtYmrYxLEWysz6EpIb5+3IZWuvydUEGlkecoA==
   dependencies:
-    micro-stacks "^0.2.0"
+    micro-stacks "^0.5.2"
 
-"@clarigen/native-bin@1.0.0-next.21":
-  version "1.0.0-next.21"
-  resolved "https://registry.yarnpkg.com/@clarigen/native-bin/-/native-bin-1.0.0-next.21.tgz#ae342b7721c4ff48eb0c1774f38a529c42301052"
-  integrity sha512-Q0OD2Z1xgwDrFETELmZjFpn2OuUVYMCNM9mwju3cZ7iDuxD4KQN/mI1I6bNbiDmZr+7kkR4/4fky/DSD9qMxOA==
+"@clarigen/native-bin@1.0.0-next.24":
+  version "1.0.0-next.24"
+  resolved "https://registry.yarnpkg.com/@clarigen/native-bin/-/native-bin-1.0.0-next.24.tgz#810aecdc92585f3bf5e1ead2279a2f84113dfed5"
+  integrity sha512-6vn8L94UMEg984vA2jK4sB56LCQ/KVp9QgBNXS6Z+cHi1I0Pgbgj3XKHB5gKgRumuZhtED8WWM1sOL3ODBcOQg==
   dependencies:
-    "@clarigen/core" "1.0.0-next.21"
+    "@clarigen/core" "1.0.0-next.24"
     fs-extra "^10.0.0"
     node-fetch "^2.6.0"
     unzipper "^0.10.11"
 
-"@clarigen/node@1.0.0-next.21":
-  version "1.0.0-next.21"
-  resolved "https://registry.yarnpkg.com/@clarigen/node/-/node-1.0.0-next.21.tgz#8e2779b11b04685fdbe7c0f67ce4aa919ef40236"
-  integrity sha512-KNgGF6jzEtenqXOqsAundYA2wiMCVk/tpGi1VGKr5oXn8+x/97hXvmLk0mjjHrFZEGewu1tVKrX0U/Nch+P2UA==
+"@clarigen/node@1.0.0-next.24":
+  version "1.0.0-next.24"
+  resolved "https://registry.yarnpkg.com/@clarigen/node/-/node-1.0.0-next.24.tgz#967717dc92e07ba740cf90d6af0a1288fb0bc6d6"
+  integrity sha512-5Dt4YuKsTnXeVCmsHwirCdoOTkdp2oQflK8ubS6p/HWEX9EGgADJhOhNiGDFtLjyuhTW/a4ZaUAW8VOwkL5zQA==
   dependencies:
-    "@clarigen/core" "1.0.0-next.21"
-    micro-stacks "^0.2.0"
+    "@clarigen/core" "1.0.0-next.24"
+    micro-stacks "^0.5.2"
 
-"@clarigen/test@1.0.0-next.21":
-  version "1.0.0-next.21"
-  resolved "https://registry.yarnpkg.com/@clarigen/test/-/test-1.0.0-next.21.tgz#f008ec721685812eb9573180e7c5ae1c56ec3d70"
-  integrity sha512-BIyK+2i/0qWIpfiWdBE1mOsj5Of5aCyv+1E+xIn9n9+Poa0DLz7oOO/dl1vBzcTsux+fUB3rtiXtTlaV2QjdTA==
+"@clarigen/test@1.0.0-next.24":
+  version "1.0.0-next.24"
+  resolved "https://registry.yarnpkg.com/@clarigen/test/-/test-1.0.0-next.24.tgz#2705c0ed97b5dddcd33855d7ef54bf5f2cc93e9f"
+  integrity sha512-RsYXpIQBm2eTcjWn+AidwoxWopBLAvvB3uPzLCinzpE4eNE7HYFeNpJdgYon66kT1bUStVJdgeyQXR/+EbJdWQ==
   dependencies:
-    "@clarigen/core" "1.0.0-next.21"
-    "@clarigen/native-bin" "1.0.0-next.21"
-    micro-stacks "^0.2.0"
+    "@clarigen/core" "1.0.0-next.24"
+    "@clarigen/native-bin" "1.0.0-next.24"
+    micro-stacks "^0.5.2"
 
-"@clarigen/web@1.0.0-next.21":
-  version "1.0.0-next.21"
-  resolved "https://registry.yarnpkg.com/@clarigen/web/-/web-1.0.0-next.21.tgz#54529f29d3f7b32981d9e4b4423b3a5393d2c5e1"
-  integrity sha512-PQIGxZinlh68XHslZN4Lqjr/4HJzu6w/Z1mMhBcbmLx4ckS3x/ugNEWWQyUY2j9XakEVWDAbmOB32sDpwb6UwQ==
+"@clarigen/web@1.0.0-next.24":
+  version "1.0.0-next.24"
+  resolved "https://registry.yarnpkg.com/@clarigen/web/-/web-1.0.0-next.24.tgz#2c680ba7b305572b0fad9bb85b72e35b2d635c5a"
+  integrity sha512-Pm8el0Ps6tCQ0ZDjAI2l7ARPA7ICCxniH1zdBzAWJiG15hAWhUOVFrLRJl+5rN4oe7SXK7GBtZ+r1BRO892+Bg==
   dependencies:
-    "@clarigen/core" "1.0.0-next.21"
-    micro-stacks "^0.2.0"
+    "@clarigen/core" "1.0.0-next.24"
+    micro-stacks "^0.5.2"
 
 "@emotion/cache@^11.6.0":
   version "11.6.0"
@@ -1272,11 +1274,6 @@
   resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-12.1.0.tgz#d27e7e76c87a460a4da99c5bfdb1618dcd6cd064"
   integrity sha512-aBvcbMwuanDH4EMrL2TthNJy+4nP59Bimn8egqv6GHMVj0a44cU6Au4PjOhLNqEh9l+IpRGBqMTzec94UdC5xg==
 
-"@noble/hashes@0.5.5":
-  version "0.5.5"
-  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-0.5.5.tgz#32ee0eecf4aa0933a97cbc5ba5a35715b917c7ab"
-  integrity sha512-RoQFap5Fgb9ZZnUivFT9JXXoX65UBxhnOPGYLZL/j3vuFkB7xfssVIAREuBMt/GQ8dlV1VdUqAezNZPiW1P4dA==
-
 "@noble/hashes@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.0.0.tgz#d5e38bfbdaba174805a4e649f13be9a9ed3351ae"
@@ -1286,11 +1283,6 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.1.2.tgz#e9e035b9b166ca0af657a7848eb2718f0f22f183"
   integrity sha512-KYRCASVTv6aeUi1tsF8/vpyR7zpfs3FUzy2Jqm+MU+LmUKhQ0y2FpfwqkCcxSg2ua4GALJd8k2R76WxwZGbQpA==
-
-"@noble/secp256k1@1.3.4":
-  version "1.3.4"
-  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.3.4.tgz#158ded712d09237c0d3428be60dc01ce8ebab9fb"
-  integrity sha512-ZVRouDO5mbdCiDg4zCd3ZZABduRtpy4tCnB33Gh9upHe9tRzpiqbRSN1VTjrj/2g8u2c6MBi0YLNnNQpBYOiWg==
 
 "@noble/secp256k1@1.5.2":
   version "1.5.2"
@@ -6674,14 +6666,6 @@ micro-stacks@>=0.1.15:
   dependencies:
     "@noble/hashes" "1.0.0"
     "@noble/secp256k1" "1.5.2"
-
-micro-stacks@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/micro-stacks/-/micro-stacks-0.2.0.tgz#3294f596ab903631081e85128f7c556aee7a6d74"
-  integrity sha512-7Ok8EmW3Bu/VWCkXaIzcya/j/yuUvEewxqgHLd6Cj1IM7mb5yWkBSRocPg6sdLxK4yLJIIRug9pBolUNgoczNQ==
-  dependencies:
-    "@noble/hashes" "0.5.5"
-    "@noble/secp256k1" "1.3.4"
 
 micro-stacks@^0.5.2:
   version "0.5.2"
