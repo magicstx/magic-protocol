@@ -1,5 +1,21 @@
 # bridge-ui
 
+## 0.4.0
+
+### Minor Changes
+
+- [#10](https://github.com/magicstx/bridge/pull/10) [`6a90055`](https://github.com/magicstx/bridge/commit/6a90055fe41b0faaf575a32c1ecce92551f34a1b) Thanks [@dumbledope](https://github.com/dumbledope)! - Removed `name` from the supplier registry
+
+* [#11](https://github.com/magicstx/bridge/pull/11) [`30d6fd4`](https://github.com/magicstx/bridge/commit/30d6fd42134371e98615b9eb5c07223652151be4) Thanks [@dumbledope](https://github.com/dumbledope)! - In `escrow-swap`, validate that the tx-sender is equal to the swapper. This ensures that `min-to-receive` is specified by the end user.
+
+### Patch Changes
+
+- [`af53850`](https://github.com/magicstx/bridge/commit/af53850bcf2b67308fae0a36189da29fdecc9424) Thanks [@dumbledope](https://github.com/dumbledope)! - Adds a `revoke-expired-inbound` function. This is used after an inbound swap is expired and not finalized. It will mark the swap as finalized and move funds from escrow back to the supplier.
+
+* [`ac0e1bf`](https://github.com/magicstx/bridge/commit/ac0e1bfd4574252fa4830ee9627a1690048982a4) Thanks [@dumbledope](https://github.com/dumbledope)! - Adds a script to run electrum_server via docker
+
+- [#9](https://github.com/magicstx/bridge/pull/9) [`eb2df29`](https://github.com/magicstx/bridge/commit/eb2df2917b2c2b373dbdad8898541b33fad94580) Thanks [@dumbledope](https://github.com/dumbledope)! - Adds fee validation to the `update-supplier-fees` method
+
 ## 0.3.0
 
 ### Minor Changes
