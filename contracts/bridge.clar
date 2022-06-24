@@ -756,7 +756,7 @@
       (swap (unwrap! (get-outbound-swap swap-id) ERR_SWAP_NOT_FOUND))
       (finalize-txid (get-completed-outbound-swap-txid swap-id))
       (swap-expiration (+ (get created-at swap) OUTBOUND_EXPIRATION))
-      (is-expired (>= block-height swap-expiration))
+      (is-expired (>= burn-block-height swap-expiration))
       (is-not-finalized (is-none finalize-txid))
     )
     (asserts! is-expired ERR_REVOKE_OUTBOUND_NOT_EXPIRED)
