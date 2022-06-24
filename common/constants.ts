@@ -60,3 +60,18 @@ export const contracts = makeContracts(allContracts, {
 });
 
 export const webProvider = WebProvider({ network });
+
+export function getAppName() {
+  const envTitle = process.env.NEXT_PUBLIC_APP_NAME;
+  if (typeof envTitle === 'string') {
+    return envTitle;
+  }
+  return 'Magic Bridge';
+}
+
+export function getAppIcon() {
+  const envIcon = process.env.NEXT_PUBLIC_APP_ICON;
+  if (typeof envIcon === 'string') {
+    return envIcon;
+  }
+}

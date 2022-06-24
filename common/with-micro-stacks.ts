@@ -1,13 +1,15 @@
 import { wrapWithMicroStacks } from '@micro-stacks/nextjs';
-import { network, LOCAL_URL } from './constants';
+import { network, LOCAL_URL, getAppName, getAppIcon } from './constants';
 type WrapArgs = Parameters<ReturnType<typeof wrapWithMicroStacks>>;
 
 export function withMicroStacks(...args: WrapArgs) {
+  const appName = getAppName();
+  const appIcon = getAppIcon() || `${LOCAL_URL}/star.svg`;
   return wrapWithMicroStacks({
     authOptions: {
       appDetails: {
-        name: 'Magic Bridge',
-        icon: `${LOCAL_URL}/burst.svg`,
+        name: appName,
+        icon: appIcon,
       },
     },
     network,

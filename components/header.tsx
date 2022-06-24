@@ -7,9 +7,10 @@ import { useBalances } from '../common/hooks/use-balances';
 import { SafeSuspense } from './safe-suspense';
 import BigNumber from 'bignumber.js';
 import { useAuth } from '@micro-stacks/react';
-import { NETWORK_CONFIG } from '../common/constants';
+import { getAppIcon, getAppName, NETWORK_CONFIG } from '../common/constants';
 import { BurstIcon } from './icons/burst';
 import { StarIcon } from './icons/star';
+import Image from 'next/image';
 
 export const Balance: React.FC<{ label: string; amount: string; decimals: number }> = ({
   amount,
@@ -43,14 +44,24 @@ export const Balances: React.FC = () => {
 
 export function Header() {
   const { isSignedIn, session } = useAuth();
+  const appName = useMemo(() => {
+    return getAppName();
+  }, []);
+  const appIcon = useMemo(() => {
+    return getAppIcon();
+  }, []);
 
   return (
     <SpaceBetween pt="30px" maxWidth="1120px" mx="auto" width="100vw">
       <SpaceBetween spacing="40px">
         <SpaceBetween spacing="12px">
-          <StarIcon />
+          {typeof appIcon === 'string' ? (
+            <Image src={appIcon} alt={appName} width="25px" height="25px" />
+          ) : (
+            <StarIcon />
+          )}
           <Link href="/" variant="Label01">
-            Magic Bridge
+            {appName}
           </Link>
         </SpaceBetween>
         {isSignedIn ? (
