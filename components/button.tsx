@@ -36,6 +36,10 @@ export const ButtonComp = styled(Box, {
       true: {
         backgroundColor: '$primary-action-subdued',
         color: '$onSurface-text-subdued',
+        '&:hover': {
+          backgroundColor: '$primary-action-subdued',
+          color: '$onSurface-text-subdued',
+        },
       },
     },
     connected: {

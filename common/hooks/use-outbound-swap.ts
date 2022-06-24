@@ -1,19 +1,12 @@
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { deserializeCV, ResponseOkCV, UIntCV } from 'micro-stacks/clarity';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
 import { footerSwapIdState } from '../../components/footer';
-import {
-  fetchOutboundSwap,
-  useOutboundSwap as useOutboundSwapState,
-  useFinalizedOutboundSwap,
-} from '../store';
+import { useOutboundSwap as useOutboundSwapState, useFinalizedOutboundSwap } from '../store';
 import { useStxTx, useListUnspent } from '../store/api';
 import { getOutboundAddress } from '../utils';
-
-type Swap = Awaited<ReturnType<typeof fetchOutboundSwap>>;
-
-const swapState = atom<Swap>(null);
+import { useRevokeOutbound } from './tx/use-revoke-outbound';
 
 export function useOutboundSwap(_txId?: string) {
   let txId: string;
@@ -64,6 +57,10 @@ export function useOutboundSwap(_txId?: string) {
 
   const [finalizeTxid] = useFinalizedOutboundSwap(swapId);
 
+  const isCanceled = finalizeTxid === '00';
+
+  const { revokeTxid, submitRevoke } = useRevokeOutbound(swapId, swap?.xbtc);
+
   return {
     initTx,
     initStatus,
@@ -74,5 +71,8 @@ export function useOutboundSwap(_txId?: string) {
     txId,
     unspent,
     btcTxId: finalizeTxid || unspent?.tx_hash,
+    submitRevoke,
+    revokeTxid,
+    isCanceled,
   };
 }
