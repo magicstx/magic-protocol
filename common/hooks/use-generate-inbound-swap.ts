@@ -22,6 +22,9 @@ export function useGenerateInboundSwap() {
         const publicKey = get(publicKeyState);
         if (!publicKey) throw new Error('Invalid user state');
         const expiration = testQuery === 'error' ? 10 : undefined;
+        if (typeof expiration === 'number') {
+          console.debug('Setting invalid expiration of', expiration);
+        }
         const swap = createInboundSwap({
           supplier,
           publicKey,

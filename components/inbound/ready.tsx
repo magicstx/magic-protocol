@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Stack } from '@nelson-ui/react';
 import { CenterBox, Divider, PendingRow } from '../center-box';
 import { useInboundSwap } from '../../common/hooks/use-inbound-swap';
@@ -13,9 +13,6 @@ export const SwapReady: React.FC = () => {
   const { swap, step, updateSwap } = useInboundSwap();
   if (!('address' in swap)) throw new Error('Invalid swap state for SwapReady component');
   const [footerSwapId, setSwapId] = useAtom(footerSwapIdState);
-  useEffect(() => {
-    console.debug('swap', swap);
-  }, [swap]);
 
   const [txWatch] = useWatchAddress(swap.address);
 
