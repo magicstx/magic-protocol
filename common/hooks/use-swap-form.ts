@@ -205,5 +205,7 @@ export function useSwapForm() {
     supplierCapacity,
     hasCapacity,
     errorMessage,
+    supplierBaseFee,
+    supplierFeeRate: fee,
   };
 }
