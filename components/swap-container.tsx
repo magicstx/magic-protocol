@@ -28,6 +28,7 @@ export const SwapContainer: React.FC = () => {
     submit,
     btcAddress,
     pendingInitOutbound,
+    hasCapacity,
     validBtc,
   } = useSwapForm();
   const swapperId = useSwapperId();
@@ -115,6 +116,11 @@ export const SwapContainer: React.FC = () => {
                 </Text>
               ) : null}
             </Stack>
+          ) : null}
+          {!hasCapacity ? (
+            <Text variant="Caption02" color="#ED5653">
+              Warning: suppliers have insufficient capacity.
+            </Text>
           ) : null}
           <SwapSummary />
         </Stack>

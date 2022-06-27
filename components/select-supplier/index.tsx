@@ -1,16 +1,14 @@
 import React, { useMemo } from 'react';
 import { Text } from '../text';
 import { Box, Stack } from '@nelson-ui/react';
-import { Supplier, useSuppliers } from '../../common/store';
-import { styled } from '@stitches/react';
 import { SupplierRow, ROW_WIDTHS } from './supplier-row';
-import { amountState, useSwapForm } from '../../common/hooks/use-swap-form';
-import { useAtomValue } from 'jotai/utils';
+import { useSwapForm } from '../../common/hooks/use-swap-form';
+import { useSuppliersWithCapacity } from '../../common/store/api';
 
 export const SelectSupplier: React.FC = () => {
   const { outputToken } = useSwapForm();
 
-  const [suppliers] = useSuppliers();
+  const suppliers = useSuppliersWithCapacity();
 
   const rows = useMemo(() => {
     return suppliers.map(supplier => {

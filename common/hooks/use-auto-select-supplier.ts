@@ -3,12 +3,13 @@ import BigNumber from 'bignumber.js';
 import { Supplier, selectedSupplierState, useSuppliers } from '../store';
 import sortBy from 'lodash-es/sortBy';
 import { useAtomValue } from 'jotai/utils';
+import { suppliersWithCapacityState, SupplierWithCapacity } from '../store/api';
 
-export function useAutoSelectSupplier(amount: string) {
-  const [suppliers] = useSuppliers();
+export function useAutoSelectSupplier(amount: string, outputToken: string) {
+  const suppliers = useAtomValue(suppliersWithCapacityState);
   const [error, setError] = useState('');
   const selectedSupplier = useAtomValue(selectedSupplierState);
-  const [bestSupplier, setBestSupplier] = useState<Supplier | undefined>();
+  const [bestSupplier, setBestSupplier] = useState<SupplierWithCapacity | undefined>();
   useEffect(() => {
     const btc = new BigNumber(amount).shiftedBy(8);
     if (btc.isNaN()) {
@@ -16,6 +17,9 @@ export function useAutoSelectSupplier(amount: string) {
       return;
     }
     const withCapacity = suppliers.filter(op => {
+      if (outputToken === 'btc') {
+        return btc.lte(op.btc);
+      }
       return btc.lte(op.funds || '0');
     });
     if (withCapacity.length === 0) {
@@ -26,7 +30,7 @@ export function useAutoSelectSupplier(amount: string) {
     }
     const sortedFee = sortBy(withCapacity, op => op.inboundFee);
     setBestSupplier(sortedFee[0]);
-  }, [suppliers, amount]);
+  }, [suppliers, amount, outputToken]);
 
   return {
     error,

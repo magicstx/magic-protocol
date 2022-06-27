@@ -9,7 +9,7 @@ import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { amountState, showOverrideSupplierState } from '../../common/hooks/use-swap-form';
 import { useAutoSelectSupplier } from '../../common/hooks/use-auto-select-supplier';
 import { Token } from '../swap-input';
-import { useBtcBalance } from '../../common/store/api';
+import { SupplierWithCapacity, useBtcBalance } from '../../common/store/api';
 import { Spinner } from '../spinner';
 
 const RowComp = styled(Box, {
@@ -38,7 +38,7 @@ const RowComp = styled(Box, {
 
 export const ROW_WIDTHS = [438 + 10, 98 + 149, 218, 145 + 62];
 
-export const SupplierRow: React.FC<{ supplier: Supplier; outputToken: Token }> = ({
+export const SupplierRow: React.FC<{ supplier: SupplierWithCapacity; outputToken: Token }> = ({
   supplier: operator,
   outputToken,
 }) => {
@@ -56,16 +56,15 @@ const CheckSubdued = styled(Box, {
 });
 
 export const SupplierBaseRow: React.FC<{
-  supplier: Supplier;
+  supplier: SupplierWithCapacity;
   capacity: React.ReactText | JSX.Element;
   outputToken: string;
   fee: number;
   baseFee: number;
 }> = ({ supplier, capacity, fee: _fee, baseFee, outputToken }) => {
   const amount = useAtomValue(amountState);
-  const { supplier: selectedOp } = useAutoSelectSupplier(amount);
+  const { supplier: selectedOp } = useAutoSelectSupplier(amount, outputToken.toLowerCase());
   const selected = selectedOp.id === supplier.id;
-  const color = selected ? '$color-white' : '$color-slate-90';
   const select = useAtomCallback(
     useCallback(
       (get, set) => {
@@ -130,7 +129,9 @@ export const OutboundCapacity: React.FC<{ publicKey: string }> = ({ publicKey })
   return <>{capacity}</>;
 };
 
-export const OutboundSupplierRow: React.FC<{ supplier: Supplier }> = ({ supplier: operator }) => {
+export const OutboundSupplierRow: React.FC<{ supplier: SupplierWithCapacity }> = ({
+  supplier: operator,
+}) => {
   const Capacity = useMemo(() => {
     return (
       <Suspense fallback={<Spinner />}>
@@ -150,7 +151,9 @@ export const OutboundSupplierRow: React.FC<{ supplier: Supplier }> = ({ supplier
   );
 };
 
-export const InboundSupplierRow: React.FC<{ supplier: Supplier }> = ({ supplier: operator }) => {
+export const InboundSupplierRow: React.FC<{ supplier: SupplierWithCapacity }> = ({
+  supplier: operator,
+}) => {
   const capacity = useMemo(() => {
     return satsToBtc(operator.funds);
   }, [operator.funds]);

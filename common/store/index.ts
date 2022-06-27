@@ -2,7 +2,7 @@ import { stacksSessionAtom } from '@micro-stacks/react';
 import { atom } from 'jotai';
 import { atomWithQuery, useQueryAtom, atomFamilyWithQuery } from 'jotai-query-toolkit';
 import type { Query } from 'jotai-query-toolkit/nextjs';
-import { atomWithStorage } from 'jotai/utils';
+import { atomWithStorage, waitForAll } from 'jotai/utils';
 import { getPublicKey } from 'noble-secp256k1';
 import { BridgeContract } from '../clarigen';
 import type { SuppliersApi } from '../../pages/api/suppliers';
@@ -10,6 +10,7 @@ import { LOCAL_URL, webProvider, contracts, NETWORK_CONFIG } from '../constants'
 import { generateGaiaHubConfig } from 'micro-stacks/storage';
 import { bytesToHex, hexToBytes, IntegerType } from 'micro-stacks/common';
 import { intToString } from '../utils';
+import type { SupplierWithCapacity } from './api';
 
 const bridge = contracts.bridge.contract;
 
@@ -167,7 +168,7 @@ export const finalizedOutboundSwapState = atomFamilyWithQuery<string, string | n
 export const btcAddressState = atomWithStorage('btcAddress', '');
 export const secretState = atomWithStorage('secret', '');
 
-export const selectedSupplierState = atom<Supplier | null>(null);
+export const selectedSupplierState = atom<SupplierWithCapacity | null>(null);
 
 export const publicKeyState = atom(get => {
   const session = get(stacksSessionAtom);

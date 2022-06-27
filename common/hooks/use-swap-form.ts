@@ -3,7 +3,7 @@ import { useInput } from './use-input';
 import { Token } from '../../components/swap-input';
 import { atom, useAtom } from 'jotai';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
-import { btcAddressState, useSwapperId } from '../store';
+import { btcAddressState, swapperIdState, useSwapperId } from '../store';
 import BigNumber from 'bignumber.js';
 import { bpsToPercent, btcToSats, getSwapAmount, parseBtcAddress, satsToBtc } from '../utils';
 import { useGenerateInboundSwap } from './use-generate-inbound-swap';
@@ -30,12 +30,11 @@ export function useSwapForm() {
   const amount = useInput(useAtom(amountState));
   const outputToken = oppositeToken(inputToken);
   const router = useRouter();
-  const swapperId = useSwapperId();
   const btcAddress = useInput(useAtom(btcAddressState));
   const [pendingInitOutbound, setPendingOutbound] = useAtom(pendingInitOutboundState);
   const { generate: generateOutbound } = useGenerateOutboundSwap();
   const { generate } = useGenerateInboundSwap();
-  const { supplier } = useAutoSelectSupplier(amount.value);
+  const { supplier } = useAutoSelectSupplier(amount.value, outputToken);
   const fee = useMemo(() => {
     return inputToken === 'btc' ? supplier.inboundFee : supplier.outboundFee;
   }, [inputToken, supplier]);
@@ -66,6 +65,10 @@ export function useSwapForm() {
     };
   }, [amount.value, fee, supplierBaseFee]);
 
+  const supplierCapacity = useMemo(() => {
+    return BigInt(outputToken === 'btc' ? supplier.btc : supplier.funds).toString();
+  }, [outputToken, supplier.btc, supplier.funds]);
+
   const switchDirection = useAtomCallback(
     useCallback(
       (get, set) => {
@@ -85,15 +88,21 @@ export function useSwapForm() {
     }
   }, [btcAddress.value]);
 
+  const hasCapacity = useMemo(() => {
+    return new BigNumber(btcToSats(outputAmount)).lt(supplierCapacity);
+  }, [supplierCapacity, outputAmount]);
+
   const isValid = useMemo(() => {
     if (outputToken === 'btc' && !validBtc) return false;
     if (new BigNumber(amount.value).isNaN()) return false;
+    if (!hasCapacity) return false;
     return true;
-  }, [amount.value, validBtc, outputToken]);
+  }, [amount.value, validBtc, outputToken, hasCapacity]);
 
   const submitInbound = useAtomCallback(
     useCallback(
       async (get, set) => {
+        const swapperId = get(swapperIdState);
         if (typeof swapperId === 'number') {
           if (!isValid) return;
           const swap = await generate({
@@ -108,7 +117,7 @@ export function useSwapForm() {
           set(pendingRegisterSwapperState, true);
         }
       },
-      [generate, supplier, router, amount.value, swapperId, isValid]
+      [generate, supplier, router, amount.value, isValid]
     )
   );
 
@@ -121,6 +130,7 @@ export function useSwapForm() {
   const submit = useAtomCallback(
     useCallback(
       async (get, set) => {
+        if (!isValid) return;
         nProgress.start();
         if (outputToken === 'xbtc') {
           await submitInbound();
@@ -169,5 +179,7 @@ export function useSwapForm() {
     validBtc,
     txFeeBtc,
     txFeePercent,
+    supplierCapacity,
+    hasCapacity,
   };
 }

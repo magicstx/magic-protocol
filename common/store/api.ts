@@ -3,7 +3,7 @@ import { stacksSessionAtom } from '@micro-stacks/react';
 import { AddressBalanceResponse } from '@stacks/stacks-blockchain-api-types';
 import { atomFamilyWithQuery, atomWithQuery, useQueryAtom } from 'jotai-query-toolkit';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
-import { currentStxAddressState, QueryKeys } from '.';
+import { currentStxAddressState, QueryKeys, Supplier, suppliersState } from '.';
 import { BtcBalanceResponse } from '../../pages/api/btc-balance';
 import { ListUnspentApiOk } from '../../pages/api/list-unspent';
 import { WatchAddressApi } from '../../pages/api/watch-address';
@@ -12,6 +12,8 @@ import { getBalances, getTx, getTxResult, Transaction } from '../api/stacks';
 import { LOCAL_URL, network } from '../constants';
 import { pubKeyToBtcAddress } from '../utils';
 import { fetchCoreApiInfo } from 'micro-stacks/api';
+import { atom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 
 export const stxTxState = atomFamilyWithQuery<string | undefined, Transaction | null>(
   (get, txId) => [QueryKeys.STX_TX, txId],
@@ -87,6 +89,20 @@ export const coreApiInfoState = atomWithQuery(QueryKeys.CORE_INFO, async () => {
   return info;
 });
 
+export type SupplierWithCapacity = Supplier & { btc: string };
+
+export const suppliersWithCapacityState = atom<SupplierWithCapacity[]>(get => {
+  const suppliers = get(suppliersState);
+  const capacityAtoms = suppliers.map(supplier => {
+    const btc = get(btcBalanceState(supplier.publicKey));
+    return {
+      ...supplier,
+      btc,
+    };
+  });
+  return capacityAtoms;
+});
+
 // hooks
 
 export const useWatchAddress = (address: string) => useQueryAtom(watchAddressState(address));
@@ -108,4 +124,8 @@ export function useStxTxResult<T>(txId: string | undefined) {
 export function useBtcBalance(publicKey: string) {
   const [balance] = useQueryAtom(btcBalanceState(publicKey));
   return balance;
+}
+
+export function useSuppliersWithCapacity() {
+  return useAtomValue(suppliersWithCapacityState);
 }
