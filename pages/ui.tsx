@@ -2,11 +2,12 @@ import React, { useMemo } from 'react';
 import { NextPage } from 'next';
 import { Layout } from '../components/layout';
 import { withMicroStacks } from '../common/with-micro-stacks';
-import { Button, ButtonComp } from '../components/button';
-import { Box, SpaceBetween, Stack } from '@nelson-ui/react';
+import { Button, ButtonComp, StatusButton } from '../components/button';
+import { Box, SpaceBetween, Stack, Grid } from '@nelson-ui/react';
 import { Text } from '../components/text';
 import { keyframes } from '@nelson-ui/core';
 import { baseTheme } from '../common/theme';
+import { Buttons, StatusButtons } from '../components/design-system/design-buttons';
 
 const magicBg = keyframes({
   '0%': { backgroundPosition: '10% 0%' },
@@ -28,6 +29,8 @@ const UiPage: NextPage = () => {
   }, []);
   return (
     <Layout>
+      <Buttons />
+      <StatusButtons />
       <Stack spacing="$row-y">{colorRows}</Stack>
       <Stack spacing="$row-y">
         <Text variant="Label01">Current:</Text>

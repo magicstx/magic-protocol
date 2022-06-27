@@ -121,18 +121,23 @@ const StatusButtonComp = styled(Box, {
   variants: {
     status: {
       success: {
-        border: '1px solid $color-primary',
-        backgroundColor: '$color-surface-200',
-        color: '$color-primary-text',
+        border: '1px solid $dark-success-border-subdued',
+        backgroundColor: '$surface-success-subdued',
+        color: '$green-500',
       },
       pending: {
-        border: '1px solid #86550B',
-        backgroundColor: '#21180A',
-        color: '$color-warning',
+        border: '1px solid $dark-border-warning-subdued',
+        backgroundColor: '$dark-surface-warning',
+        color: '$warning-action-warning',
       },
       error: {
-        border: '1px solid $text-alert-red',
+        border: '1px solid $surface-error-border-subdued',
         color: '$text-alert-red',
+      },
+      canceled: {
+        border: '1px solid $border-subdued',
+        color: '$light-onSurface-text-dim',
+        backgroundColor: '$surface-very-subdued',
       },
     },
   },
@@ -145,9 +150,13 @@ export const StatusButton: React.FC<BoxProps & VariantProps<typeof StatusButtonC
 }) => {
   const icon = useMemo(() => {
     if (status === 'success') {
-      return <CheckIcon color="var(--colors-color-primary-text)" />;
+      return <CheckIcon color="var(--colors-green-500)" />;
     } else if (status === 'pending') {
-      return <PendingIcon color="var(--colors-color-warning)" />;
+      return <PendingIcon color="var(--colors-dark-warning-action-warning)" />;
+    } else if (status === 'error') {
+      return <PendingIcon color="var(--colors-text-alert-red)" />;
+    } else if (status === 'canceled') {
+      return <CheckIcon color="var(--colors-light-onSurface-text-dim" />;
     }
     return null;
   }, [status]);

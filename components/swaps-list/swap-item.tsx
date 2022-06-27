@@ -32,7 +32,7 @@ interface RowProps {
   id: string;
   dir: SwapListItem['dir'];
   amount: string;
-  status: 'success' | 'pending';
+  status: 'success' | 'pending' | 'canceled' | 'error';
   buttonText?: string;
   route: () => void | Promise<void>;
   swapId: string;
@@ -56,7 +56,9 @@ export const SwapRow: React.FC<RowProps> = ({
     return format(d, 'yyyy-MM-dd');
   }, [id]);
   const buttonText = useMemo(() => {
-    return status === 'success' ? 'Successful' : 'Pending';
+    if (status === 'canceled') return 'Canceled';
+    if (status === 'error' || status === 'pending') return 'Pending';
+    if (status === 'success') return 'Successful';
   }, [status]);
   const tokens = useMemo(() => {
     if (dir === 'inbound') return ['BTC', 'xBTC'];
@@ -155,7 +157,10 @@ export const OutboundSwapItem: React.FC<{ id: string }> = ({ id }) => {
   const swapId = useStxTxResult<bigint | null>(txId);
   const [finalizeTxid] = useFinalizedOutboundSwap(swapId);
   const status = useMemo(() => {
-    if (finalizeTxid) return 'success';
+    if (finalizeTxid) {
+      if (finalizeTxid === '00') return 'canceled';
+      return 'success';
+    }
     return 'pending';
   }, [finalizeTxid]);
   const goToSwap = useCallback(() => {
