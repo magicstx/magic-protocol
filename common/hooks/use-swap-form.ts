@@ -125,7 +125,7 @@ export function useSwapForm() {
   const submitInbound = useAtomCallback(
     useCallback(
       async (get, set) => {
-        const swapperId = get(swapperIdState);
+        const { id: swapperId } = get(swapperIdState);
         if (typeof swapperId === 'number') {
           if (!isValid) return;
           const swap = await generate({

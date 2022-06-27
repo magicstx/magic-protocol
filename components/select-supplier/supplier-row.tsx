@@ -25,6 +25,9 @@ const RowComp = styled(Box, {
   '&:first-child': {
     borderTop: '1px solid $border-subdued',
   },
+  '&:hover': {
+    backgroundColor: '$surface-surface--hovered',
+  },
   variants: {
     selected: {
       true: {

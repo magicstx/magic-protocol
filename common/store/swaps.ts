@@ -9,6 +9,7 @@ import { generateHTLCAddress } from '../htlc';
 import { Supplier, QueryKeys } from './index';
 import { atomWithQuery } from 'jotai-query-toolkit';
 import { fetchPrivate } from 'micro-stacks/common';
+import { TransactionStatus } from '../api/stacks';
 
 export const swapIdState = atom<string | undefined>(undefined);
 
@@ -53,6 +54,10 @@ export interface InboundSwapFinalized extends InboundSwapEscrowed {
   finalizeTxid: string;
 }
 
+export interface InboundSwapDone extends InboundSwapFinalized {
+  finalizeTxStatus: TransactionStatus;
+}
+
 export type InboundSwap =
   | InboundSwapStarted
   | InboundSwapReady
@@ -60,7 +65,8 @@ export type InboundSwap =
   | InboundSwapSent
   | InboundSwapEscrowed
   | InboundSwapRecovered
-  | InboundSwapFinalized;
+  | InboundSwapFinalized
+  | InboundSwapDone;
 
 export function getSwapStep(swap: InboundSwap) {
   if ('finalizeTxid' in swap) return 'finalize';

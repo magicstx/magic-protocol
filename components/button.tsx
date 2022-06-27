@@ -143,6 +143,8 @@ const StatusButtonComp = styled(Box, {
   },
 });
 
+export type ButtonStatus = VariantProps<typeof StatusButtonComp>['status'];
+
 export const StatusButton: React.FC<BoxProps & VariantProps<typeof StatusButtonComp>> = ({
   status,
   children,

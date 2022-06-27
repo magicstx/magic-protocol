@@ -9,7 +9,7 @@ import {
 } from '../../common/store/swaps';
 import { satsToBtc, truncateMiddle } from '../../common/utils';
 import format from 'date-fns/format';
-import { StatusButton } from '../button';
+import { ButtonStatus, StatusButton } from '../button';
 import { useRouter } from 'next/router';
 import { useQueryAtom } from 'jotai-query-toolkit';
 import { Spinner } from '../spinner';
@@ -19,10 +19,13 @@ import { DuplicateIcon } from '../icons/duplicate';
 
 const SwapRowComp = styled(Box, {
   borderBottom: '1px solid $border-subdued',
-  padding: '34px 0',
+  padding: '20px 0',
   width: '100%',
   '&:first-child': {
     borderTop: '1px solid $border-subdued',
+  },
+  '&:hover': {
+    backgroundColor: '$surface-surface--hovered',
   },
 });
 
@@ -32,7 +35,7 @@ interface RowProps {
   id: string;
   dir: SwapListItem['dir'];
   amount: string;
-  status: 'success' | 'pending' | 'canceled' | 'error';
+  status: ButtonStatus;
   buttonText?: string;
   route: () => void | Promise<void>;
   swapId: string;
@@ -120,9 +123,11 @@ export const InboundSwapItem: React.FC<{ id: string }> = ({ id }) => {
   const swapId = useMemo(() => {
     return 'btcTxid' in swap ? swap.btcTxid : '';
   }, [swap]);
-  const statusInfo: { status: 'success' | 'pending'; buttonText?: string } = useMemo(() => {
-    if ('finalizeTxid' in swap) {
-      return { status: 'success' };
+  const statusInfo: { status: ButtonStatus; buttonText?: string } = useMemo(() => {
+    if ('finalizeTxStatus' in swap) {
+      if (swap.finalizeTxStatus === 'success') return { status: 'success' };
+      if (swap.finalizeTxStatus === 'pending') return { status: 'pending' };
+      return { status: 'error', buttonText: 'Error' };
     }
     if ('btcTxid' in swap) {
       return { status: 'pending' };

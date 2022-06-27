@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { Box, Flex, Grid, SpaceBetween, Stack } from '@nelson-ui/react';
 import { CenterBox, Divider, DoneRow, PendingRow } from '../center-box';
 import { useInboundSwap } from '../../common/hooks/use-inbound-swap';
@@ -10,10 +10,12 @@ import { BtcIcon } from '../icons/btc';
 import { Text } from '../text';
 import { MagicArrow } from '../icons/magic-arrow';
 import BigNumber from 'bignumber.js';
+import { TransactionStatus } from '../../common/api/stacks';
 
-export const FinalRow: React.FC<{ txId: string; status: string }> = ({ txId }) => {
-  const [tx] = useStxTx(txId);
-  const status = tx?.status || 'pending';
+export const FinalRow: React.FC<{ txId: string; status: TransactionStatus }> = ({
+  txId,
+  status,
+}) => {
   if (status === 'pending') {
     return <PendingRow txId={txId}>Waiting for your Stacks transaction</PendingRow>;
   }
@@ -81,10 +83,23 @@ const FinalSummaryComp: React.FC<{ satsAmount: string; fee: number; baseFee: num
 const FinalSummary = memo(FinalSummaryComp);
 
 export const SwapDone: React.FC = () => {
-  const { swap } = useInboundSwap();
+  const { swap, updateSwap } = useInboundSwap();
   if (!('finalizeTxid' in swap)) throw new Error('Invalid swap state');
   const [finalizeTx] = useStxTx(swap.finalizeTxid);
   const status = finalizeTx?.status || 'pending';
+  const swapSavedStatus = useMemo(() => {
+    return 'finalizeTxStatus' in swap ? swap.finalizeTxStatus : 'pending';
+  }, [swap]);
+  const setStatus = useCallback(async () => {
+    if (swapSavedStatus !== status) {
+      await updateSwap({
+        finalizeTxStatus: status,
+      });
+    }
+  }, [status, updateSwap, swapSavedStatus]);
+  useEffect(() => {
+    void setStatus();
+  }, [setStatus]);
 
   return (
     <Stack spacing="$row-y">
