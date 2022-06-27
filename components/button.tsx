@@ -57,6 +57,7 @@ export const ButtonComp = styled(Box, {
     },
     magicBg: {
       true: {
+        minWidth: '234px',
         backgroundColor: '$grey-100',
         // backgroundImage: '$color-primary-magic-hover',
         // backgroundSize: '150% 150%',
@@ -80,7 +81,7 @@ export const Button: React.FC<
     return (
       <Box
         borderRadius="50px"
-        padding="2px"
+        padding="3px"
         maxWidth="244px"
         backgroundImage="$foil"
         backgroundSize="150% 150%"
