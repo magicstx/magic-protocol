@@ -44,14 +44,14 @@ export const ButtonComp = styled(Box, {
     },
     connected: {
       true: {
-        background: '$color-surface',
-        border: '1px solid $color-primary',
+        background: '$onSurface-very-subdued',
+        border: '1px solid $onSurface-border',
         '.button-text': {
-          color: '$color-primary-text',
+          color: '$text',
         },
         '&:hover': {
-          background: '$color-surface-200',
-          borderColor: '$color-primary-text',
+          background: '$surface-surface--pressed',
+          borderColor: '$onSurface-border',
         },
       },
     },
