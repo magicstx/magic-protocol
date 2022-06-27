@@ -26,14 +26,12 @@ export const SwapInput = styled('input', {
   lineHeight: 1,
   color: '$color-base-white',
   boxSizing: 'border-box',
-  // background: '$dark-surface-very-subdued',
-  // background: '$color-surface',
+  background: '$surface-very-subdued',
 });
 
 export const SwapLabel: React.FC<{ token: Token }> = ({ token }) => {
   return (
     <SpaceBetween
-      // background="$background-subdued"
       py="$2"
       px="14px"
       borderRadius="7px"
@@ -134,13 +132,7 @@ export const SwapField: React.FC<SwapFieldProps> = ({ dir }) => {
         {capitalize(dir)} {token === 'btc' ? 'Bitcoin chain' : 'Stacks chain'}
       </Text>
       <SwapFieldBorder>
-        <SwapFieldComp
-          background="$color-surface"
-          borderRadius="$medium"
-          borderWidth="1px"
-          borderStyle="solid"
-          width="100%"
-        >
+        <SwapFieldComp borderRadius="$medium" borderWidth="1px" borderStyle="solid" width="100%">
           <SwapLabel token={token} />
           {dir === 'from' && inputToken === 'xbtc' && isSignedIn ? <SwapBalance /> : null}
           <SwapInput placeholder="0.0" {...inputProps} />

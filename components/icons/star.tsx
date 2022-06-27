@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, BoxProps } from '@nelson-ui/react';
 
-export const StarIcon: React.FC<BoxProps> = props => {
+export const StarIcon: React.FC<BoxProps & { h?: number }> = ({ h = 25, ...props }) => {
+  const [height, width] = useMemo(() => {
+    return [h, h + 1];
+  }, [h]);
   return (
-    <Box display="inline-block" height="25px" width="26px" {...props}>
+    <Box display="inline-block" size={h} {...props}>
       <svg
-        width="25"
-        height="26"
+        width={width}
+        height={height}
         viewBox="0 0 25 26"
+        preserveAspectRatio="xMinYMin"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >

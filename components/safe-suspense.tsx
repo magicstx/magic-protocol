@@ -1,16 +1,18 @@
 import React, { ReactNode, memo } from 'react';
 import { IS_SSR } from 'jotai-query-toolkit';
-import { ImSpinner7 } from 'react-icons/im';
-import PulseLoader from 'react-spinners/PulseLoader';
-import { Box, Flex, Stack, IconButton } from '@nelson-ui/react';
+import { Flex } from '@nelson-ui/react';
+import { StarIcon } from './icons/star';
+import { keyframes } from '@nelson-ui/core';
+
+const spin = keyframes({
+  '0%': { transform: 'rotateY(0deg)' },
+  '100%': { transform: 'rotateY(360deg)' },
+});
 
 const LoadingEl: React.FC = () => {
   return (
     <Flex alignItems="center" justifyContent="center">
-      <Stack maxWidth="500px" spacing="$5" pt="150px">
-        {/* <IconButton icon={ImSpinner7} size="100px" iconSize="100px" /> */}
-        <PulseLoader size="75px" color="$color-slate-85" />
-      </Stack>
+      <StarIcon h={200} opacity={0.6} animation={`${spin()} 3s linear infinite`} />
     </Flex>
   );
 };
