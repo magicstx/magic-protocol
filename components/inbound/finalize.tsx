@@ -9,6 +9,7 @@ import { ExternalTx } from '../icons/external-tx';
 import { Text } from '../text';
 import type { TransactionStatus } from '../../common/api/stacks';
 import { SwapRedeem } from './recover';
+import { Button } from '../button';
 
 export const FinalizeRow: React.FC<{ txId?: string; status?: TransactionStatus }> = ({
   txId = '',
@@ -45,13 +46,6 @@ export const SwapFinalize: React.FC = () => {
     xbtc,
   });
 
-  useEffect(() => {
-    if (escrowTx?.tx_status === 'success') {
-      void finalizeTx.submit();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [escrowTx?.tx_status]);
-
   const setTxid = useCallback(async () => {
     if ('finalizeTxid' in swap || !finalizeTx.txId) return;
     await updateSwap({
@@ -77,6 +71,11 @@ export const SwapFinalize: React.FC = () => {
         ) : null}
       </CenterBox>
       <SwapRedeem />
+      {escrowTx?.tx_status === 'success' ? (
+        <Button width="260px" mx="auto" size="big" onClick={finalizeTx.submit}>
+          Continue
+        </Button>
+      ) : null}
     </Stack>
   );
 };
