@@ -13,7 +13,7 @@ export const BtcAddress: React.FC = () => {
   }, [swap.inputAmount]);
   return (
     <Stack spacing="$3" px="$row-x">
-      <Text variant="Label01">Send Bitcoin to:</Text>
+      <Text variant="Label01">Send {maxBtc} Bitcoin to:</Text>
       <Box
         p="$5"
         backgroundColor="$surface-very-subdued"
