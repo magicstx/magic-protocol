@@ -55,6 +55,13 @@ export function useSwapForm() {
       };
     }
     const output = getSwapAmount(amountBN.toString(), fee, supplierBaseFee);
+    if (output <= 0n) {
+      return {
+        outputAmount: '0',
+        txFeeBtc: '0',
+        txFeePercent: '0',
+      };
+    }
     const txFeeSats = amountBN.minus(output.toString());
     const txFeeBtc = satsToBtc(txFeeSats.toString());
     const txFeePercent = txFeeSats.decimalPlaces(6).dividedBy(amountBN).multipliedBy(100);
@@ -92,12 +99,28 @@ export function useSwapForm() {
     return new BigNumber(btcToSats(outputAmount)).lt(supplierCapacity);
   }, [supplierCapacity, outputAmount]);
 
+  const errorMessage = useMemo(() => {
+    if (outputToken === 'btc' && !validBtc && btcAddress.value) return 'Invalid BTC address.';
+    if (!hasCapacity)
+      return `Insufficient supplier funds. Max swap size is ${satsToBtc(supplierCapacity)}.`;
+    if (new BigNumber(amount.value).gt(0) && new BigNumber(outputAmount).lte(0))
+      return `Swap amount too low.`;
+    return undefined;
+  }, [
+    outputToken,
+    supplierCapacity,
+    hasCapacity,
+    validBtc,
+    amount.value,
+    outputAmount,
+    btcAddress.value,
+  ]);
+
   const isValid = useMemo(() => {
-    if (outputToken === 'btc' && !validBtc) return false;
+    if (typeof errorMessage !== 'undefined') return false;
     if (new BigNumber(amount.value).isNaN()) return false;
-    if (!hasCapacity) return false;
     return true;
-  }, [amount.value, validBtc, outputToken, hasCapacity]);
+  }, [amount.value, errorMessage]);
 
   const submitInbound = useAtomCallback(
     useCallback(
@@ -181,5 +204,6 @@ export function useSwapForm() {
     txFeePercent,
     supplierCapacity,
     hasCapacity,
+    errorMessage,
   };
 }

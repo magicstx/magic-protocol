@@ -28,7 +28,7 @@ export const SwapContainer: React.FC = () => {
     submit,
     btcAddress,
     pendingInitOutbound,
-    hasCapacity,
+    errorMessage,
     validBtc,
   } = useSwapForm();
   const swapperId = useSwapperId();
@@ -110,16 +110,11 @@ export const SwapContainer: React.FC = () => {
                 Your BTC Address
               </Text>
               <Input {...btcAddress} placeholder="Enter a non-Segwit Bitcoin address" />
-              {btcAddress.value && !validBtc ? (
-                <Text variant="Caption02" color="#ED5653">
-                  Invalid address. Please use a non-Segwit address.
-                </Text>
-              ) : null}
             </Stack>
           ) : null}
-          {!hasCapacity ? (
+          {typeof errorMessage === 'string' ? (
             <Text variant="Caption02" color="#ED5653">
-              Warning: suppliers have insufficient capacity.
+              {errorMessage}
             </Text>
           ) : null}
           <SwapSummary />

@@ -1,9 +1,10 @@
-import { bytesToBigInt, IntegerType, intToBigInt } from 'micro-stacks/common';
+import { bytesToBigInt, IntegerType, intToBigInt as _intToBigInt } from 'micro-stacks/common';
 import BigNumber from 'bignumber.js';
 import { address as bAddress, networks, payments, Transaction } from 'bitcoinjs-lib';
 import { coreUrl, btcNetwork, NETWORK_CONFIG } from './constants';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { base58checkEncode, hashRipemd160 } from 'micro-stacks/crypto';
+import { Supplier } from './store';
 
 export function getTxUrl(txId: string) {
   const id = getTxId(txId);
@@ -76,12 +77,34 @@ export function bpsToPercent(bps: number) {
   return new BigNumber(bps).dividedBy(100).toString();
 }
 
+export function intToBigInt(num: IntegerType | BigNumber) {
+  if (num instanceof Uint8Array) {
+    return bytesToBigInt(num);
+  }
+  if (typeof num === 'bigint') {
+    return num;
+  }
+  const bn = new BigNumber(num).decimalPlaces(0);
+  if (bn.isNaN()) return 0n;
+  return BigInt(bn.toString());
+}
+
 export function getSwapAmount(amount: IntegerType, feeRate: IntegerType, baseFee?: IntegerType) {
-  const withBps = (intToBigInt(amount) * (10000n - intToBigInt(feeRate, true))) / 10000n;
+  const withBps = (intToBigInt(amount) * (10000n - _intToBigInt(feeRate, true))) / 10000n;
   if (typeof baseFee !== 'undefined') {
     return withBps - intToBigInt(baseFee);
   }
   return withBps;
+}
+
+export function getSupplierSwapAmount(
+  amount: IntegerType,
+  supplier: Supplier,
+  isOutbound: boolean
+) {
+  const baseFee = isOutbound ? supplier.outboundBaseFee : supplier.inboundBaseFee;
+  const feeRate = isOutbound ? supplier.outboundFee : supplier.inboundFee;
+  return getSwapAmount(amount, feeRate, baseFee);
 }
 
 export const addressVersionToMainnetVersion: Record<number, number> = {
