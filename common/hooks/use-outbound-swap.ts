@@ -2,9 +2,9 @@ import { useAtom } from 'jotai';
 import { deserializeCV, ResponseOkCV, UIntCV } from 'micro-stacks/clarity';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
-import { footerSwapIdState } from '../../components/footer';
 import { useOutboundSwap as useOutboundSwapState, useFinalizedOutboundSwap } from '../store';
 import { useStxTx, useListUnspent } from '../store/api';
+import { useSwapId } from '../store/swaps';
 import { getOutboundAddress } from '../utils';
 import { useRevokeOutbound } from './tx/use-revoke-outbound';
 
@@ -32,7 +32,7 @@ export function useOutboundSwap(_txId?: string) {
 
   const [swap] = useOutboundSwapState(swapId);
 
-  const [footerSwapId, setSwapId] = useAtom(footerSwapIdState);
+  const [footerSwapId, setSwapId] = useSwapId();
 
   useEffect(() => {
     if (footerSwapId !== txId) {

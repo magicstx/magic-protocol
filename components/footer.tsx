@@ -1,18 +1,13 @@
 import React from 'react';
 import { Box, Stack } from '@nelson-ui/react';
 import { Text } from './text';
-import { atom } from 'jotai';
-
-export const footerSwapIdState = atom<string | undefined>(undefined);
 
 export const Footer: React.FC = () => {
   return (
     <Box width="100%" textAlign="center" pb="42px">
       <Stack spacing="6px">
-        <Box>
-          {/* <Text variant="Caption02" display="inline-block" color="$color-slate-85">
-            Keep this tab open.
-          </Text>{' '} */}
+        {/* UNCOMMENT IF YOU WANT TO LINK TO DOCS
+          <Box>
           <Text
             variant="Caption02"
             display="inline-block"
@@ -24,7 +19,7 @@ export const Footer: React.FC = () => {
           >
             Need help?
           </Text>
-        </Box>
+        </Box> */}
       </Stack>
     </Box>
   );

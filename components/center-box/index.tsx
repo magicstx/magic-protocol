@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import { Box, Stack, Flex, BoxProps, StackProps } from '@nelson-ui/react';
-import { useAtomValue } from 'jotai/utils';
 import { Text } from '../text';
-import { footerSwapIdState } from '../footer';
+import { useSwapId } from '../../common/store/swaps';
 export * from './rows';
 
 interface CenterBoxProps {
@@ -19,7 +18,7 @@ export const CenterBox: React.FC<CenterBoxProps> = ({
   noPadding,
   showSwapId,
 }) => {
-  const swapId = useAtomValue(footerSwapIdState);
+  const [swapId] = useSwapId();
   const stackProps = useMemo(() => {
     if (noPadding) {
       return {

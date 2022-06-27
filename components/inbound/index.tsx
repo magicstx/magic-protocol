@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { Box, Text, Stack } from '@nelson-ui/react';
+import { Stack } from '@nelson-ui/react';
 import { useInboundSwap } from '../../common/hooks/use-inbound-swap';
 import { CenterBox } from '../center-box';
-import { Button } from '../button';
-import { getSwapStep } from '../../common/store/swaps';
+import { getSwapStep, useSwapId } from '../../common/store/swaps';
 import { RegisterSwap } from './register';
 import { SwapReady } from './ready';
 import { SwapEscrow } from './escrow';
@@ -11,14 +10,12 @@ import { SwapFinalize } from './finalize';
 import { SwapDone } from './done';
 import { SwapWarning } from './warning';
 import { useSetTitle } from '../head';
-import { footerSwapIdState } from '../footer';
-import { useAtom } from 'jotai';
 
 export const InboundSwap: React.FC = () => {
   const { swap } = useInboundSwap();
   const step = getSwapStep(swap);
   useSetTitle('Swap BTC -> xBTC');
-  const [_, setSwapId] = useAtom(footerSwapIdState);
+  const [_, setSwapId] = useSwapId();
   useEffect(() => {
     return () => {
       setSwapId(undefined);

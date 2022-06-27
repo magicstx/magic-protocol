@@ -1,7 +1,6 @@
 import { primaryGaiaHubConfigAtom, stacksSessionAtom } from '@micro-stacks/react';
-import { useAtom } from 'jotai';
+import { atom, useAtom } from 'jotai';
 import { atomFamilyWithQuery, useQueryAtom } from 'jotai-query-toolkit';
-import { useAtomValue } from 'jotai/utils';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { getRandomBytes } from 'micro-stacks/crypto';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
@@ -10,6 +9,12 @@ import { generateHTLCAddress } from '../htlc';
 import { Supplier, QueryKeys } from './index';
 import { atomWithQuery } from 'jotai-query-toolkit';
 import { fetchPrivate } from 'micro-stacks/common';
+
+export const swapIdState = atom<string | undefined>(undefined);
+
+export function useSwapId() {
+  return useAtom(swapIdState);
+}
 
 export interface InboundSwapStarted {
   id: string;

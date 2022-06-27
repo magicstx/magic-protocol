@@ -1,10 +1,14 @@
 import { useGaia } from '@micro-stacks/react';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo, useEffect } from 'react';
-import { getSwapStep, InboundSwap, inboundSwapKey, useInboundSwapStorage } from '../store/swaps';
+import {
+  getSwapStep,
+  InboundSwap,
+  inboundSwapKey,
+  useInboundSwapStorage,
+  useSwapId,
+} from '../store/swaps';
 import NProgress from 'nprogress';
-import { useAtom } from 'jotai';
-import { footerSwapIdState } from '../../components/footer';
 
 type SwapStep = ReturnType<typeof getSwapStep>;
 
@@ -14,7 +18,7 @@ export function useInboundSwap() {
   if (typeof storageId !== 'string') throw new Error('Invalid swapId');
   const [swap, { setQueryData }] = useInboundSwapStorage(storageId);
   const { putFile } = useGaia();
-  const [footerSwapId, setSwapId] = useAtom(footerSwapIdState);
+  const [footerSwapId, setSwapId] = useSwapId();
 
   const step = useMemo(() => {
     return getSwapStep(swap);

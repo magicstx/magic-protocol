@@ -6,14 +6,13 @@ import { PendingInit } from './pending';
 import { SwapInitialized } from './initialized';
 import { SwapConfirmed } from './confirmed';
 import { useSetTitle } from '../head';
-import { footerSwapIdState } from '../footer';
-import { useAtom } from 'jotai';
 import { SwapCanceled } from './canceled';
+import { useSwapId } from '../../common/store/swaps';
 
 export const OutboundSwap: React.FC = () => {
   const { initTx, initStatus, unspent, txId, isCanceled } = useOutboundSwap();
   useSetTitle('Swap xBTC -> BTC');
-  const [_, setSwapId] = useAtom(footerSwapIdState);
+  const [_, setSwapId] = useSwapId();
   useEffect(() => {
     return () => {
       setSwapId(undefined);
