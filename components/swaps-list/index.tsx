@@ -22,8 +22,13 @@ export const SwapsList: React.FC = () => {
     });
   }, [swaps]);
   return (
-    <Flex>
-      <Box width="1120px">
+    <Stack flexWrap="wrap" spacing="$4" width="1120px" mt="$6">
+      <Box>
+        <Text variant="Heading02" color="$white">
+          Swap history
+        </Text>
+      </Box>
+      <Box width="100%">
         <Flex flexDirection="row" py="15px" width="100%">
           <Box width={`${ROW_WIDTHS[0]}px`}>
             <Text variant="Label02" color="$text-dim">
@@ -45,6 +50,6 @@ export const SwapsList: React.FC = () => {
           {rows}
         </Flex>
       </Box>
-    </Flex>
+    </Stack>
   );
 };
