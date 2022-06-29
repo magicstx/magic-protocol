@@ -4,6 +4,7 @@ import { ClarityAbi } from '@clarigen/core';
 export const BridgeInterface: ClarityAbi = {
   "functions": [
     {
+      "name": "concat-buffs-fold",
       "access": "private",
       "args": [
         {
@@ -23,7 +24,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "concat-buffs-fold",
       "outputs": {
         "type": {
           "buffer": {
@@ -33,6 +33,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "transfer",
       "access": "private",
       "args": [
         {
@@ -48,34 +49,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "principal"
         }
       ],
-      "name": "transfer",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "bool"
+            "ok": "bool",
+            "error": "uint128"
           }
         }
       }
     },
     {
-      "access": "private",
-      "args": [
-        {
-          "name": "user",
-          "type": "principal"
-        },
-        {
-          "name": "amount",
-          "type": "uint128"
-        }
-      ],
       "name": "update-user-inbound-volume",
-      "outputs": {
-        "type": "bool"
-      }
-    },
-    {
       "access": "private",
       "args": [
         {
@@ -87,12 +71,29 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "update-user-outbound-volume",
       "outputs": {
         "type": "bool"
       }
     },
     {
+      "name": "update-user-outbound-volume",
+      "access": "private",
+      "args": [
+        {
+          "name": "user",
+          "type": "principal"
+        },
+        {
+          "name": "amount",
+          "type": "uint128"
+        }
+      ],
+      "outputs": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "add-funds",
       "access": "public",
       "args": [
         {
@@ -100,17 +101,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "add-funds",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "escrow-swap",
       "access": "public",
       "args": [
         {
@@ -136,12 +137,12 @@ export const BridgeInterface: ClarityAbi = {
           "name": "prev-blocks",
           "type": {
             "list": {
-              "length": 10,
               "type": {
                 "buffer": {
                   "length": 80
                 }
-              }
+              },
+              "length": 10
             }
           }
         },
@@ -161,12 +162,12 @@ export const BridgeInterface: ClarityAbi = {
                 "name": "hashes",
                 "type": {
                   "list": {
-                    "length": 12,
                     "type": {
                       "buffer": {
                         "length": 32
                       }
-                    }
+                    },
+                    "length": 12
                   }
                 }
               },
@@ -234,11 +235,9 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "escrow-swap",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -270,12 +269,14 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "finalize-outbound-swap",
       "access": "public",
       "args": [
         {
@@ -301,12 +302,12 @@ export const BridgeInterface: ClarityAbi = {
           "name": "prev-blocks",
           "type": {
             "list": {
-              "length": 10,
               "type": {
                 "buffer": {
                   "length": 80
                 }
-              }
+              },
+              "length": 10
             }
           }
         },
@@ -326,12 +327,12 @@ export const BridgeInterface: ClarityAbi = {
                 "name": "hashes",
                 "type": {
                   "list": {
-                    "length": 12,
                     "type": {
                       "buffer": {
                         "length": 32
                       }
-                    }
+                    },
+                    "length": 12
                   }
                 }
               },
@@ -355,17 +356,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "finalize-outbound-swap",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "bool"
+            "ok": "bool",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "finalize-swap",
       "access": "public",
       "args": [
         {
@@ -385,11 +386,9 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "finalize-swap",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -417,25 +416,27 @@ export const BridgeInterface: ClarityAbi = {
                   "type": "uint128"
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "initialize-swapper",
       "access": "public",
       "args": [],
-      "name": "initialize-swapper",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "initiate-outbound-swap",
       "access": "public",
       "args": [
         {
@@ -463,17 +464,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "initiate-outbound-swap",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "register-supplier",
       "access": "public",
       "args": [
         {
@@ -509,17 +510,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "register-supplier",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "remove-funds",
       "access": "public",
       "args": [
         {
@@ -527,17 +528,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "remove-funds",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "revoke-expired-inbound",
       "access": "public",
       "args": [
         {
@@ -549,11 +550,9 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "revoke-expired-inbound",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -581,12 +580,14 @@ export const BridgeInterface: ClarityAbi = {
                   "type": "uint128"
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "revoke-expired-outbound",
       "access": "public",
       "args": [
         {
@@ -594,11 +595,9 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "revoke-expired-outbound",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -638,12 +637,14 @@ export const BridgeInterface: ClarityAbi = {
                   "type": "uint128"
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "update-supplier-fees",
       "access": "public",
       "args": [
         {
@@ -667,11 +668,9 @@ export const BridgeInterface: ClarityAbi = {
           "type": "int128"
         }
       ],
-      "name": "update-supplier-fees",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -707,12 +706,14 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "update-supplier-public-key",
       "access": "public",
       "args": [
         {
@@ -724,11 +725,9 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "update-supplier-public-key",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -764,12 +763,14 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "buff-to-u8",
       "access": "read_only",
       "args": [
         {
@@ -781,12 +782,12 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "buff-to-u8",
       "outputs": {
         "type": "uint128"
       }
     },
     {
+      "name": "bytes-len",
       "access": "read_only",
       "args": [
         {
@@ -798,7 +799,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "bytes-len",
       "outputs": {
         "type": {
           "buffer": {
@@ -808,23 +808,23 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "concat-buffs",
       "access": "read_only",
       "args": [
         {
           "name": "buffs",
           "type": {
             "list": {
-              "length": 6,
               "type": {
                 "buffer": {
                   "length": 32
                 }
-              }
+              },
+              "length": 6
             }
           }
         }
       ],
-      "name": "concat-buffs",
       "outputs": {
         "type": {
           "buffer": {
@@ -834,6 +834,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "generate-htlc-script",
       "access": "read_only",
       "args": [
         {
@@ -877,7 +878,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "generate-htlc-script",
       "outputs": {
         "type": {
           "buffer": {
@@ -887,6 +887,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "generate-htlc-script-hash",
       "access": "read_only",
       "args": [
         {
@@ -930,7 +931,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "generate-htlc-script-hash",
       "outputs": {
         "type": {
           "buffer": {
@@ -940,6 +940,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "generate-output",
       "access": "read_only",
       "args": [
         {
@@ -959,7 +960,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "generate-output",
       "outputs": {
         "type": {
           "buffer": {
@@ -969,27 +969,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
-      "access": "read_only",
-      "args": [
-        {
-          "name": "hash",
-          "type": {
-            "buffer": {
-              "length": 20
-            }
-          }
-        }
-      ],
       "name": "generate-p2pkh-output",
-      "outputs": {
-        "type": {
-          "buffer": {
-            "length": 25
-          }
-        }
-      }
-    },
-    {
       "access": "read_only",
       "args": [
         {
@@ -1001,7 +981,27 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
+      "outputs": {
+        "type": {
+          "buffer": {
+            "length": 25
+          }
+        }
+      }
+    },
+    {
       "name": "generate-p2sh-output",
+      "access": "read_only",
+      "args": [
+        {
+          "name": "hash",
+          "type": {
+            "buffer": {
+              "length": 20
+            }
+          }
+        }
+      ],
       "outputs": {
         "type": {
           "buffer": {
@@ -1011,6 +1011,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "generate-script-hash",
       "access": "read_only",
       "args": [
         {
@@ -1022,7 +1023,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "generate-script-hash",
       "outputs": {
         "type": {
           "buffer": {
@@ -1032,6 +1032,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-amount-with-fee-rate",
       "access": "read_only",
       "args": [
         {
@@ -1043,12 +1044,12 @@ export const BridgeInterface: ClarityAbi = {
           "type": "int128"
         }
       ],
-      "name": "get-amount-with-fee-rate",
       "outputs": {
         "type": "int128"
       }
     },
     {
+      "name": "get-completed-outbound-swap-by-txid",
       "access": "read_only",
       "args": [
         {
@@ -1060,7 +1061,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "get-completed-outbound-swap-by-txid",
       "outputs": {
         "type": {
           "optional": "uint128"
@@ -1068,6 +1068,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-completed-outbound-swap-txid",
       "access": "read_only",
       "args": [
         {
@@ -1075,7 +1076,6 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-completed-outbound-swap-txid",
       "outputs": {
         "type": {
           "optional": {
@@ -1087,6 +1087,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-escrow",
       "access": "read_only",
       "args": [
         {
@@ -1094,7 +1095,6 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-escrow",
       "outputs": {
         "type": {
           "optional": "uint128"
@@ -1102,6 +1102,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-full-inbound",
       "access": "read_only",
       "args": [
         {
@@ -1113,11 +1114,9 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "get-full-inbound",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -1177,12 +1176,14 @@ export const BridgeInterface: ClarityAbi = {
                   "type": "uint128"
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "get-full-supplier",
       "access": "read_only",
       "args": [
         {
@@ -1190,11 +1191,9 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-full-supplier",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -1238,12 +1237,14 @@ export const BridgeInterface: ClarityAbi = {
                   }
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "get-funds",
       "access": "read_only",
       "args": [
         {
@@ -1251,12 +1252,12 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-funds",
       "outputs": {
         "type": "uint128"
       }
     },
     {
+      "name": "get-inbound-meta",
       "access": "read_only",
       "args": [
         {
@@ -1268,7 +1269,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "get-inbound-meta",
       "outputs": {
         "type": {
           "optional": {
@@ -1307,6 +1307,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-inbound-swap",
       "access": "read_only",
       "args": [
         {
@@ -1318,7 +1319,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "get-inbound-swap",
       "outputs": {
         "type": {
           "optional": {
@@ -1353,30 +1353,31 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
-      "access": "read_only",
-      "args": [],
       "name": "get-next-outbound-id",
+      "access": "read_only",
+      "args": [],
       "outputs": {
         "type": "uint128"
       }
     },
     {
-      "access": "read_only",
-      "args": [],
       "name": "get-next-supplier-id",
-      "outputs": {
-        "type": "uint128"
-      }
-    },
-    {
       "access": "read_only",
       "args": [],
-      "name": "get-next-swapper-id",
       "outputs": {
         "type": "uint128"
       }
     },
     {
+      "name": "get-next-swapper-id",
+      "access": "read_only",
+      "args": [],
+      "outputs": {
+        "type": "uint128"
+      }
+    },
+    {
+      "name": "get-outbound-swap",
       "access": "read_only",
       "args": [
         {
@@ -1384,7 +1385,6 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-outbound-swap",
       "outputs": {
         "type": {
           "optional": {
@@ -1431,6 +1431,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-preimage",
       "access": "read_only",
       "args": [
         {
@@ -1442,7 +1443,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "get-preimage",
       "outputs": {
         "type": {
           "optional": {
@@ -1454,6 +1454,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-supplier",
       "access": "read_only",
       "args": [
         {
@@ -1461,7 +1462,6 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-supplier",
       "outputs": {
         "type": {
           "optional": {
@@ -1504,6 +1504,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-supplier-id-by-controller",
       "access": "read_only",
       "args": [
         {
@@ -1511,7 +1512,6 @@ export const BridgeInterface: ClarityAbi = {
           "type": "principal"
         }
       ],
-      "name": "get-supplier-id-by-controller",
       "outputs": {
         "type": {
           "optional": "uint128"
@@ -1519,6 +1519,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-supplier-id-by-public-key",
       "access": "read_only",
       "args": [
         {
@@ -1530,7 +1531,6 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "get-supplier-id-by-public-key",
       "outputs": {
         "type": {
           "optional": "uint128"
@@ -1538,6 +1538,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-swap-amount",
       "access": "read_only",
       "args": [
         {
@@ -1553,17 +1554,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "int128"
         }
       ],
-      "name": "get-swap-amount",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "get-swapper-id",
       "access": "read_only",
       "args": [
         {
@@ -1571,7 +1572,6 @@ export const BridgeInterface: ClarityAbi = {
           "type": "principal"
         }
       ],
-      "name": "get-swapper-id",
       "outputs": {
         "type": {
           "optional": "uint128"
@@ -1579,6 +1579,7 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "get-swapper-principal",
       "access": "read_only",
       "args": [
         {
@@ -1586,7 +1587,6 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "get-swapper-principal",
       "outputs": {
         "type": {
           "optional": "principal"
@@ -1594,43 +1594,31 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
-      "access": "read_only",
-      "args": [],
       "name": "get-total-inbound-volume",
+      "access": "read_only",
+      "args": [],
       "outputs": {
         "type": "uint128"
       }
     },
     {
-      "access": "read_only",
-      "args": [],
       "name": "get-total-outbound-volume",
-      "outputs": {
-        "type": "uint128"
-      }
-    },
-    {
       "access": "read_only",
       "args": [],
+      "outputs": {
+        "type": "uint128"
+      }
+    },
+    {
       "name": "get-total-volume",
+      "access": "read_only",
+      "args": [],
       "outputs": {
         "type": "uint128"
       }
     },
     {
-      "access": "read_only",
-      "args": [
-        {
-          "name": "user",
-          "type": "principal"
-        }
-      ],
       "name": "get-user-inbound-volume",
-      "outputs": {
-        "type": "uint128"
-      }
-    },
-    {
       "access": "read_only",
       "args": [
         {
@@ -1638,12 +1626,12 @@ export const BridgeInterface: ClarityAbi = {
           "type": "principal"
         }
       ],
+      "outputs": {
+        "type": "uint128"
+      }
+    },
+    {
       "name": "get-user-outbound-volume",
-      "outputs": {
-        "type": "uint128"
-      }
-    },
-    {
       "access": "read_only",
       "args": [
         {
@@ -1651,12 +1639,25 @@ export const BridgeInterface: ClarityAbi = {
           "type": "principal"
         }
       ],
-      "name": "get-user-total-volume",
       "outputs": {
         "type": "uint128"
       }
     },
     {
+      "name": "get-user-total-volume",
+      "access": "read_only",
+      "args": [
+        {
+          "name": "user",
+          "type": "principal"
+        }
+      ],
+      "outputs": {
+        "type": "uint128"
+      }
+    },
+    {
+      "name": "read-uint32",
       "access": "read_only",
       "args": [
         {
@@ -1672,17 +1673,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "read-uint32",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "validate-btc-addr",
       "access": "read_only",
       "args": [
         {
@@ -1702,17 +1703,17 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "validate-btc-addr",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "bool"
+            "ok": "bool",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "validate-expiration",
       "access": "read_only",
       "args": [
         {
@@ -1724,17 +1725,17 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "validate-expiration",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "bool"
+            "ok": "bool",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "validate-fee",
       "access": "read_only",
       "args": [
         {
@@ -1744,17 +1745,17 @@ export const BridgeInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "validate-fee",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "bool"
+            "ok": "bool",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "validate-outbound-revocable",
       "access": "read_only",
       "args": [
         {
@@ -1762,11 +1763,9 @@ export const BridgeInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "validate-outbound-revocable",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -1806,26 +1805,418 @@ export const BridgeInterface: ClarityAbi = {
                   "type": "uint128"
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     }
   ],
-  "fungible_tokens": [],
+  "variables": [
+    {
+      "name": "BUFF_TO_BYTE",
+      "type": {
+        "list": {
+          "type": {
+            "buffer": {
+              "length": 1
+            }
+          },
+          "length": 256
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_ADD_FUNDS",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_ALREADY_FINALIZED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_ESCROW_EXPIRED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_FEE_INVALID",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INCONSISTENT_FEES",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INSUFFICIENT_AMOUNT",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INSUFFICIENT_FUNDS",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INVALID_BTC_ADDR",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INVALID_ESCROW",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INVALID_EXPIRATION",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INVALID_HASH",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INVALID_OUTPUT",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INVALID_PREIMAGE",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INVALID_SUPPLIER",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_INVALID_TX",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_PANIC",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_READ_UINT",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_REVOKE_INBOUND_IS_FINALIZED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_REVOKE_INBOUND_NOT_EXPIRED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_REVOKE_OUTBOUND_IS_FINALIZED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_REVOKE_OUTBOUND_NOT_EXPIRED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_SUPPLIER_EXISTS",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_SUPPLIER_NOT_FOUND",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_SWAPPER_EXISTS",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_SWAPPER_NOT_FOUND",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_SWAP_NOT_FOUND",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_TRANSFER",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_TXID_USED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_TX_NOT_MINED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ERR_UNAUTHORIZED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "ESCROW_EXPIRATION",
+      "type": "uint128",
+      "access": "constant"
+    },
+    {
+      "name": "MIN_EXPIRATION",
+      "type": "uint128",
+      "access": "constant"
+    },
+    {
+      "name": "OUTBOUND_EXPIRATION",
+      "type": "uint128",
+      "access": "constant"
+    },
+    {
+      "name": "P2PKH_VERSION",
+      "type": {
+        "buffer": {
+          "length": 1
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "P2SH_VERSION",
+      "type": {
+        "buffer": {
+          "length": 1
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "REVOKED_INBOUND_PREIMAGE",
+      "type": {
+        "buffer": {
+          "length": 1
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "REVOKED_OUTBOUND_TXID",
+      "type": {
+        "buffer": {
+          "length": 1
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "next-outbound-id",
+      "type": "uint128",
+      "access": "variable"
+    },
+    {
+      "name": "next-supplier-id",
+      "type": "uint128",
+      "access": "variable"
+    },
+    {
+      "name": "next-swapper-id",
+      "type": "uint128",
+      "access": "variable"
+    },
+    {
+      "name": "total-inbound-volume-var",
+      "type": "uint128",
+      "access": "variable"
+    },
+    {
+      "name": "total-outbound-volume-var",
+      "type": "uint128",
+      "access": "variable"
+    }
+  ],
   "maps": [
     {
+      "name": "completed-outbound-swap-txids",
       "key": {
         "buffer": {
           "length": 32
         }
       },
-      "name": "completed-outbound-swap-txids",
       "value": "uint128"
     },
     {
-      "key": "uint128",
       "name": "completed-outbound-swaps",
+      "key": "uint128",
       "value": {
         "buffer": {
           "length": 32
@@ -1833,12 +2224,12 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "inbound-meta",
       "key": {
         "buffer": {
           "length": 32
         }
       },
-      "name": "inbound-meta",
       "value": {
         "tuple": [
           {
@@ -1873,12 +2264,12 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "inbound-preimages",
       "key": {
         "buffer": {
           "length": 32
         }
       },
-      "name": "inbound-preimages",
       "value": {
         "buffer": {
           "length": 128
@@ -1886,12 +2277,12 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "inbound-swaps",
       "key": {
         "buffer": {
           "length": 32
         }
       },
-      "name": "inbound-swaps",
       "value": {
         "tuple": [
           {
@@ -1922,8 +2313,8 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
-      "key": "uint128",
       "name": "outbound-swaps",
+      "key": "uint128",
       "value": {
         "tuple": [
           {
@@ -1966,13 +2357,13 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
-      "key": "principal",
       "name": "supplier-by-controller",
+      "key": "principal",
       "value": "uint128"
     },
     {
-      "key": "uint128",
       "name": "supplier-by-id",
+      "key": "uint128",
       "value": {
         "tuple": [
           {
@@ -2011,436 +2402,45 @@ export const BridgeInterface: ClarityAbi = {
       }
     },
     {
+      "name": "supplier-by-public-key",
       "key": {
         "buffer": {
           "length": 33
         }
       },
-      "name": "supplier-by-public-key",
       "value": "uint128"
     },
     {
-      "key": "uint128",
       "name": "supplier-escrow",
+      "key": "uint128",
       "value": "uint128"
     },
     {
-      "key": "uint128",
       "name": "supplier-funds",
+      "key": "uint128",
       "value": "uint128"
     },
     {
-      "key": "uint128",
       "name": "swapper-by-id",
+      "key": "uint128",
       "value": "principal"
     },
     {
-      "key": "principal",
       "name": "swapper-by-principal",
+      "key": "principal",
       "value": "uint128"
     },
     {
-      "key": "principal",
       "name": "user-inbound-volume-map",
+      "key": "principal",
       "value": "uint128"
     },
     {
-      "key": "principal",
       "name": "user-outbound-volume-map",
+      "key": "principal",
       "value": "uint128"
     }
   ],
-  "non_fungible_tokens": [],
-  "variables": [
-    {
-      "access": "constant",
-      "name": "BUFF_TO_BYTE",
-      "type": {
-        "list": {
-          "length": 256,
-          "type": {
-            "buffer": {
-              "length": 1
-            }
-          }
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_ADD_FUNDS",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_ALREADY_FINALIZED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_ESCROW_EXPIRED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_FEE_INVALID",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INCONSISTENT_FEES",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INSUFFICIENT_AMOUNT",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INSUFFICIENT_FUNDS",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INVALID_BTC_ADDR",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INVALID_ESCROW",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INVALID_EXPIRATION",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INVALID_HASH",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INVALID_OUTPUT",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INVALID_PREIMAGE",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INVALID_SUPPLIER",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_INVALID_TX",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_PANIC",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_READ_UINT",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_REVOKE_INBOUND_IS_FINALIZED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_REVOKE_INBOUND_NOT_EXPIRED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_REVOKE_OUTBOUND_IS_FINALIZED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_REVOKE_OUTBOUND_NOT_EXPIRED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_SUPPLIER_EXISTS",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_SUPPLIER_NOT_FOUND",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_SWAPPER_EXISTS",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_SWAPPER_NOT_FOUND",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_SWAP_NOT_FOUND",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_TRANSFER",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_TXID_USED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_TX_NOT_MINED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ERR_UNAUTHORIZED",
-      "type": {
-        "response": {
-          "error": "uint128",
-          "ok": "none"
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "ESCROW_EXPIRATION",
-      "type": "uint128"
-    },
-    {
-      "access": "constant",
-      "name": "MIN_EXPIRATION",
-      "type": "uint128"
-    },
-    {
-      "access": "constant",
-      "name": "OUTBOUND_EXPIRATION",
-      "type": "uint128"
-    },
-    {
-      "access": "constant",
-      "name": "P2PKH_VERSION",
-      "type": {
-        "buffer": {
-          "length": 1
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "P2SH_VERSION",
-      "type": {
-        "buffer": {
-          "length": 1
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "REVOKED_INBOUND_PREIMAGE",
-      "type": {
-        "buffer": {
-          "length": 1
-        }
-      }
-    },
-    {
-      "access": "constant",
-      "name": "REVOKED_OUTBOUND_TXID",
-      "type": {
-        "buffer": {
-          "length": 1
-        }
-      }
-    },
-    {
-      "access": "variable",
-      "name": "next-outbound-id",
-      "type": "uint128"
-    },
-    {
-      "access": "variable",
-      "name": "next-supplier-id",
-      "type": "uint128"
-    },
-    {
-      "access": "variable",
-      "name": "next-swapper-id",
-      "type": "uint128"
-    },
-    {
-      "access": "variable",
-      "name": "total-inbound-volume-var",
-      "type": "uint128"
-    },
-    {
-      "access": "variable",
-      "name": "total-outbound-volume-var",
-      "type": "uint128"
-    }
-  ]
+  "fungible_tokens": [],
+  "non_fungible_tokens": []
 };

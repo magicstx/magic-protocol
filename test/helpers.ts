@@ -1,6 +1,32 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { payments, Psbt, ECPair, networks } from 'bitcoinjs-lib';
 import { IntegerType, intToBigInt } from 'micro-stacks/common';
+import { contracts as contractDef } from '../common/clarigen/single';
+import { deploymentFactory } from '@clarigen/core';
+import { simnetDeployment } from '../common/clarigen/deployments/simnet';
+
+export const factory = deploymentFactory(contractDef, simnetDeployment);
+
+type Wallets = typeof simnetDeployment['genesis']['wallets'];
+
+export type Accounts = {
+  [I in keyof Wallets as Wallets[number]['name']]: {
+    balance: bigint;
+    address: Wallets[number]['address'];
+  };
+};
+
+export const accounts = Object.fromEntries(
+  simnetDeployment.genesis.wallets.map(a => {
+    return [
+      a.name,
+      {
+        balance: BigInt(a.balance),
+        address: a.address,
+      },
+    ];
+  })
+) as Accounts;
 
 export function makeTxHex(payment: payments.Payment, value = 10000) {
   // input data from bitcoinjs-lib tests

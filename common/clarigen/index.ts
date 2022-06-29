@@ -1,26 +1,26 @@
 import type { ContractInstances } from '@clarigen/core';
 import { ftTraitInfo } from './ft-trait';
-import { xbtcInfo } from './xbtc';
-import { testUtilsInfo } from './test/test-utils';
+import { restrictedTokenTraitInfo } from './restricted-token-trait';
+import { wrappedBitcoinInfo } from './Wrapped-Bitcoin';
+import { testUtilsInfo } from './test-utils';
 import { clarityBitcoinInfo } from './clarity-bitcoin';
 import { bridgeInfo } from './bridge';
-import { supplierWrapperInfo } from './supplier-wrapper';
 export type { FtTraitContract } from './ft-trait';
-export type { XbtcContract } from './xbtc';
-export type { TestUtilsContract } from './test/test-utils';
+export type { RestrictedTokenTraitContract } from './restricted-token-trait';
+export type { WrappedBitcoinContract } from './Wrapped-Bitcoin';
+export type { TestUtilsContract } from './test-utils';
 export type { ClarityBitcoinContract } from './clarity-bitcoin';
 export type { BridgeContract } from './bridge';
-export type { SupplierWrapperContract } from './supplier-wrapper';
 
 export type Contracts = ContractInstances<typeof contracts>;
 
 export const contracts = {
   ftTrait: ftTraitInfo,
-  xbtc: xbtcInfo,
+  restrictedTokenTrait: restrictedTokenTraitInfo,
+  wrappedBitcoin: wrappedBitcoinInfo,
   testUtils: testUtilsInfo,
   clarityBitcoin: clarityBitcoinInfo,
   bridge: bridgeInfo,
-  supplierWrapper: supplierWrapperInfo,
 };
 
 // prettier-ignore

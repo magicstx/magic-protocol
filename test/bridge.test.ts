@@ -9,14 +9,6 @@ import {
 import { bytesToHex, hexToBytes, numberToHex } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import {
-  contracts,
-  BridgeContract,
-  accounts,
-  XbtcContract,
-  TestUtilsContract,
-  ClarityBitcoinContract,
-} from '../common/clarigen';
-import {
   CSV_DELAY,
   CSV_DELAY_BUFF,
   generateHTLCAddress,
@@ -27,8 +19,14 @@ import { getSwapAmount, logTxCosts, makeTxHex } from './helpers';
 import { privateKey, publicKey, publicKeys } from './mocks';
 import { script as bScript, Transaction, payments, networks } from 'bitcoinjs-lib';
 import { base58checkDecode, getPublicKey } from 'micro-stacks/crypto';
-import { NativeClarityBinProvider } from '@clarigen/native-bin';
-import { ContractReturn, CoreNodeEventType, filterEvents } from '@clarigen/core';
+import { ClarinetAccounts, NativeClarityBinProvider } from '@clarigen/native-bin';
+import {
+  deploymentFactory,
+  ContractReturn,
+  CoreNodeEventType,
+  filterEvents,
+  makeContracts,
+} from '@clarigen/core';
 import { makeRandomPrivKey } from 'micro-stacks/transactions';
 import { contracts as contractDef } from '../common/clarigen/single';
 import {
@@ -39,26 +37,50 @@ import {
   getRevokeInboundPrint,
   getRevokeOutboundPrint,
 } from '../common/events';
+import { simnetDeployment } from '../common/clarigen/deployments/simnet';
 
-let contract: BridgeContract;
-let xbtcContract: XbtcContract;
-let testUtils: TestUtilsContract;
-let clarityBtc: ClarityBitcoinContract;
+const factory = deploymentFactory(contractDef, simnetDeployment);
+const {
+  bridge: contract,
+  wrappedBitcoin: xbtcContract,
+  testUtils,
+  clarityBitcoin: clarityBtc,
+} = factory;
 let t: TestProvider;
 
+type Wallets = typeof simnetDeployment['genesis']['wallets'];
+
+type Accounts = {
+  [I in keyof Wallets as Wallets[number]['name']]: {
+    balance: bigint;
+    address: Wallets[number]['address'];
+  };
+};
+
+const accounts = Object.fromEntries(
+  simnetDeployment.genesis.wallets.map(a => {
+    return [
+      a.name,
+      {
+        balance: BigInt(a.balance),
+        address: a.address,
+      },
+    ];
+  })
+) as Accounts;
+
+const controller = 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR';
 const deployer = accounts.deployer.address;
 const supplier = accounts.operator.address;
 const swapper = accounts.swapper.address;
 const alice = accounts.wallet_3.address;
 
-let bridgeId: string;
-const xbtcTokenId = `${deployer}.xbtc::xbtc`;
+const bridgeId = contract.identifier;
+const xbtcTokenId = `${xbtcContract.identifier}::wrapped-bitcoin`;
 
 const feeIn = 300n;
 const feeOut = 100n;
 const startingFunds = 2n * 1000000n;
-
-const constants = contractDef.bridge.constants;
 
 async function getInboundSwap(txid: Uint8Array) {
   const swap = await t.rov(contract.getInboundSwap(txid));
@@ -69,25 +91,27 @@ async function getInboundSwap(txid: Uint8Array) {
 // process.env.PRINT_CLARIGEN_STDERR = 'true';
 
 beforeAll(async () => {
-  const { bridge, supplierWrapper, ...rest } = contracts;
-  const { deployed, provider } = await TestProvider.fromContracts(
-    {
-      ...rest,
-      clarityBitcoin: {
-        ...contracts.clarityBitcoin,
-        contractFile: 'contracts/test/clarity-bitcoin.clar',
-      },
-      bridge,
-      supplierWrapper,
-    },
-    { accounts }
-  );
+  // console.log(Object.keys(factory));
+  // const { clarityBitcoin, bridge, ...rest } = factory;
+  const provider = await TestProvider.fromFactory(factory, { accounts });
+  // const {provider } = await TestProvider.fromContracts(
+  //   {
+  //     ...rest,
+  //     clarityBitcoin: {
+  //       ...contracts.clarityBitcoin,
+  //       contractFile: 'contracts/test/clarity-bitcoin.clar',
+  //     },
+  //     bridge,
+  //   },
+  //   { accounts }
+  // );
   t = provider;
-  contract = deployed.bridge.contract;
-  xbtcContract = deployed.xbtc.contract;
-  testUtils = deployed.testUtils.contract;
-  bridgeId = deployed.bridge.identifier;
-  clarityBtc = deployed.clarityBitcoin.contract;
+});
+
+test('initializing xbtc', async () => {
+  await t.txOk(xbtcContract.initialize('xbtc', 'xbtc', 8, controller), controller);
+  await t.txOk(xbtcContract.addPrincipalToRole(1, controller), controller);
+  await t.txOk(xbtcContract.mintTokens(100000000000000, supplier), controller);
 });
 
 test('can register as supplier', async () => {
@@ -293,7 +317,7 @@ describe('successful inbound swap', () => {
       ),
       supplier
     );
-    expect(receipt.value).toEqual(constants.ERR_UNAUTHORIZED.value);
+    expect(receipt.value).toEqual(3n);
   });
 
   test('can escrow with a valid transaction', async () => {
@@ -800,7 +824,7 @@ describe('validating inbound swaps', () => {
 
     test('cannot inbound before expiration', async () => {
       const receipt = await t.txErr(contract.revokeExpiredInbound(txid), swapper);
-      expect(receipt.value).toEqual(constants.ERR_REVOKE_INBOUND_NOT_EXPIRED.value);
+      expect(receipt.value).toEqual(28n);
     });
 
     describe('after swap expiration', () => {
@@ -823,7 +847,7 @@ describe('validating inbound swaps', () => {
         const escrowBefore = (await t.rov(contract.getEscrow(supplier)))!;
         const receipt = await t.txOk(contract.revokeExpiredInbound(txid), swapper);
         const preImage = await t.rov(contract.getPreimage(txid));
-        expect(preImage).toEqual(constants.REVOKED_INBOUND_PREIMAGE);
+        expect(preImage).toEqual(hexToBytes('00'));
         expect(receipt.value).toEqual(swap);
         const funds = await t.rov(contract.getFunds(supplier));
         const escrow = (await t.rov(contract.getEscrow(supplier)))!;
@@ -840,7 +864,7 @@ describe('validating inbound swaps', () => {
 
       test('cannot revoke already revoked inbound swap', async () => {
         const receipt = await t.txErr(contract.revokeExpiredInbound(txid), swapper);
-        expect(receipt.value).toEqual(constants.ERR_REVOKE_INBOUND_IS_FINALIZED.value);
+        expect(receipt.value).toEqual(29n);
       });
     });
   });

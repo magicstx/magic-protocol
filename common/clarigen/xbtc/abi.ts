@@ -4,25 +4,26 @@ import { ClarityAbi } from '@clarigen/core';
 export const XbtcInterface: ClarityAbi = {
   "functions": [
     {
+      "name": "get-token-uri",
       "access": "public",
       "args": [],
-      "name": "get-token-uri",
       "outputs": {
         "type": {
           "response": {
-            "error": "none",
             "ok": {
               "optional": {
                 "string-utf8": {
                   "length": 19
                 }
               }
-            }
+            },
+            "error": "none"
           }
         }
       }
     },
     {
+      "name": "transfer",
       "access": "public",
       "args": [
         {
@@ -48,17 +49,17 @@ export const XbtcInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "transfer",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "bool"
+            "ok": "bool",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "get-balance",
       "access": "read_only",
       "args": [
         {
@@ -66,83 +67,82 @@ export const XbtcInterface: ClarityAbi = {
           "type": "principal"
         }
       ],
-      "name": "get-balance",
       "outputs": {
         "type": {
           "response": {
-            "error": "none",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "none"
           }
         }
       }
     },
     {
-      "access": "read_only",
-      "args": [],
       "name": "get-decimals",
+      "access": "read_only",
+      "args": [],
       "outputs": {
         "type": {
           "response": {
-            "error": "none",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "none"
           }
         }
       }
     },
     {
-      "access": "read_only",
-      "args": [],
       "name": "get-name",
+      "access": "read_only",
+      "args": [],
       "outputs": {
         "type": {
           "response": {
-            "error": "none",
             "ok": {
               "string-ascii": {
                 "length": 4
               }
-            }
+            },
+            "error": "none"
           }
         }
       }
     },
     {
-      "access": "read_only",
-      "args": [],
       "name": "get-symbol",
+      "access": "read_only",
+      "args": [],
       "outputs": {
         "type": {
           "response": {
-            "error": "none",
             "ok": {
               "string-ascii": {
                 "length": 4
               }
-            }
+            },
+            "error": "none"
           }
         }
       }
     },
     {
+      "name": "get-total-supply",
       "access": "read_only",
       "args": [],
-      "name": "get-total-supply",
       "outputs": {
         "type": {
           "response": {
-            "error": "none",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "none"
           }
         }
       }
     }
   ],
+  "variables": [],
+  "maps": [],
   "fungible_tokens": [
     {
       "name": "xbtc"
     }
   ],
-  "maps": [],
-  "non_fungible_tokens": [],
-  "variables": []
+  "non_fungible_tokens": []
 };

@@ -1,7 +1,7 @@
 
 # ft-trait
 
-[`ft-trait.clar`](../contracts/ft-trait.clar)
+[`SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar`](../.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar)
 
 
 

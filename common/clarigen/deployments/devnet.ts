@@ -68,22 +68,6 @@ export const devnetDeployment = {
               path: '/Users/hankstoever/magic/bridge/contracts/bridge.clar',
             },
           },
-          {
-            'contract-publish': {
-              'contract-name': 'supplier-wrapper',
-              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              cost: 23340,
-              path: '/Users/hankstoever/magic/bridge/contracts/supplier-wrapper.clar',
-            },
-          },
-          {
-            'contract-publish': {
-              'contract-name': 'test-utils',
-              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-              cost: 4970,
-              path: '/Users/hankstoever/magic/bridge/contracts/test/test-utils.clar',
-            },
-          },
         ],
       },
     ],

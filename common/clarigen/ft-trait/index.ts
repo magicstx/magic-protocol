@@ -13,8 +13,8 @@ export function ftTraitContract(contractAddress: string, contractName: string) {
 
 export const ftTraitInfo: Contract<FtTraitContract> = {
   contract: ftTraitContract,
-  address: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-  contractFile: 'contracts/ft-trait.clar',
+  address: 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR',
+  contractFile: '.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar',
   name: 'ft-trait',
   abi: FtTraitInterface,
 };

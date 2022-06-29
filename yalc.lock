@@ -27,9 +27,9 @@
       "replaced": "0.1.17"
     },
     "@clarigen/core": {
-      "signature": "c16bbd862eaef9f44d0be57b76728615",
+      "signature": "67274786b01bbfe7e06eb9a8a010ab5d",
       "file": true,
-      "replaced": "1.0.0-next.21"
+      "replaced": "1.0.0-next.24"
     },
     "micro-stacks": {
       "signature": "db11499a1a2758b52d0afbc5e827dd80",
@@ -51,9 +51,14 @@
       "file": true
     },
     "@clarigen/cli": {
-      "signature": "5572ca10bf178c48f2f37518883bca54",
+      "signature": "bcbbf0044ed593dd549083b1ec6ccb43",
       "file": true,
-      "replaced": "1.0.0-next.21"
+      "replaced": "1.0.0-next.24"
+    },
+    "@clarigen/test": {
+      "signature": "fa2c005368f3aef1280def7d6158eaa1",
+      "file": true,
+      "replaced": "1.0.0-next.24"
     }
   }
 }

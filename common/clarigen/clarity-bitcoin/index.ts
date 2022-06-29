@@ -14,7 +14,7 @@ export function clarityBitcoinContract(contractAddress: string, contractName: st
 export const clarityBitcoinInfo: Contract<ClarityBitcoinContract> = {
   contract: clarityBitcoinContract,
   address: 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
-  contractFile: 'contracts/clarity-bitcoin.clar',
+  contractFile: 'contracts/test/clarity-bitcoin.clar',
   name: 'clarity-bitcoin',
   abi: ClarityBitcoinInterface,
 };

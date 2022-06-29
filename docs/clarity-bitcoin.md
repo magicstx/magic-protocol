@@ -1,7 +1,7 @@
 
 # clarity-bitcoin
 
-[`clarity-bitcoin.clar`](../contracts/clarity-bitcoin.clar)
+[`clarity-bitcoin.clar`](../contracts/test/clarity-bitcoin.clar)
 
 Error codes
 
@@ -39,7 +39,6 @@ Error codes
 - [`read-txouts`](#read-txouts)
 - [`parse-tx`](#parse-tx)
 - [`parse-block-header`](#parse-block-header)
-- [`verify-block-header`](#verify-block-header)
 - [`get-reversed-txid`](#get-reversed-txid)
 - [`get-txid`](#get-txid)
 - [`is-bit-set`](#is-bit-set)
@@ -48,6 +47,7 @@ Error codes
 - [`verify-prev-block`](#verify-prev-block)
 - [`verify-prev-blocks`](#verify-prev-blocks)
 - [`verify-prev-blocks-fold`](#verify-prev-blocks-fold)
+- [`verify-block-header`](#verify-block-header)
 
 **Private functions:**
 
@@ -57,7 +57,7 @@ Error codes
 
 ### buff-to-u8
 
-[View in file](../contracts/clarity-bitcoin.clar#L118)
+[View in file](../contracts/test/clarity-bitcoin.clar#L118)
 
 `(define-read-only (buff-to-u8 ((byte (buff 1))) uint)`
 
@@ -81,7 +81,7 @@ Convert a 1-byte buff into a uint.
 
 ### inner-read-slice-1024
 
-[View in file](../contracts/clarity-bitcoin.clar#L122)
+[View in file](../contracts/test/clarity-bitcoin.clar#L122)
 
 `(define-read-only (inner-read-slice-1024 ((ignored bool) (input (tuple (acc (buff 1024)) (data (buff 1024)) (index uint)))) (tuple (acc (buff 1024)) (data (buff 1024)) (index uint)))`
 
@@ -117,7 +117,7 @@ Append a byte at the given index in the given data to acc.
 
 ### read-slice-512
 
-[View in file](../contracts/clarity-bitcoin.clar#L137)
+[View in file](../contracts/test/clarity-bitcoin.clar#L137)
 
 `(define-read-only (read-slice-512 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -142,7 +142,7 @@ Read 512 bytes from data, starting at index.  Return the 512-byte slice.
 
 ### read-slice-256
 
-[View in file](../contracts/clarity-bitcoin.clar#L142)
+[View in file](../contracts/test/clarity-bitcoin.clar#L142)
 
 `(define-read-only (read-slice-256 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -167,7 +167,7 @@ Read 256 bytes from data, starting at index.  Return the 256-byte slice.
 
 ### read-slice-128
 
-[View in file](../contracts/clarity-bitcoin.clar#L147)
+[View in file](../contracts/test/clarity-bitcoin.clar#L147)
 
 `(define-read-only (read-slice-128 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -192,7 +192,7 @@ Read 128 bytes from data, starting at index.  Return the 128-byte slice.
 
 ### read-slice-64
 
-[View in file](../contracts/clarity-bitcoin.clar#L152)
+[View in file](../contracts/test/clarity-bitcoin.clar#L152)
 
 `(define-read-only (read-slice-64 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -217,7 +217,7 @@ Read 64 bytes from data, starting at index.  Return the 64-byte slice.
 
 ### read-slice-32
 
-[View in file](../contracts/clarity-bitcoin.clar#L157)
+[View in file](../contracts/test/clarity-bitcoin.clar#L157)
 
 `(define-read-only (read-slice-32 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -242,7 +242,7 @@ Read 32 bytes from data, starting at index.  Return the 32-byte slice.
 
 ### read-slice-16
 
-[View in file](../contracts/clarity-bitcoin.clar#L162)
+[View in file](../contracts/test/clarity-bitcoin.clar#L162)
 
 `(define-read-only (read-slice-16 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -267,7 +267,7 @@ Read 16 bytes from data, starting at index.  Return the 16-byte slice.
 
 ### read-slice-8
 
-[View in file](../contracts/clarity-bitcoin.clar#L167)
+[View in file](../contracts/test/clarity-bitcoin.clar#L167)
 
 `(define-read-only (read-slice-8 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -292,7 +292,7 @@ Read 8 bytes from data, starting at index.  Return the 8-byte slice.
 
 ### read-slice-4
 
-[View in file](../contracts/clarity-bitcoin.clar#L172)
+[View in file](../contracts/test/clarity-bitcoin.clar#L172)
 
 `(define-read-only (read-slice-4 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -317,7 +317,7 @@ Read 4 bytes from data, starting at index.  Return the 4-byte slice.
 
 ### read-slice-2
 
-[View in file](../contracts/clarity-bitcoin.clar#L177)
+[View in file](../contracts/test/clarity-bitcoin.clar#L177)
 
 `(define-read-only (read-slice-2 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -342,7 +342,7 @@ Read 2 bytes from data, starting at index.  Return the 2-byte slice.
 
 ### read-slice-1
 
-[View in file](../contracts/clarity-bitcoin.clar#L182)
+[View in file](../contracts/test/clarity-bitcoin.clar#L182)
 
 `(define-read-only (read-slice-1 ((input (tuple (data (buff 1024)) (index uint)))) (buff 1024))`
 
@@ -367,7 +367,7 @@ Read 1 byte from data, starting at index.  Return the 1-byte slice.
 
 ### inner-read-slice
 
-[View in file](../contracts/clarity-bitcoin.clar#L188)
+[View in file](../contracts/test/clarity-bitcoin.clar#L188)
 
 `(define-read-only (inner-read-slice ((chunk_size uint) (input (tuple (acc (buff 1024)) (buffer (buff 1024)) (index uint) (remaining uint)))) (tuple (acc (buff 1024)) (buffer (buff 1024)) (index uint) (remaining uint)))`
 
@@ -433,7 +433,7 @@ chunk_size must be a power of 2, up to 1024
 
 ### read-slice
 
-[View in file](../contracts/clarity-bitcoin.clar#L234)
+[View in file](../contracts/test/clarity-bitcoin.clar#L234)
 
 `(define-read-only (read-slice ((data (buff 1024)) (offset uint) (size uint)) (response (buff 1024) uint))`
 
@@ -472,7 +472,7 @@ Returns (err ERR-OUT-OF-BOUNDS) if the slice offset and/or size would copy a ran
 
 ### read-uint16
 
-[View in file](../contracts/clarity-bitcoin.clar#L251)
+[View in file](../contracts/test/clarity-bitcoin.clar#L251)
 
 `(define-read-only (read-uint16 ((ctx (tuple (index uint) (txbuff (buff 1024))))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (uint16 uint)) uint))`
 
@@ -513,7 +513,7 @@ Returns (err ERR-OUT-OF-BOUNDS) if we read past the end of txbuff
 
 ### read-uint32
 
-[View in file](../contracts/clarity-bitcoin.clar#L272)
+[View in file](../contracts/test/clarity-bitcoin.clar#L272)
 
 `(define-read-only (read-uint32 ((ctx (tuple (index uint) (txbuff (buff 1024))))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (uint32 uint)) uint))`
 
@@ -556,7 +556,7 @@ Returns (err ERR-OUT-OF-BOUNDS) if we read past the end of txbuff
 
 ### read-uint64
 
-[View in file](../contracts/clarity-bitcoin.clar#L295)
+[View in file](../contracts/test/clarity-bitcoin.clar#L295)
 
 `(define-read-only (read-uint64 ((ctx (tuple (index uint) (txbuff (buff 1024))))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (uint64 uint)) uint))`
 
@@ -611,7 +611,7 @@ Returns (err ERR-OUT-OF-BOUNDS) if we read past the end of txbuff
 
 ### read-varint
 
-[View in file](../contracts/clarity-bitcoin.clar#L330)
+[View in file](../contracts/test/clarity-bitcoin.clar#L330)
 
 `(define-read-only (read-varint ((ctx (tuple (index uint) (txbuff (buff 1024))))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (varint uint)) uint))`
 
@@ -682,7 +682,7 @@ Returns (err ERR-OUT-OF-BOUNDS) if we read past the end of txbuff.
 
 ### read-varslice
 
-[View in file](../contracts/clarity-bitcoin.clar#L381)
+[View in file](../contracts/test/clarity-bitcoin.clar#L381)
 
 `(define-read-only (read-varslice ((old-ctx (tuple (index uint) (txbuff (buff 1024))))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (varslice (buff 1024))) uint))`
 
@@ -718,7 +718,7 @@ Returns (err ERR-OUT-OF-BOUNDS) if we read past the end of txbuff.
 
 ### inner-buff32-permutation
 
-[View in file](../contracts/clarity-bitcoin.clar#L396)
+[View in file](../contracts/test/clarity-bitcoin.clar#L396)
 
 `(define-read-only (inner-buff32-permutation ((target-index uint) (state (tuple (hash-input (buff 32)) (hash-output (buff 32))))) (tuple (hash-input (buff 32)) (hash-output (buff 32))))`
 
@@ -756,7 +756,7 @@ The target-index decides which index in hash-input gets appended to hash-output.
 
 ### reverse-buff32
 
-[View in file](../contracts/clarity-bitcoin.clar#L412)
+[View in file](../contracts/test/clarity-bitcoin.clar#L412)
 
 `(define-read-only (reverse-buff32 ((input (buff 32))) (buff 32))`
 
@@ -784,7 +784,7 @@ Reverse the byte order of a 32-byte buffer.  Returns the (buff 32).
 
 ### read-hashslice
 
-[View in file](../contracts/clarity-bitcoin.clar#L422)
+[View in file](../contracts/test/clarity-bitcoin.clar#L422)
 
 `(define-read-only (read-hashslice ((old-ctx (tuple (index uint) (txbuff (buff 1024))))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (hashslice (buff 32))) uint))`
 
@@ -820,7 +820,7 @@ Returns (err ERR-OUT-OF-BOUNDS) if we read past the end of txbuff.
 
 ### read-next-txin
 
-[View in file](../contracts/clarity-bitcoin.clar#L441)
+[View in file](../contracts/test/clarity-bitcoin.clar#L441)
 
 `(define-read-only (read-next-txin ((ignored bool) (state-res (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (remaining uint) (txins (list 8 (tuple (outpoint (tuple (hash (buff 32)) (index uint))) (scriptSig (buff 256)) (sequence uint))))) uint))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (remaining uint) (txins (list 8 (tuple (outpoint (tuple (hash (buff 32)) (index uint))) (scriptSig (buff 256)) (sequence uint))))) uint))`
 
@@ -896,7 +896,7 @@ Returns (err ERR-TOO-MANY-TXINS) if there are more than eight inputs to read.
 
 ### read-txins
 
-[View in file](../contracts/clarity-bitcoin.clar#L495)
+[View in file](../contracts/test/clarity-bitcoin.clar#L495)
 
 `(define-read-only (read-txins ((ctx (tuple (index uint) (txbuff (buff 1024))))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (remaining uint) (txins (list 8 (tuple (outpoint (tuple (hash (buff 32)) (index uint))) (scriptSig (buff 256)) (sequence uint))))) uint))`
 
@@ -933,7 +933,7 @@ Returns (err ERR-TOO-MANY-TXINS) if there are more than eight inputs to read.
 
 ### read-next-txout
 
-[View in file](../contracts/clarity-bitcoin.clar#L512)
+[View in file](../contracts/test/clarity-bitcoin.clar#L512)
 
 `(define-read-only (read-next-txout ((ignored bool) (state-res (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (remaining uint) (txouts (list 8 (tuple (scriptPubKey (buff 128)) (value uint))))) uint))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (remaining uint) (txouts (list 8 (tuple (scriptPubKey (buff 128)) (value uint))))) uint))`
 
@@ -997,7 +997,7 @@ Returns (err ERR-TOO-MANY-TXOUTS) if there are more than eight outputs to read.
 
 ### read-txouts
 
-[View in file](../contracts/clarity-bitcoin.clar#L555)
+[View in file](../contracts/test/clarity-bitcoin.clar#L555)
 
 `(define-read-only (read-txouts ((ctx (tuple (index uint) (txbuff (buff 1024))))) (response (tuple (ctx (tuple (index uint) (txbuff (buff 1024)))) (remaining uint) (txouts (list 8 (tuple (scriptPubKey (buff 128)) (value uint))))) uint))`
 
@@ -1034,7 +1034,7 @@ Returns (err ERR-TOO-MANY-TXOUTS) if there are more than eight outputs to read.
 
 ### parse-tx
 
-[View in file](../contracts/clarity-bitcoin.clar#L591)
+[View in file](../contracts/test/clarity-bitcoin.clar#L591)
 
 `(define-read-only (parse-tx ((tx (buff 1024))) (response (tuple (ins (list 8 (tuple (outpoint (tuple (hash (buff 32)) (index uint))) (scriptSig (buff 256)) (sequence uint)))) (locktime uint) (outs (list 8 (tuple (scriptPubKey (buff 128)) (value uint)))) (version uint)) uint))`
 
@@ -1094,7 +1094,7 @@ Returns (err ERR-TOO-MANY-TXINS) if there are more than eight outputs to read.
 
 ### parse-block-header
 
-[View in file](../contracts/clarity-bitcoin.clar#L618)
+[View in file](../contracts/test/clarity-bitcoin.clar#L618)
 
 `(define-read-only (parse-block-header ((headerbuff (buff 80))) (response (tuple (merkle-root (buff 32)) (nbits uint) (nonce uint) (parent (buff 32)) (timestamp uint) (version uint)) uint))`
 
@@ -1145,39 +1145,9 @@ Returns (err ERR-BAD-HEADER) if the header buffer isn't actually 80 bytes long.
 | --- | --- | --- |
 | headerbuff | (buff 80) |  |
 
-### verify-block-header
-
-[View in file](../contracts/clarity-bitcoin.clar#L642)
-
-`(define-read-only (verify-block-header ((headerbuff (buff 80)) (expected-block-height uint)) bool)`
-
-Verify that a block header hashes to a burnchain header hash at a given height.
-Returns true if so; false if not.
-
-<details>
-  <summary>Source code:</summary>
-
-```clarity
-(define-read-only (verify-block-header (headerbuff (buff 80)) (expected-block-height uint))
-    (match (get-block-info? burnchain-header-hash expected-block-height)
-        bhh (is-eq bhh (reverse-buff32 (sha256 (sha256 headerbuff))))
-        false
-    )
-)
-```
-</details>
-
-
-**Parameters:**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| headerbuff | (buff 80) |  |
-| expected-block-height | uint |  |
-
 ### get-reversed-txid
 
-[View in file](../contracts/clarity-bitcoin.clar#L651)
+[View in file](../contracts/test/clarity-bitcoin.clar#L651)
 
 `(define-read-only (get-reversed-txid ((tx (buff 1024))) (buff 32))`
 
@@ -1202,7 +1172,7 @@ This is the reverse of what you see on block explorers.
 
 ### get-txid
 
-[View in file](../contracts/clarity-bitcoin.clar#L656)
+[View in file](../contracts/test/clarity-bitcoin.clar#L656)
 
 `(define-read-only (get-txid ((tx (buff 1024))) (buff 32))`
 
@@ -1228,7 +1198,7 @@ This is what you see on block explorers.
 
 ### is-bit-set
 
-[View in file](../contracts/clarity-bitcoin.clar#L661)
+[View in file](../contracts/test/clarity-bitcoin.clar#L661)
 
 `(define-read-only (is-bit-set ((val uint) (bit uint)) bool)`
 
@@ -1254,7 +1224,7 @@ Determine if the ith bit in a uint is set to 1
 
 ### inner-merkle-proof-verify
 
-[View in file](../contracts/clarity-bitcoin.clar#L671)
+[View in file](../contracts/test/clarity-bitcoin.clar#L671)
 
 `(define-read-only (inner-merkle-proof-verify ((ctr uint) (state (tuple (cur-hash (buff 32)) (path uint) (proof-hashes (list 12 (buff 32))) (root-hash (buff 32)) (tree-depth uint) (verified bool)))) (tuple (cur-hash (buff 32)) (path uint) (proof-hashes (list 12 (buff 32))) (root-hash (buff 32)) (tree-depth uint) (verified bool)))`
 
@@ -1317,7 +1287,7 @@ The proof verifies if cur-hash is equal to root-hash, and we're out of proof-has
 
 ### verify-merkle-proof
 
-[View in file](../contracts/clarity-bitcoin.clar#L717)
+[View in file](../contracts/test/clarity-bitcoin.clar#L717)
 
 `(define-read-only (verify-merkle-proof ((reversed-txid (buff 32)) (merkle-root (buff 32)) (proof (tuple (hashes (list 12 (buff 32))) (tree-depth uint) (tx-index uint)))) (response bool uint))`
 
@@ -1361,7 +1331,7 @@ Returns (err ERR-PROOF-TOO-SHORT) if the proof's hashes aren't long enough to li
 
 ### verify-prev-block
 
-[View in file](../contracts/clarity-bitcoin.clar#L759)
+[View in file](../contracts/test/clarity-bitcoin.clar#L770)
 
 `(define-read-only (verify-prev-block ((block (buff 80)) (parent (buff 80))) (response bool uint))`
 
@@ -1396,7 +1366,7 @@ Returns (err ERR-PROOF-TOO-SHORT) if the proof's hashes aren't long enough to li
 
 ### verify-prev-blocks
 
-[View in file](../contracts/clarity-bitcoin.clar#L772)
+[View in file](../contracts/test/clarity-bitcoin.clar#L783)
 
 `(define-read-only (verify-prev-blocks ((block (buff 80)) (prev-blocks (list 10 (buff 80)))) (response (buff 80) uint))`
 
@@ -1429,7 +1399,7 @@ Returns (err ERR-PROOF-TOO-SHORT) if the proof's hashes aren't long enough to li
 
 ### verify-prev-blocks-fold
 
-[View in file](../contracts/clarity-bitcoin.clar#L783)
+[View in file](../contracts/test/clarity-bitcoin.clar#L794)
 
 `(define-read-only (verify-prev-blocks-fold ((parent (buff 80)) (next-resp (response (buff 80) uint))) (response (buff 80) uint))`
 
@@ -1461,3 +1431,33 @@ Returns (err ERR-PROOF-TOO-SHORT) if the proof's hashes aren't long enough to li
 | --- | --- | --- |
 | parent | (buff 80) |  |
 | next-resp | (response (buff 80) uint) |  |
+
+### verify-block-header
+
+[View in file](../contracts/test/clarity-bitcoin.clar#L809)
+
+`(define-read-only (verify-block-header ((headerbuff (buff 80)) (expected-block-height uint)) bool)`
+
+Verify that a block header hashes to a burnchain header hash at a given height.
+Returns true if so; false if not.
+
+<details>
+  <summary>Source code:</summary>
+
+```clarity
+(define-read-only (verify-block-header (headerbuff (buff 80)) (expected-block-height uint))
+    (match (contract-call? .test-utils burn-block-header expected-block-height)
+        bhh (is-eq bhh headerbuff)
+        false
+    )
+)
+```
+</details>
+
+
+**Parameters:**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| headerbuff | (buff 80) |  |
+| expected-block-height | uint |  |

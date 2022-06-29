@@ -1,28 +1,15 @@
 import { TestProvider } from '@clarigen/test';
-import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import { hexToBytes } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
-import { contracts, ClarityBitcoinContract, accounts, TestUtilsContract } from '../common/clarigen';
+import { factory, accounts } from './helpers';
 
-let contract: ClarityBitcoinContract;
+const contract = factory.clarityBitcoin;
+const testUtils = factory.testUtils;
 let t: TestProvider;
-let testUtils: TestUtilsContract;
-
 const alice = accounts.wallet_3.address;
 
 beforeAll(async () => {
-  const { bridge, supplierWrapper, ...rest } = contracts;
-  const { deployed, provider } = await TestProvider.fromContracts({
-    ...rest,
-    clarityBitcoin: {
-      ...contracts.clarityBitcoin,
-      contractFile: 'contracts/test/clarity-bitcoin.clar',
-    },
-    bridge,
-    supplierWrapper,
-  });
-  t = provider;
-  contract = deployed.clarityBitcoin.contract;
-  testUtils = deployed.testUtils.contract;
+  t = await TestProvider.fromFactory(factory);
 });
 
 // btc 728908
@@ -71,9 +58,6 @@ test.skip('testing block header', async () => {
   const parsed = await t.rovOk(contract.parseBlockHeader(secondBlock));
   const { parent } = parsed;
   const firstHash = hashSha256(hashSha256(firstBlock));
-  // console.log(bytesToHex(firstHash));
-  // console.log(bytesToHex(parent));
-  // console.log('parsed', parsed);
 });
 
 test('verify-prev-block', async () => {

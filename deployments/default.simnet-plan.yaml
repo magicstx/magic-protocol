@@ -44,25 +44,38 @@ plan:
       transactions:
         - emulated-contract-publish:
             contract-name: ft-trait
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: /Users/hankstoever/magic/bridge/contracts/ft-trait.clar
+            emulated-sender: SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR
+            path: ".clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar"
         - emulated-contract-publish:
-            contract-name: xbtc
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: /Users/hankstoever/magic/bridge/contracts/xbtc.clar
+            contract-name: restricted-token-trait
+            emulated-sender: SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR
+            path: ".clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait.clar"
         - emulated-contract-publish:
-            contract-name: clarity-bitcoin
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: /Users/hankstoever/magic/bridge/contracts/clarity-bitcoin.clar
-        - emulated-contract-publish:
-            contract-name: bridge
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: /Users/hankstoever/magic/bridge/contracts/bridge.clar
-        - emulated-contract-publish:
-            contract-name: supplier-wrapper
-            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: /Users/hankstoever/magic/bridge/contracts/supplier-wrapper.clar
+            contract-name: Wrapped-Bitcoin
+            emulated-sender: SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR
+            path: ".clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin.clar"
+        # - emulated-contract-publish:
+        #     contract-name: ft-trait
+        #     emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     path: contracts/ft-trait.clar
+        # - emulated-contract-publish:
+        #     contract-name: xbtc
+        #     emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     path: contracts/xbtc.clar
         - emulated-contract-publish:
             contract-name: test-utils
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-            path: /Users/hankstoever/magic/bridge/contracts/test/test-utils.clar
+            path: contracts/test/test-utils.clar
+        - emulated-contract-publish:
+            contract-name: clarity-bitcoin
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/test/clarity-bitcoin.clar
+        - emulated-contract-publish:
+            contract-name: bridge
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/bridge.clar
+        # - emulated-contract-publish:
+        #     contract-name: supplier-wrapper
+        #     emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+        #     path: contracts/supplier-wrapper.clar
+        

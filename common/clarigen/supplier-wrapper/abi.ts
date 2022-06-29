@@ -4,6 +4,7 @@ import { ClarityAbi } from '@clarigen/core';
 export const SupplierWrapperInterface: ClarityAbi = {
   "functions": [
     {
+      "name": "withdraw-funds",
       "access": "private",
       "args": [
         {
@@ -11,17 +12,17 @@ export const SupplierWrapperInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "withdraw-funds",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "add-funds",
       "access": "public",
       "args": [
         {
@@ -29,17 +30,17 @@ export const SupplierWrapperInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "add-funds",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "finalize-swap",
       "access": "public",
       "args": [
         {
@@ -59,11 +60,9 @@ export const SupplierWrapperInterface: ClarityAbi = {
           }
         }
       ],
-      "name": "finalize-swap",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -123,12 +122,14 @@ export const SupplierWrapperInterface: ClarityAbi = {
                   "type": "uint128"
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "register-supplier",
       "access": "public",
       "args": [
         {
@@ -164,17 +165,17 @@ export const SupplierWrapperInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "register-supplier",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "remove-funds",
       "access": "public",
       "args": [
         {
@@ -182,17 +183,17 @@ export const SupplierWrapperInterface: ClarityAbi = {
           "type": "uint128"
         }
       ],
-      "name": "remove-funds",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "uint128"
+            "ok": "uint128",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "transfer-owner",
       "access": "public",
       "args": [
         {
@@ -200,17 +201,17 @@ export const SupplierWrapperInterface: ClarityAbi = {
           "type": "principal"
         }
       ],
-      "name": "transfer-owner",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "principal"
+            "ok": "principal",
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "update-supplier",
       "access": "public",
       "args": [
         {
@@ -242,11 +243,9 @@ export const SupplierWrapperInterface: ClarityAbi = {
           "type": "int128"
         }
       ],
-      "name": "update-supplier",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
             "ok": {
               "tuple": [
                 {
@@ -282,61 +281,62 @@ export const SupplierWrapperInterface: ClarityAbi = {
                   }
                 }
               ]
-            }
+            },
+            "error": "uint128"
           }
         }
       }
     },
     {
+      "name": "get-owner",
       "access": "read_only",
       "args": [],
-      "name": "get-owner",
       "outputs": {
         "type": "principal"
       }
     },
     {
+      "name": "validate-owner",
       "access": "read_only",
       "args": [],
-      "name": "validate-owner",
       "outputs": {
         "type": {
           "response": {
-            "error": "uint128",
-            "ok": "bool"
+            "ok": "bool",
+            "error": "uint128"
           }
         }
       }
     }
   ],
-  "fungible_tokens": [],
-  "maps": [],
-  "non_fungible_tokens": [],
   "variables": [
     {
-      "access": "constant",
       "name": "ERR_PANIC",
       "type": {
         "response": {
-          "error": "uint128",
-          "ok": "none"
+          "ok": "none",
+          "error": "uint128"
         }
-      }
+      },
+      "access": "constant"
     },
     {
-      "access": "constant",
       "name": "ERR_UNAUTHORIZED",
       "type": {
         "response": {
-          "error": "uint128",
-          "ok": "none"
+          "ok": "none",
+          "error": "uint128"
         }
-      }
+      },
+      "access": "constant"
     },
     {
-      "access": "variable",
       "name": "owner",
-      "type": "principal"
+      "type": "principal",
+      "access": "variable"
     }
-  ]
+  ],
+  "maps": [],
+  "fungible_tokens": [],
+  "non_fungible_tokens": []
 };

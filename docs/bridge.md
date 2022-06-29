@@ -412,7 +412,6 @@ that the `min-to-receive` parameter is provided by the end-user.
         redeem-script: htlc-redeem,
         sats: sats,
       })
-      (event (merge escrow meta))
     )
     ;; assert tx-sender is swapper
     (asserts! (is-eq tx-sender (unwrap! (map-get? swapper-by-id swapper-id) ERR_SWAPPER_NOT_FOUND)) ERR_UNAUTHORIZED)
@@ -424,7 +423,10 @@ that the `min-to-receive` parameter is provided by the end-user.
     (asserts! (>= xbtc min-to-receive) ERR_INCONSISTENT_FEES)
     (map-set supplier-funds supplier-id new-funds)
     (map-set supplier-escrow supplier-id new-escrow)
-    (print (merge event { topic: "escrow" }))
+    (print (merge (merge escrow meta) { 
+      topic: "escrow",
+      txid: txid,
+    }))
     (ok meta)
   )
 )
@@ -454,7 +456,7 @@ BTC tx was confirmed. |
 
 ### finalize-swap
 
-[View in file](../contracts/bridge.clar#L367)
+[View in file](../contracts/bridge.clar#L369)
 
 `(define-public (finalize-swap ((txid (buff 32)) (preimage (buff 128))) (response (tuple (expiration uint) (hash (buff 32)) (supplier uint) (swapper uint) (xbtc uint)) uint))`
 
@@ -487,6 +489,11 @@ escrowing the swap.
       (asserts! (>= (get expiration swap) block-height) ERR_ESCROW_EXPIRED)
       (map-set supplier-escrow supplier-id (- escrowed xbtc))
       (update-user-inbound-volume swapper xbtc)
+      (print (merge swap {
+        preimage: preimage,
+        topic: "finalize-inbound",
+        txid: txid,
+      }))
       (ok swap)
     )
   )
@@ -504,7 +511,7 @@ escrowing the swap.
 
 ### revoke-expired-inbound
 
-[View in file](../contracts/bridge.clar#L404)
+[View in file](../contracts/bridge.clar#L411)
 
 `(define-public (revoke-expired-inbound ((txid (buff 32))) (response (tuple (expiration uint) (hash (buff 32)) (supplier uint) (swapper uint) (xbtc uint)) uint))`
 
@@ -543,6 +550,10 @@ REVOKED_INBOUND_PREIMAGE (0x00).
       (map-insert inbound-preimages txid REVOKED_INBOUND_PREIMAGE)
       (map-set supplier-escrow supplier-id new-escrow)
       (map-set supplier-funds supplier-id new-funds)
+      (print (merge swap {
+        topic: "revoke-inbound",
+        txid: txid,
+      }))
       (ok swap)
     )
   )
@@ -559,7 +570,7 @@ REVOKED_INBOUND_PREIMAGE (0x00).
 
 ### initiate-outbound-swap
 
-[View in file](../contracts/bridge.clar#L437)
+[View in file](../contracts/bridge.clar#L448)
 
 `(define-public (initiate-outbound-swap ((xbtc uint) (btc-version (buff 1)) (btc-hash (buff 20)) (supplier-id uint)) (response uint uint))`
 
@@ -594,6 +605,10 @@ Swapper provides the amount of xBTC and their withdraw address.
     (try! (transfer xbtc tx-sender (as-contract tx-sender)))
     (asserts! (map-insert outbound-swaps swap-id swap) ERR_PANIC)
     (var-set next-outbound-id (+ swap-id u1))
+    (print (merge swap {
+      swap-id: swap-id,
+      topic: "initiate-outbound",
+    }))
     (ok swap-id)
   )
 )
@@ -612,7 +627,7 @@ Swapper provides the amount of xBTC and their withdraw address.
 
 ### finalize-outbound-swap
 
-[View in file](../contracts/bridge.clar#L476)
+[View in file](../contracts/bridge.clar#L491)
 
 `(define-public (finalize-outbound-swap ((block (tuple (header (buff 80)) (height uint))) (prev-blocks (list 10 (buff 80))) (tx (buff 1024)) (proof (tuple (hashes (list 12 (buff 32))) (tree-depth uint) (tx-index uint))) (output-index uint) (swap-id uint)) (response bool uint))`
 
@@ -655,6 +670,11 @@ This method is called by the supplier after they've sent the swapper BTC.
     (asserts! (map-insert completed-outbound-swap-txids txid swap-id) ERR_TXID_USED)
     (asserts! (>= output-sats (get sats swap)) ERR_INSUFFICIENT_AMOUNT)
     (update-user-outbound-volume (get swapper swap) xbtc)
+    (print (merge swap {
+      topic: "finalize-outbound",
+      txid: txid,
+      swap-id: swap-id,
+    }))
     (ok true)
   )
 )
@@ -678,7 +698,7 @@ BTC tx was confirmed. |
 
 ### revoke-expired-outbound
 
-[View in file](../contracts/bridge.clar#L516)
+[View in file](../contracts/bridge.clar#L536)
 
 `(define-public (revoke-expired-outbound ((swap-id uint)) (response (tuple (created-at uint) (hash (buff 20)) (sats uint) (supplier uint) (swapper principal) (version (buff 1)) (xbtc uint)) uint))`
 
@@ -702,6 +722,10 @@ to receive the xBTC escrowed.
     )
     (try! (as-contract (transfer xbtc tx-sender swapper)))
     (asserts! (map-insert completed-outbound-swaps swap-id REVOKED_OUTBOUND_TXID) ERR_PANIC)
+    (print (merge swap {
+      topic: "revoke-outbound",
+      swap-id: swap-id,
+    }))
     (ok swap)
   )
 )
@@ -717,7 +741,7 @@ to receive the xBTC escrowed.
 
 ### get-supplier-id-by-controller
 
-[View in file](../contracts/bridge.clar#L531)
+[View in file](../contracts/bridge.clar#L555)
 
 `(define-read-only (get-supplier-id-by-controller ((controller principal)) (optional uint))`
 
@@ -742,7 +766,7 @@ to receive the xBTC escrowed.
 
 ### get-supplier-id-by-public-key
 
-[View in file](../contracts/bridge.clar#L535)
+[View in file](../contracts/bridge.clar#L559)
 
 `(define-read-only (get-supplier-id-by-public-key ((public-key (buff 33))) (optional uint))`
 
@@ -767,7 +791,7 @@ to receive the xBTC escrowed.
 
 ### get-supplier
 
-[View in file](../contracts/bridge.clar#L539)
+[View in file](../contracts/bridge.clar#L563)
 
 `(define-read-only (get-supplier ((id uint)) (optional (tuple (controller principal) (inbound-base-fee int) (inbound-fee (optional int)) (outbound-base-fee int) (outbound-fee (optional int)) (public-key (buff 33)))))`
 
@@ -792,7 +816,7 @@ to receive the xBTC escrowed.
 
 ### get-funds
 
-[View in file](../contracts/bridge.clar#L543)
+[View in file](../contracts/bridge.clar#L567)
 
 `(define-read-only (get-funds ((id uint)) uint)`
 
@@ -817,7 +841,7 @@ to receive the xBTC escrowed.
 
 ### get-escrow
 
-[View in file](../contracts/bridge.clar#L547)
+[View in file](../contracts/bridge.clar#L571)
 
 `(define-read-only (get-escrow ((id uint)) (optional uint))`
 
@@ -842,7 +866,7 @@ to receive the xBTC escrowed.
 
 ### get-inbound-swap
 
-[View in file](../contracts/bridge.clar#L551)
+[View in file](../contracts/bridge.clar#L575)
 
 `(define-read-only (get-inbound-swap ((txid (buff 32))) (optional (tuple (expiration uint) (hash (buff 32)) (supplier uint) (swapper uint) (xbtc uint))))`
 
@@ -867,7 +891,7 @@ to receive the xBTC escrowed.
 
 ### get-preimage
 
-[View in file](../contracts/bridge.clar#L555)
+[View in file](../contracts/bridge.clar#L579)
 
 `(define-read-only (get-preimage ((txid (buff 32))) (optional (buff 128)))`
 
@@ -892,7 +916,7 @@ to receive the xBTC escrowed.
 
 ### get-outbound-swap
 
-[View in file](../contracts/bridge.clar#L559)
+[View in file](../contracts/bridge.clar#L583)
 
 `(define-read-only (get-outbound-swap ((id uint)) (optional (tuple (created-at uint) (hash (buff 20)) (sats uint) (supplier uint) (swapper principal) (version (buff 1)) (xbtc uint))))`
 
@@ -917,7 +941,7 @@ to receive the xBTC escrowed.
 
 ### get-completed-outbound-swap-txid
 
-[View in file](../contracts/bridge.clar#L563)
+[View in file](../contracts/bridge.clar#L587)
 
 `(define-read-only (get-completed-outbound-swap-txid ((id uint)) (optional (buff 32)))`
 
@@ -942,7 +966,7 @@ to receive the xBTC escrowed.
 
 ### get-completed-outbound-swap-by-txid
 
-[View in file](../contracts/bridge.clar#L567)
+[View in file](../contracts/bridge.clar#L591)
 
 `(define-read-only (get-completed-outbound-swap-by-txid ((txid (buff 32))) (optional uint))`
 
@@ -967,7 +991,7 @@ to receive the xBTC escrowed.
 
 ### get-swapper-id
 
-[View in file](../contracts/bridge.clar#L571)
+[View in file](../contracts/bridge.clar#L595)
 
 `(define-read-only (get-swapper-id ((swapper principal)) (optional uint))`
 
@@ -992,7 +1016,7 @@ to receive the xBTC escrowed.
 
 ### get-swapper-principal
 
-[View in file](../contracts/bridge.clar#L575)
+[View in file](../contracts/bridge.clar#L599)
 
 `(define-read-only (get-swapper-principal ((id uint)) (optional principal))`
 
@@ -1017,7 +1041,7 @@ to receive the xBTC escrowed.
 
 ### get-next-supplier-id
 
-[View in file](../contracts/bridge.clar#L579)
+[View in file](../contracts/bridge.clar#L603)
 
 `(define-read-only (get-next-supplier-id () uint)`
 
@@ -1036,7 +1060,7 @@ to receive the xBTC escrowed.
 
 ### get-next-swapper-id
 
-[View in file](../contracts/bridge.clar#L580)
+[View in file](../contracts/bridge.clar#L604)
 
 `(define-read-only (get-next-swapper-id () uint)`
 
@@ -1055,7 +1079,7 @@ to receive the xBTC escrowed.
 
 ### get-next-outbound-id
 
-[View in file](../contracts/bridge.clar#L581)
+[View in file](../contracts/bridge.clar#L605)
 
 `(define-read-only (get-next-outbound-id () uint)`
 
@@ -1074,7 +1098,7 @@ to receive the xBTC escrowed.
 
 ### get-full-supplier
 
-[View in file](../contracts/bridge.clar#L583)
+[View in file](../contracts/bridge.clar#L607)
 
 `(define-read-only (get-full-supplier ((id uint)) (response (tuple (controller principal) (escrow uint) (funds uint) (inbound-base-fee int) (inbound-fee (optional int)) (outbound-base-fee int) (outbound-fee (optional int)) (public-key (buff 33))) uint))`
 
@@ -1106,7 +1130,7 @@ to receive the xBTC escrowed.
 
 ### get-inbound-meta
 
-[View in file](../contracts/bridge.clar#L594)
+[View in file](../contracts/bridge.clar#L618)
 
 `(define-read-only (get-inbound-meta ((txid (buff 32))) (optional (tuple (csv uint) (output-index uint) (redeem-script (buff 120)) (sats uint) (sender-public-key (buff 33)))))`
 
@@ -1131,7 +1155,7 @@ to receive the xBTC escrowed.
 
 ### get-full-inbound
 
-[View in file](../contracts/bridge.clar#L598)
+[View in file](../contracts/bridge.clar#L622)
 
 `(define-read-only (get-full-inbound ((txid (buff 32))) (response (tuple (csv uint) (expiration uint) (hash (buff 32)) (output-index uint) (redeem-script (buff 120)) (sats uint) (sender-public-key (buff 33)) (supplier uint) (swapper uint) (swapper-principal principal) (xbtc uint)) uint))`
 
@@ -1163,7 +1187,7 @@ to receive the xBTC escrowed.
 
 ### get-user-inbound-volume
 
-[View in file](../contracts/bridge.clar#L609)
+[View in file](../contracts/bridge.clar#L633)
 
 `(define-read-only (get-user-inbound-volume ((user principal)) uint)`
 
@@ -1191,7 +1215,7 @@ to receive the xBTC escrowed.
 
 ### get-total-inbound-volume
 
-[View in file](../contracts/bridge.clar#L616)
+[View in file](../contracts/bridge.clar#L640)
 
 `(define-read-only (get-total-inbound-volume () uint)`
 
@@ -1210,7 +1234,7 @@ to receive the xBTC escrowed.
 
 ### get-user-outbound-volume
 
-[View in file](../contracts/bridge.clar#L618)
+[View in file](../contracts/bridge.clar#L642)
 
 `(define-read-only (get-user-outbound-volume ((user principal)) uint)`
 
@@ -1238,7 +1262,7 @@ to receive the xBTC escrowed.
 
 ### get-total-outbound-volume
 
-[View in file](../contracts/bridge.clar#L625)
+[View in file](../contracts/bridge.clar#L649)
 
 `(define-read-only (get-total-outbound-volume () uint)`
 
@@ -1257,7 +1281,7 @@ to receive the xBTC escrowed.
 
 ### get-user-total-volume
 
-[View in file](../contracts/bridge.clar#L627)
+[View in file](../contracts/bridge.clar#L651)
 
 `(define-read-only (get-user-total-volume ((user principal)) uint)`
 
@@ -1282,7 +1306,7 @@ to receive the xBTC escrowed.
 
 ### get-total-volume
 
-[View in file](../contracts/bridge.clar#L631)
+[View in file](../contracts/bridge.clar#L655)
 
 `(define-read-only (get-total-volume () uint)`
 
@@ -1303,7 +1327,7 @@ to receive the xBTC escrowed.
 
 ### transfer
 
-[View in file](../contracts/bridge.clar#L637)
+[View in file](../contracts/bridge.clar#L661)
 
 `(define-private (transfer ((amount uint) (sender principal) (recipient principal)) (response bool uint))`
 
@@ -1314,7 +1338,7 @@ to receive the xBTC escrowed.
 
 ```clarity
 (define-private (transfer (amount uint) (sender principal) (recipient principal))
-  (match (contract-call? .xbtc transfer amount sender recipient none)
+  (match (contract-call? 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin transfer amount sender recipient none)
     success (ok success)
     error (begin
       (print { transfer-error: error })
@@ -1336,7 +1360,7 @@ to receive the xBTC escrowed.
 
 ### concat-buffs
 
-[View in file](../contracts/bridge.clar#L647)
+[View in file](../contracts/bridge.clar#L671)
 
 `(define-read-only (concat-buffs ((buffs (list 6 (buff 32)))) (buff 192))`
 
@@ -1367,7 +1391,7 @@ to receive the xBTC escrowed.
 
 ### concat-buffs-fold
 
-[View in file](../contracts/bridge.clar#L657)
+[View in file](../contracts/bridge.clar#L681)
 
 `(define-private (concat-buffs-fold ((b (buff 32)) (result (buff 192))) (buff 192))`
 
@@ -1402,7 +1426,7 @@ to receive the xBTC escrowed.
 
 ### get-swap-amount
 
-[View in file](../contracts/bridge.clar#L670)
+[View in file](../contracts/bridge.clar#L694)
 
 `(define-read-only (get-swap-amount ((amount uint) (fee-rate int) (base-fee int)) (response uint uint))`
 
@@ -1437,7 +1461,7 @@ to receive the xBTC escrowed.
 
 ### get-amount-with-fee-rate
 
-[View in file](../contracts/bridge.clar#L682)
+[View in file](../contracts/bridge.clar#L706)
 
 `(define-read-only (get-amount-with-fee-rate ((amount uint) (fee-rate int)) int)`
 
@@ -1469,7 +1493,7 @@ to receive the xBTC escrowed.
 
 ### update-user-inbound-volume
 
-[View in file](../contracts/bridge.clar#L692)
+[View in file](../contracts/bridge.clar#L716)
 
 `(define-private (update-user-inbound-volume ((user principal) (amount uint)) bool)`
 
@@ -1503,7 +1527,7 @@ to receive the xBTC escrowed.
 
 ### update-user-outbound-volume
 
-[View in file](../contracts/bridge.clar#L704)
+[View in file](../contracts/bridge.clar#L728)
 
 `(define-private (update-user-outbound-volume ((user principal) (amount uint)) bool)`
 
@@ -1537,7 +1561,7 @@ to receive the xBTC escrowed.
 
 ### validate-expiration
 
-[View in file](../contracts/bridge.clar#L718)
+[View in file](../contracts/bridge.clar#L742)
 
 `(define-read-only (validate-expiration ((expiration uint) (mined-height uint)) (response bool uint))`
 
@@ -1566,7 +1590,7 @@ to receive the xBTC escrowed.
 
 ### validate-fee
 
-[View in file](../contracts/bridge.clar#L725)
+[View in file](../contracts/bridge.clar#L749)
 
 `(define-read-only (validate-fee ((fee-opt (optional int))) (response bool uint))`
 
@@ -1602,7 +1626,7 @@ to receive the xBTC escrowed.
 
 ### validate-btc-addr
 
-[View in file](../contracts/bridge.clar#L740)
+[View in file](../contracts/bridge.clar#L764)
 
 `(define-read-only (validate-btc-addr ((version (buff 1)) (hash (buff 20))) (response bool uint))`
 
@@ -1635,7 +1659,7 @@ to receive the xBTC escrowed.
 
 ### validate-outbound-revocable
 
-[View in file](../contracts/bridge.clar#L753)
+[View in file](../contracts/bridge.clar#L777)
 
 `(define-read-only (validate-outbound-revocable ((swap-id uint)) (response (tuple (created-at uint) (hash (buff 20)) (sats uint) (supplier uint) (swapper principal) (version (buff 1)) (xbtc uint)) uint))`
 
@@ -1652,7 +1676,7 @@ to be revoked, it must be expired and not finalized
       (swap (unwrap! (get-outbound-swap swap-id) ERR_SWAP_NOT_FOUND))
       (finalize-txid (get-completed-outbound-swap-txid swap-id))
       (swap-expiration (+ (get created-at swap) OUTBOUND_EXPIRATION))
-      (is-expired (>= block-height swap-expiration))
+      (is-expired (>= burn-block-height swap-expiration))
       (is-not-finalized (is-none finalize-txid))
     )
     (asserts! is-expired ERR_REVOKE_OUTBOUND_NOT_EXPIRED)
@@ -1672,7 +1696,7 @@ to be revoked, it must be expired and not finalized
 
 ### generate-htlc-script
 
-[View in file](../contracts/bridge.clar#L770)
+[View in file](../contracts/bridge.clar#L794)
 
 `(define-read-only (generate-htlc-script ((sender (buff 33)) (recipient (buff 33)) (expiration (buff 4)) (hash (buff 32)) (swapper (buff 4))) (buff 120))`
 
@@ -1723,7 +1747,7 @@ to be revoked, it must be expired and not finalized
 
 ### generate-script-hash
 
-[View in file](../contracts/bridge.clar#L796)
+[View in file](../contracts/bridge.clar#L820)
 
 `(define-read-only (generate-script-hash ((script (buff 120))) (buff 23))`
 
@@ -1748,7 +1772,7 @@ to be revoked, it must be expired and not finalized
 
 ### generate-htlc-script-hash
 
-[View in file](../contracts/bridge.clar#L800)
+[View in file](../contracts/bridge.clar#L824)
 
 `(define-read-only (generate-htlc-script-hash ((sender (buff 33)) (recipient (buff 33)) (expiration (buff 4)) (hash (buff 32)) (swapper (buff 4))) (buff 23))`
 
@@ -1783,7 +1807,7 @@ to be revoked, it must be expired and not finalized
 
 ### generate-p2pkh-output
 
-[View in file](../contracts/bridge.clar#L810)
+[View in file](../contracts/bridge.clar#L834)
 
 `(define-read-only (generate-p2pkh-output ((hash (buff 20))) (buff 25))`
 
@@ -1808,7 +1832,7 @@ to be revoked, it must be expired and not finalized
 
 ### generate-p2sh-output
 
-[View in file](../contracts/bridge.clar#L814)
+[View in file](../contracts/bridge.clar#L838)
 
 `(define-read-only (generate-p2sh-output ((hash (buff 20))) (buff 23))`
 
@@ -1833,7 +1857,7 @@ to be revoked, it must be expired and not finalized
 
 ### generate-output
 
-[View in file](../contracts/bridge.clar#L822)
+[View in file](../contracts/bridge.clar#L846)
 
 `(define-read-only (generate-output ((version (buff 1)) (hash (buff 20))) (buff 25))`
 
@@ -1865,7 +1889,7 @@ so it should only ever be these two.
 
 ### bytes-len
 
-[View in file](../contracts/bridge.clar#L829)
+[View in file](../contracts/bridge.clar#L853)
 
 `(define-read-only (bytes-len ((bytes (buff 4))) (buff 1))`
 
@@ -1890,7 +1914,7 @@ so it should only ever be these two.
 
 ### read-uint32
 
-[View in file](../contracts/bridge.clar#L836)
+[View in file](../contracts/bridge.clar#L860)
 
 `(define-read-only (read-uint32 ((num (buff 4)) (length uint)) (response uint uint))`
 
@@ -1924,7 +1948,7 @@ little-endian
 
 ### buff-to-u8
 
-[View in file](../contracts/bridge.clar#L848)
+[View in file](../contracts/bridge.clar#L872)
 
 `(define-read-only (buff-to-u8 ((byte (buff 1))) uint)`
 

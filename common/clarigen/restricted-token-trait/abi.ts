@@ -1,7 +1,7 @@
 import { ClarityAbi } from '@clarigen/core';
 
 // prettier-ignore
-export const FtTraitInterface: ClarityAbi = {
+export const RestrictedTokenTraitInterface: ClarityAbi = {
   "functions": [],
   "variables": [],
   "maps": [],

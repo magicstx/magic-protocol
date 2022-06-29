@@ -659,7 +659,7 @@
 ;; helpers
 
 (define-private (transfer (amount uint) (sender principal) (recipient principal))
-  (match (contract-call? .xbtc transfer amount sender recipient none)
+  (match (contract-call? 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin transfer amount sender recipient none)
     success (ok success)
     error (begin
       (print { transfer-error: error })
