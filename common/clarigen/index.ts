@@ -5,12 +5,14 @@ import { wrappedBitcoinInfo } from './Wrapped-Bitcoin';
 import { testUtilsInfo } from './test-utils';
 import { clarityBitcoinInfo } from './clarity-bitcoin';
 import { bridgeInfo } from './bridge';
+import { supplierWrapperInfo } from './supplier-wrapper';
 export type { FtTraitContract } from './ft-trait';
 export type { RestrictedTokenTraitContract } from './restricted-token-trait';
 export type { WrappedBitcoinContract } from './Wrapped-Bitcoin';
 export type { TestUtilsContract } from './test-utils';
 export type { ClarityBitcoinContract } from './clarity-bitcoin';
 export type { BridgeContract } from './bridge';
+export type { SupplierWrapperContract } from './supplier-wrapper';
 
 export type Contracts = ContractInstances<typeof contracts>;
 
@@ -21,6 +23,7 @@ export const contracts = {
   testUtils: testUtilsInfo,
   clarityBitcoin: clarityBitcoinInfo,
   bridge: bridgeInfo,
+  supplierWrapper: supplierWrapperInfo,
 };
 
 // prettier-ignore

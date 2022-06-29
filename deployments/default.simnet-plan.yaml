@@ -54,14 +54,6 @@ plan:
             contract-name: Wrapped-Bitcoin
             emulated-sender: SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR
             path: ".clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin.clar"
-        # - emulated-contract-publish:
-        #     contract-name: ft-trait
-        #     emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-        #     path: contracts/ft-trait.clar
-        # - emulated-contract-publish:
-        #     contract-name: xbtc
-        #     emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-        #     path: contracts/xbtc.clar
         - emulated-contract-publish:
             contract-name: test-utils
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
@@ -74,8 +66,8 @@ plan:
             contract-name: bridge
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/bridge.clar
-        # - emulated-contract-publish:
-        #     contract-name: supplier-wrapper
-        #     emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-        #     path: contracts/supplier-wrapper.clar
+        - emulated-contract-publish:
+            contract-name: supplier-wrapper
+            emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+            path: contracts/supplier-wrapper.clar
         

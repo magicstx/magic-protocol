@@ -17,7 +17,7 @@
     ;; here, you can do special logic to move funds into a sub-protocol
 
     ;; refunding fees:
-    (try! (as-contract (contract-call? .xbtc transfer fee tx-sender swapper none)))
+    (try! (as-contract (contract-call? 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin transfer fee tx-sender swapper none)))
     (ok swap)
   )
 )

@@ -104,6 +104,13 @@ export const simnetDeployment = {
               path: 'contracts/bridge.clar',
             },
           },
+          {
+            'emulated-contract-publish': {
+              'contract-name': 'supplier-wrapper',
+              'emulated-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              path: 'contracts/supplier-wrapper.clar',
+            },
+          },
         ],
       },
     ],

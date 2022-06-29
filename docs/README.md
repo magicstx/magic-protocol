@@ -6,3 +6,4 @@
 - [`test-utils`](contracts/test/test-utils.md)
 - [`clarity-bitcoin`](contracts/test/clarity-bitcoin.md)
 - [`bridge`](contracts/bridge.md)
+- [`supplier-wrapper`](contracts/supplier-wrapper.md)
