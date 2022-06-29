@@ -339,7 +339,6 @@
         redeem-script: htlc-redeem,
         sats: sats,
       })
-      (event (merge escrow meta))
     )
     ;; assert tx-sender is swapper
     (asserts! (is-eq tx-sender (unwrap! (map-get? swapper-by-id swapper-id) ERR_SWAPPER_NOT_FOUND)) ERR_UNAUTHORIZED)
@@ -351,7 +350,10 @@
     (asserts! (>= xbtc min-to-receive) ERR_INCONSISTENT_FEES)
     (map-set supplier-funds supplier-id new-funds)
     (map-set supplier-escrow supplier-id new-escrow)
-    (print (merge event { topic: "escrow" }))
+    (print (merge (merge escrow meta) { 
+      topic: "escrow",
+      txid: txid,
+    }))
     (ok meta)
   )
 )
@@ -382,6 +384,11 @@
       (asserts! (>= (get expiration swap) block-height) ERR_ESCROW_EXPIRED)
       (map-set supplier-escrow supplier-id (- escrowed xbtc))
       (update-user-inbound-volume swapper xbtc)
+      (print (merge swap {
+        preimage: preimage,
+        topic: "finalize-inbound",
+        txid: txid,
+      }))
       (ok swap)
     )
   )
@@ -418,6 +425,10 @@
       (map-insert inbound-preimages txid REVOKED_INBOUND_PREIMAGE)
       (map-set supplier-escrow supplier-id new-escrow)
       (map-set supplier-funds supplier-id new-funds)
+      (print (merge swap {
+        topic: "revoke-inbound",
+        txid: txid,
+      }))
       (ok swap)
     )
   )
@@ -455,6 +466,10 @@
     (try! (transfer xbtc tx-sender (as-contract tx-sender)))
     (asserts! (map-insert outbound-swaps swap-id swap) ERR_PANIC)
     (var-set next-outbound-id (+ swap-id u1))
+    (print (merge swap {
+      swap-id: swap-id,
+      topic: "initiate-outbound",
+    }))
     (ok swap-id)
   )
 )
@@ -502,6 +517,11 @@
     (asserts! (map-insert completed-outbound-swap-txids txid swap-id) ERR_TXID_USED)
     (asserts! (>= output-sats (get sats swap)) ERR_INSUFFICIENT_AMOUNT)
     (update-user-outbound-volume (get swapper swap) xbtc)
+    (print (merge swap {
+      topic: "finalize-outbound",
+      txid: txid,
+      swap-id: swap-id,
+    }))
     (ok true)
   )
 )
@@ -522,6 +542,10 @@
     )
     (try! (as-contract (transfer xbtc tx-sender swapper)))
     (asserts! (map-insert completed-outbound-swaps swap-id REVOKED_OUTBOUND_TXID) ERR_PANIC)
+    (print (merge swap {
+      topic: "revoke-outbound",
+      swap-id: swap-id,
+    }))
     (ok swap)
   )
 )

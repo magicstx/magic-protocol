@@ -31,6 +31,14 @@ import { NativeClarityBinProvider } from '@clarigen/native-bin';
 import { ContractReturn, CoreNodeEventType, filterEvents } from '@clarigen/core';
 import { makeRandomPrivKey } from 'micro-stacks/transactions';
 import { contracts as contractDef } from '../common/clarigen/single';
+import {
+  getEscrowPrint,
+  getFinalizeInboundPrint,
+  getFinalizeOutboundPrint,
+  getInitiateOutboundPrint,
+  getRevokeInboundPrint,
+  getRevokeOutboundPrint,
+} from '../common/events';
 
 let contract: BridgeContract;
 let xbtcContract: XbtcContract;
@@ -306,7 +314,15 @@ describe('successful inbound swap', () => {
       ),
       swapper
     );
-    // logTxCosts(receipt.costs, 'escrowSwap');
+    const printEvent = getEscrowPrint(receipt.prints);
+    const { 'swapper-principal': swapperPrincipal, ...swap } = await t.rovOk(
+      contract.getFullInbound(txid)
+    );
+    expect(printEvent).toEqual({
+      ...swap,
+      topic: 'escrow',
+      txid,
+    });
   });
   test('validates that escrow stored', async () => {
     const swap = await t.rov(contract.getInboundSwap(txid));
@@ -367,7 +383,18 @@ describe('successful inbound swap', () => {
   let finalizeReceipt: PublicResultOk<any>;
 
   test('can finalize an escrow', async () => {
-    finalizeReceipt = await t.txOk(contract.finalizeSwap(txid, Buffer.from(preImage)), swapper);
+    finalizeReceipt = await t.txOk(contract.finalizeSwap(txid, preImage), swapper);
+  });
+
+  test('finalize has proper print', async () => {
+    const print = getFinalizeInboundPrint(finalizeReceipt.prints);
+    const swap = await getInboundSwap(txid);
+    expect(print).toEqual({
+      ...swap,
+      txid,
+      preimage: preImage,
+      topic: 'finalize-inbound',
+    });
   });
 
   test('validates proper amount of xbtc moved', () => {
@@ -802,6 +829,13 @@ describe('validating inbound swaps', () => {
         const escrow = (await t.rov(contract.getEscrow(supplier)))!;
         expect(funds).toEqual(fundsBefore + xbtc);
         expect(escrow).toEqual(escrowBefore - xbtc);
+
+        const print = getRevokeInboundPrint(receipt.prints);
+        expect(print).toEqual({
+          ...swap,
+          topic: 'revoke-inbound',
+          txid,
+        });
       });
 
       test('cannot revoke already revoked inbound swap', async () => {
@@ -843,6 +877,16 @@ describe('successful outbound swap', () => {
     expect(receipt.value).toEqual(swapId);
   });
 
+  test('has correct print', async () => {
+    const swap = (await t.rov(contract.getOutboundSwap(swapId)))!;
+    const print = getInitiateOutboundPrint(receipt.prints);
+    expect(print).toEqual({
+      ...swap,
+      'swap-id': swapId,
+      topic: 'initiate-outbound',
+    });
+  });
+
   test('tx sent the right amount of xbtc', async () => {
     const tokensMoved = receipt.assets.tokens[swapper][xbtcTokenId];
     expect(tokensMoved).toEqual(xbtcAmount.toString());
@@ -881,6 +925,15 @@ describe('successful outbound swap', () => {
       ),
       supplier
     );
+
+    const print = getFinalizeOutboundPrint(receipt.prints);
+    const swap = (await t.rov(contract.getOutboundSwap(swapId)))!;
+    expect(print).toEqual({
+      ...swap,
+      topic: 'finalize-outbound',
+      txid,
+      'swap-id': swapId,
+    });
   });
 
   test('Swap saved as completed', async () => {
@@ -978,6 +1031,15 @@ describe('revoking outbound swap', () => {
       expect(ftTransfer.ft_transfer_event.asset_identifier).toEqual(xbtcTokenId);
 
       expect(receipt.assets.tokens[bridgeId][xbtcTokenId]).toEqual(xbtcAmount.toString());
+
+      const swap = (await t.rov(contract.getOutboundSwap(swapId)))!;
+
+      const print = getRevokeOutboundPrint(receipt.prints);
+      expect(print).toEqual({
+        ...swap,
+        topic: 'revoke-outbound',
+        'swap-id': swapId,
+      });
     });
 
     test('cannot finalize an outbound swap after revoked', async () => {
