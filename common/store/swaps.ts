@@ -6,10 +6,11 @@ import { getRandomBytes } from 'micro-stacks/crypto';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { getFile } from 'micro-stacks/storage';
 import { generateHTLCAddress } from '../htlc';
-import { Supplier, QueryKeys } from './index';
+import { Supplier, QueryKeys, finalizedOutboundSwapState } from './index';
 import { atomWithQuery } from 'jotai-query-toolkit';
 import { fetchPrivate } from 'micro-stacks/common';
 import { TransactionStatus } from '../api/stacks';
+import { stxTxResultState } from './api';
 
 export const swapIdState = atom<string | undefined>(undefined);
 
@@ -232,3 +233,39 @@ export const swapsListState = atomWithQuery<SwapListItem[]>(QueryKeys.SWAPS_LIST
 });
 
 export const useSwapKeys = () => useQueryAtom(swapsListState);
+
+type FullOutboundSwap = OutboundSwapStarted & {
+  finalizeTxid?: string;
+  swapId?: number;
+};
+
+export const fullOutboundSwapState = atomFamilyWithQuery<string, FullOutboundSwap>(
+  (get, storageId) => ['OUTBOUND_SWAP_FULL', storageId],
+  (get, storageId) => {
+    const swap: FullOutboundSwap = get(outboundSwapStorageState(storageId));
+    const swapId = get(stxTxResultState(swap.txId)) as bigint | null;
+    if (typeof swapId === 'bigint') {
+      const finalizeTxid = get(finalizedOutboundSwapState(swapId.toString()));
+      if (typeof finalizeTxid === 'string') {
+        swap.finalizeTxid = finalizeTxid;
+      }
+      return {
+        ...swap,
+        swapId: Number(swapId),
+      };
+    }
+    return swap;
+  }
+);
+
+export const allSwapsState = atom<(InboundSwap | FullOutboundSwap)[]>(get => {
+  const keys = get(swapsListState);
+  const items = keys.map(({ dir, id }) => {
+    if (dir === 'outbound') {
+      return get(fullOutboundSwapState(id));
+    }
+    const swap = get(inboundSwapState(id));
+    return swap;
+  });
+  return items;
+});
