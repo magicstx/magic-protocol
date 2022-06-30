@@ -15,7 +15,12 @@
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit",
-    "electrum_server": "docker run -it -p 50001:50001 -e COIN=\"Bitcoin\" -e NET=\"regtest\" -e DAEMON_URL=\"http://devnet:devnet@host.docker.internal:18443\" lukechilds/electrumx"
+    "electrum_server": "docker run -it -p 50001:50001 -e COIN=\"Bitcoin\" -e NET=\"regtest\" -e DAEMON_URL=\"http://devnet:devnet@host.docker.internal:18443\" lukechilds/electrumx",
+    "gen:types": "clarinet run https://deno.land/x/clarigen@v0.2.4/cli/run.ts --allow-write",
+    "gen:deployments": "deno run --allow-read --allow-write https://deno.land/x/clarigen@v0.2.4/cli/gen-deployments.ts",
+    "move-types": "cp -f -r artifacts/clarigen/ common/clarigen && rm -rf artifacts",
+    "fmt-types": "prettier -w \"artifacts/clarigen/**/*.ts\"",
+    "gen": "yarn gen:deployments && yarn gen:types && yarn fmt-types && yarn move-types"
   },
   "prettier": "@stacks/prettier-config",
   "dependencies": {
