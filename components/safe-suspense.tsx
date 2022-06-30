@@ -3,16 +3,44 @@ import { IS_SSR } from 'jotai-query-toolkit';
 import { Flex } from '@nelson-ui/react';
 import { StarIcon } from './icons/star';
 import { keyframes } from '@nelson-ui/core';
+import { Box } from '@nelson-ui/react';
+import { styled } from '@stitches/react';
 
 const spin = keyframes({
   '0%': { transform: 'rotateY(0deg)' },
   '100%': { transform: 'rotateY(360deg)' },
 });
 
+const circleSpin = keyframes({
+  '0%': { transform: 'rotate(0deg)' },
+  '100%': { transform: 'rotate(360deg)' },
+});
+
+const CircleBorder = styled(Box, {
+  width: '150px',
+  height: '150px',
+  padding: '3px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius: '50%',
+  background: 'linear-gradient(0deg, rgba(245, 245, 245, 0.1) 33%, rgba(245, 245, 245, 1) 100%)',
+});
+
+const CircleCore = styled(Box, {
+  width: '100%',
+  height: '100%',
+  backgroundColor: '$background',
+  borderRadius: '50%',
+});
+
 const LoadingEl: React.FC = () => {
   return (
     <Flex alignItems="center" justifyContent="center">
-      <StarIcon h={200} opacity={0.6} animation={`${spin()} 3s linear infinite`} />
+      {/* <StarIcon h={200} opacity={0.6} animation={`${spin()} 3s linear infinite`} /> */}
+      <CircleBorder animation={`${circleSpin()} .8s linear 0s infinite`}>
+        <CircleCore />
+      </CircleBorder>
     </Flex>
   );
 };
