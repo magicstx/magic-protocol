@@ -115,6 +115,7 @@ export const SwapField: React.FC<SwapFieldProps> = ({ dir }) => {
       return {
         onChange: amount.onChange,
         value: amount.value,
+        autoFocus: true,
       };
     }
     return {
