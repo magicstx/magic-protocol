@@ -27,9 +27,9 @@
       "replaced": "0.1.17"
     },
     "@clarigen/core": {
-      "signature": "6e3e0670bd811f656f3df1b231d5f240",
+      "signature": "a5b1648fe1d2d69b83faba87b6ef09e8",
       "file": true,
-      "replaced": "1.0.0-next.25"
+      "replaced": "1.0.0-next.26"
     },
     "micro-stacks": {
       "signature": "db11499a1a2758b52d0afbc5e827dd80",

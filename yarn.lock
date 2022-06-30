@@ -628,6 +628,13 @@
   dependencies:
     micro-stacks "^0.5.2"
 
+"@clarigen/core@1.0.0-next.27":
+  version "1.0.0-next.27"
+  resolved "https://registry.yarnpkg.com/@clarigen/core/-/core-1.0.0-next.27.tgz#68f437bf6176d31d7a2752f28e061914f895033a"
+  integrity sha512-Gsxmm3SLZlOUVjrfN4fq30V4zn10fXLY5L6wzxRvVyUqKJl0AG7OgkObJyW2BWOYV7MeEmeavV1d2dEBf+Hf+w==
+  dependencies:
+    micro-stacks "^0.5.2"
+
 "@clarigen/native-bin@1.0.0-next.25":
   version "1.0.0-next.25"
   resolved "https://registry.yarnpkg.com/@clarigen/native-bin/-/native-bin-1.0.0-next.25.tgz#402be85318189bf9fccc347334dd1f05a55112aa"
