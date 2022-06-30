@@ -4,19 +4,15 @@ import 'cross-fetch/polyfill';
 config({
   path: '.env.local',
 });
-import { tx } from '@clarigen/node';
 import { logTxid, OPERATOR_KEY, setupScript, SWAPPER_KEY } from './helpers';
 import { PostConditionMode } from 'micro-stacks/transactions';
-import { CONTRACT_ADDRESS } from '../common/constants';
 import { hexToBytes } from 'micro-stacks/common';
 
 const [pubKey, amt, inboundFee, outboundFee, inboundBase, outboundBase] = process.argv.slice(2);
 
 async function run() {
-  console.log('CONTRACT_ADDRESS', CONTRACT_ADDRESS);
   console.log('OPERATOR_KEY', OPERATOR_KEY);
-  const { bridge, nonce, network, provider } = await setupScript(OPERATOR_KEY);
-  console.log('nonce', nonce);
+  const { bridge, network, provider } = await setupScript(OPERATOR_KEY);
 
   const amount = 1_000_000_000n; // 10 xbtc
   const pubHex = pubKey || process.env.BTC_PUBLIC!;

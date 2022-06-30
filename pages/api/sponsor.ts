@@ -8,12 +8,14 @@ import {
 import { NextApiRequest, NextApiResponse } from 'next';
 import { fetchAccountNonce } from '../../common/api/stacks';
 import { sponsorAddress } from '../../common/api-constants';
-import { network, TYPED_CLARITY_ADDRESS } from '../../common/constants';
-// import { sponsorTransaction } from '@stacks/transactions';
+import { network } from '../../common/constants';
+import { createAddress } from 'micro-stacks/clarity';
+import { bridgeAddress } from '../../common/contracts';
 
 function validateTransaction(tx: StacksTransaction) {
   if (tx.payload.payloadType !== 2) return false;
-  if (tx.payload.contractAddress.hash160 !== TYPED_CLARITY_ADDRESS.hash160) return false;
+  const address = createAddress(bridgeAddress());
+  if (tx.payload.contractAddress.hash160 !== address.hash160) return false;
   return true;
 }
 

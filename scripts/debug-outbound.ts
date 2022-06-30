@@ -5,7 +5,7 @@ import { hexToCV, UIntCV } from 'micro-stacks/clarity';
 // import { network } from '../common/constants';
 import { StacksTestnet } from 'micro-stacks/network';
 import { cvToValue } from '@clarigen/core';
-import { BridgeContract } from '../common/clarigen';
+import { BridgeContract } from '../common/contracts';
 import { getOutboundAddress } from '../common/utils';
 import { OPERATOR_KEY, setupScript } from './helpers';
 import { bytesToHex } from 'micro-stacks/common';
@@ -25,8 +25,8 @@ async function run() {
     url: network.getCoreApiUrl(),
   })) as ContractCallTransaction;
 
-  const { provider, bridge, contracts } = await setupScript(OPERATOR_KEY);
-  const clarityBtc = contracts.clarityBitcoin.contract;
+  const { provider, bridge, contracts } = setupScript(OPERATOR_KEY);
+  const clarityBtc = contracts.clarityBitcoin;
 
   const swapId = cvToValue<number>(hexToCV<UIntCV>(tx.tx_result.hex));
 

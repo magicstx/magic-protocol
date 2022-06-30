@@ -1,12 +1,9 @@
 import { hexToBytes, IntegerType } from 'micro-stacks/common';
 import {
-  createAssetInfo,
   FungibleConditionCode,
   makeContractFungiblePostCondition,
-  PostConditionMode,
 } from 'micro-stacks/transactions';
-import { CONTRACT_ADDRESS } from '../../constants';
-import { InboundSwap } from '../../store';
+import { bridgeAddress, xbtcAssetInfo } from '../../contracts';
 import { useTx } from '../use-tx';
 
 interface FinalizeSwap {
@@ -21,14 +18,14 @@ export const useFinalizeInbound = ({ txid, preimage, xbtc }: FinalizeSwap) => {
     // if (!swap) throw new Error('Missing swap');
     const txBuff = Buffer.from(txid, 'hex');
     const preimageBuff = Buffer.from(hexToBytes(preimage));
-    const tx = contracts.bridge.contract.finalizeSwap(txBuff, preimageBuff);
+    const tx = contracts.bridge.finalizeSwap(txBuff, preimageBuff);
 
     const postCondition = makeContractFungiblePostCondition(
-      CONTRACT_ADDRESS,
+      bridgeAddress(),
       'bridge',
       FungibleConditionCode.LessEqual,
       xbtc,
-      createAssetInfo(CONTRACT_ADDRESS, 'xbtc', 'xbtc')
+      xbtcAssetInfo()
     );
     return submit(tx, {
       postConditions: [postCondition],

@@ -6,7 +6,7 @@ import { fetchTransaction } from 'micro-stacks/api';
 import { hexToCV } from 'micro-stacks/clarity';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { getTxData } from '../common/api/electrum';
-import { BridgeContract } from '../common/clarigen';
+import { BridgeContract } from '../common/contracts';
 import { btcNetwork, network } from '../common/constants';
 import { getBtcTxUrl } from '../common/utils';
 import { OPERATOR_KEY, setupScript } from './helpers';
@@ -26,8 +26,8 @@ async function run() {
 
   // if (tx.tx_status === 'pending') throw new Error('Not confirmed');
 
-  const { provider, bridge, contracts } = await setupScript(OPERATOR_KEY);
-  const clarityBtc = contracts.clarityBitcoin.contract;
+  const { provider, bridge, contracts } = setupScript(OPERATOR_KEY);
+  const clarityBtc = contracts.clarityBitcoin;
 
   const args = tx.contract_call.function_args!;
 

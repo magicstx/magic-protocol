@@ -22,7 +22,7 @@ export const useEscrowSwap = (swap: InboundSwapSent) => {
     const amountWithFeeRate = (amount * (10000n - intToBigInt(supplier.inboundFee))) / 10000n;
     const minToReceive = amountWithFeeRate - BigInt(supplier.inboundBaseFee);
     const expiration = encodeExpiration(swap.expiration);
-    const escrowTx = contracts.bridge.contract.escrowSwap(
+    const escrowTx = contracts.bridge.escrowSwap(
       txData.block,
       txData.prevBlocks,
       txData.txHex,

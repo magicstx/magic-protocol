@@ -4,15 +4,13 @@ import { atomWithQuery, useQueryAtom, atomFamilyWithQuery } from 'jotai-query-to
 import type { Query } from 'jotai-query-toolkit/nextjs';
 import { atomWithStorage, waitForAll } from 'jotai/utils';
 import { getPublicKey } from 'noble-secp256k1';
-import { BridgeContract } from '../clarigen';
 import type { SuppliersApi } from '../../pages/api/suppliers';
-import { LOCAL_URL, webProvider, contracts, NETWORK_CONFIG } from '../constants';
+import { LOCAL_URL, webProvider, NETWORK_CONFIG } from '../constants';
 import { generateGaiaHubConfig } from 'micro-stacks/storage';
 import { bytesToHex, hexToBytes, IntegerType } from 'micro-stacks/common';
 import { intToString } from '../utils';
 import type { SupplierWithCapacity } from './api';
-
-const bridge = contracts.bridge.contract;
+import { bridgeContract, getContracts } from '../contracts';
 
 export enum QueryKeys {
   SUPPLIERID = 'supplierById',
@@ -34,7 +32,8 @@ export enum QueryKeys {
   CORE_INFO = 'coreInfo',
 }
 
-export async function fetchSupplierWithContract(id: number, bridge: BridgeContract) {
+export async function fetchSupplierWithContract(id: number) {
+  const { bridge } = getContracts();
   const [supplier, funds] = await Promise.all([
     webProvider.ro(bridge.getSupplier(id)),
     webProvider.ro(bridge.getFunds(id)),
@@ -56,8 +55,7 @@ export async function fetchSupplierWithContract(id: number, bridge: BridgeContra
 
 export async function fetchSupplier(id: number) {
   try {
-    // const bridge = webProvider().bridge.contract;
-    const supplier = await fetchSupplierWithContract(id, bridge);
+    const supplier = await fetchSupplierWithContract(id);
     if (supplier === null) {
       throw new Error(`Could not find supplier with id ${id}`);
     }
@@ -77,7 +75,7 @@ export async function fetchAllSuppliersApi() {
 
 export async function fetchSwapperId(address: string) {
   try {
-    const _id = await webProvider.ro(bridge.getSwapperId(address));
+    const _id = await webProvider.ro(bridgeContract().getSwapperId(address));
     const id = _id === null ? null : Number(_id);
     return { id };
   } catch (error) {
@@ -87,16 +85,16 @@ export async function fetchSwapperId(address: string) {
 }
 
 export async function fetchInboundSwap(txid: string) {
-  const swap = await webProvider.ro(bridge.getInboundSwap(hexToBytes(txid)));
+  const swap = await webProvider.ro(bridgeContract().getInboundSwap(hexToBytes(txid)));
   return swap;
 }
 
 export async function fetchOutboundSwap(swapId: bigint) {
-  return await webProvider.ro(bridge.getOutboundSwap(swapId));
+  return await webProvider.ro(bridgeContract().getOutboundSwap(swapId));
 }
 
 export async function fetchFinalizedOutboundSwapTxid(swapId: bigint) {
-  return await webProvider.ro(bridge.getCompletedOutboundSwapTxid(swapId));
+  return await webProvider.ro(bridgeContract().getCompletedOutboundSwapTxid(swapId));
 }
 
 export type OutboundSwap = Awaited<ReturnType<typeof fetchOutboundSwap>>;

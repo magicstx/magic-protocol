@@ -1,12 +1,11 @@
 import { atom, useAtom } from 'jotai';
 import { numberToHex } from 'micro-stacks/common';
 import {
-  createAssetInfo,
   FungibleConditionCode,
   makeStandardFungiblePostCondition,
 } from 'micro-stacks/transactions';
-import { useCallback, useState } from 'react';
-import { CONTRACT_ADDRESS } from '../../constants';
+import { useCallback } from 'react';
+import { xbtcAssetInfo } from '../../contracts';
 import { btcToSats, parseBtcAddress } from '../../utils';
 import { useStxAddress } from '../use-stx-address';
 import { useTx } from '../use-tx';
@@ -33,7 +32,7 @@ export const useInitiateOutbound = ({ supplierId, address, amount }: OutboundTx)
     const b58 = parseBtcAddress(address);
     const version = Buffer.from(numberToHex(b58.version), 'hex');
     const amountBN = btcToSats(amount);
-    const tx = contracts.bridge.contract.initiateOutboundSwap(
+    const tx = contracts.bridge.initiateOutboundSwap(
       BigInt(amountBN),
       version,
       b58.hash,
@@ -43,7 +42,7 @@ export const useInitiateOutbound = ({ supplierId, address, amount }: OutboundTx)
       sender,
       FungibleConditionCode.Equal,
       amountBN,
-      createAssetInfo(CONTRACT_ADDRESS, 'xbtc', 'xbtc')
+      xbtcAssetInfo()
     );
     try {
       return submit(tx, { postConditions: [postCondition] });

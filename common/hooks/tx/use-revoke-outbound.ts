@@ -1,11 +1,10 @@
 import { atom, useAtom } from 'jotai';
 import {
-  createAssetInfo,
   FungibleConditionCode,
   makeContractFungiblePostCondition,
 } from 'micro-stacks/transactions';
 import { useEffect } from 'react';
-import { CONTRACT_ADDRESS } from '../../constants';
+import { bridgeAddress, xbtcAssetInfo } from '../../contracts';
 import { useTx } from '../use-tx';
 
 const revokeTxidState = atom<string | undefined>(undefined);
@@ -17,13 +16,13 @@ export function useRevokeOutbound(swapId: bigint | null, xbtc?: bigint) {
     if (typeof swapId !== 'bigint' || typeof xbtc !== 'bigint') {
       throw new Error('Cannot revoke outbound - no swap.');
     }
-    const tx = contracts.bridge.contract.revokeExpiredOutbound(swapId);
+    const tx = contracts.bridge.revokeExpiredOutbound(swapId);
     const postCondition = makeContractFungiblePostCondition(
-      CONTRACT_ADDRESS,
+      bridgeAddress(),
       'bridge',
       FungibleConditionCode.LessEqual,
       xbtc,
-      createAssetInfo(CONTRACT_ADDRESS, 'xbtc', 'xbtc')
+      xbtcAssetInfo()
     );
     return submit(tx, {
       postConditions: [postCondition],

@@ -1,6 +1,6 @@
-import { atomWithQuery, useQueryAtom, atomFamilyWithQuery } from 'jotai-query-toolkit';
-import { ContractCall, ContractCalls } from '@clarigen/core';
-import { contracts, webProvider } from '../constants';
+import { useQueryAtom, atomFamilyWithQuery } from 'jotai-query-toolkit';
+import { ContractCall } from '@clarigen/core';
+import { webProvider } from '../constants';
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */

@@ -1,7 +1,7 @@
 import { hexToBytes } from 'micro-stacks/common';
 import { BroadcastResponse } from '../../pages/api/btc-broadcast';
 import type { SponsorResult } from '../../pages/api/sponsor';
-import type { BridgeContract } from '../clarigen';
+import type { BridgeContract } from '../contracts';
 import { LOCAL_URL } from '../constants';
 import type { TxData as TxDataApi } from './electrum';
 

@@ -28,7 +28,6 @@ import {
   makeContracts,
 } from '@clarigen/core';
 import { makeRandomPrivKey } from 'micro-stacks/transactions';
-import { contracts as contractDef } from '../common/clarigen/single';
 import {
   getEscrowPrint,
   getFinalizeInboundPrint,
@@ -37,9 +36,8 @@ import {
   getRevokeInboundPrint,
   getRevokeOutboundPrint,
 } from '../common/events';
-import { simnetDeployment } from '../common/clarigen/deployments/simnet';
+import { factory, accounts } from './helpers';
 
-const factory = deploymentFactory(contractDef, simnetDeployment);
 const {
   bridge: contract,
   wrappedBitcoin: xbtcContract,
@@ -47,27 +45,6 @@ const {
   clarityBitcoin: clarityBtc,
 } = factory;
 let t: TestProvider;
-
-type Wallets = typeof simnetDeployment['genesis']['wallets'];
-
-type Accounts = {
-  [I in keyof Wallets as Wallets[number]['name']]: {
-    balance: bigint;
-    address: Wallets[number]['address'];
-  };
-};
-
-const accounts = Object.fromEntries(
-  simnetDeployment.genesis.wallets.map(a => {
-    return [
-      a.name,
-      {
-        balance: BigInt(a.balance),
-        address: a.address,
-      },
-    ];
-  })
-) as Accounts;
 
 const controller = 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR';
 const deployer = accounts.deployer.address;
@@ -91,20 +68,7 @@ async function getInboundSwap(txid: Uint8Array) {
 // process.env.PRINT_CLARIGEN_STDERR = 'true';
 
 beforeAll(async () => {
-  // console.log(Object.keys(factory));
-  // const { clarityBitcoin, bridge, ...rest } = factory;
   const provider = await TestProvider.fromFactory(factory, { accounts });
-  // const {provider } = await TestProvider.fromContracts(
-  //   {
-  //     ...rest,
-  //     clarityBitcoin: {
-  //       ...contracts.clarityBitcoin,
-  //       contractFile: 'contracts/test/clarity-bitcoin.clar',
-  //     },
-  //     bridge,
-  //   },
-  //   { accounts }
-  // );
   t = provider;
 });
 

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import 'cross-fetch/polyfill';
 import { TestProvider } from '@clarigen/test';
-import { contracts, ClarityBitcoinContract, BridgeContract } from '../common/clarigen';
 import { privateKeys, publicKeys } from './mocks';
 import {
   generateHTLCAddress,
@@ -25,16 +24,14 @@ import { bytesToHex, hexToBytes, numberToHex } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { expectBuffers, makeTxHex } from './helpers';
 import { getTxHex } from '../common/api/electrum';
+import { factory, accounts } from './helpers';
 
-let clarityBtc: ClarityBitcoinContract;
-let htlcContract: BridgeContract;
+const htlcContract = factory.bridge;
+const clarityBtc = factory.clarityBitcoin;
 let t: TestProvider;
 
 beforeAll(async () => {
-  const { deployed, provider } = await TestProvider.fromContracts(contracts);
-  t = provider;
-  clarityBtc = deployed.clarityBitcoin.contract;
-  htlcContract = deployed.bridge.contract;
+  t = await TestProvider.fromFactory(factory);
 });
 
 const [sender, recipient] = publicKeys;

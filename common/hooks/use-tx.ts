@@ -1,15 +1,15 @@
 import { useCallback, useState, useMemo } from 'react';
 import { ContractCalls } from '@clarigen/core';
 import { tx as submitTx } from '@clarigen/web';
-import { Contracts } from '../clarigen';
 import { sponsorTransaction } from '../api';
 import { getTxId } from '../utils';
 import { useStxTx, useStxTxResult } from '../store/api';
 import { bytesToHex } from 'micro-stacks/common';
 import { ContractCallTxOptions } from 'micro-stacks/connect';
-import { network, contracts } from '../constants';
+import { network } from '../constants';
 import { stacksSessionAtom } from '@micro-stacks/react';
 import { useAtomValue } from 'jotai/utils';
+import { getContracts, Contracts } from '../contracts';
 
 type Receipt<Ok, Err> = Awaited<ReturnType<typeof submitTx>>;
 
@@ -57,6 +57,7 @@ export const useTx = <Ok, Err>(builder: TxBuilder<Ok, Err>, opts: UseTxOptions =
 
   const submit = useCallback(async () => {
     setError(undefined);
+    const contracts = getContracts();
     try {
       const receipt = await builder(contracts, submitter);
       if (opts.sponsored) {

@@ -3,7 +3,7 @@ import { useTx } from '../use-tx';
 export const useRegisterSwapper = () => {
   return useTx(
     (contracts, submit) => {
-      const tx = contracts.bridge.contract.initializeSwapper();
+      const tx = contracts.bridge.initializeSwapper();
       return submit(tx);
       // return tx.submit({});
       // return tx.submit({

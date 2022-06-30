@@ -149,3 +149,7 @@ export function pubKeyToBtcAddress(publicKey: Uint8Array) {
   const hash160 = hashRipemd160(sha256);
   return base58checkEncode(hash160, btcNetwork.pubKeyHash);
 }
+
+export function splitContractId(identifier: string) {
+  return identifier.split('.');
+}

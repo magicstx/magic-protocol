@@ -1,12 +1,11 @@
 import { fetch } from 'cross-fetch';
-import { accounts } from '../common/clarigen';
-import { StacksMocknet } from 'micro-stacks/network';
 import { NodeProvider } from '@clarigen/node';
 import { publicKeys } from '../test/mocks';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { hexToBytes } from 'micro-stacks/common';
 import { getPublicKey } from 'noble-secp256k1';
-import { CONTRACT_ADDRESS, network, contracts } from '../common/constants';
+import { network } from '../common/constants';
+import { getContracts } from '../common/contracts';
 
 export const OPERATOR_KEY =
   process.env.SCRIPT_OPERATOR_KEY ||
@@ -32,22 +31,19 @@ export function logTxid(receipt: { txId: string }) {
   console.log(`${network.getCoreApiUrl()}/extended/v1/tx/0x${receipt.txId}?unanchored=true`);
 }
 
-export async function setupScript(senderKey: string) {
+export function setupScript(senderKey: string) {
+  const contracts = getContracts();
   const clarigenConfig = {
     privateKey: senderKey,
     network,
-    deployerAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || CONTRACT_ADDRESS,
   };
 
   const provider = NodeProvider(clarigenConfig);
 
-  const nonce = await getNonce(accounts.operator.address);
-
   return {
     contracts,
-    bridge: contracts.bridge.contract,
-    clarityBitcoin: contracts.clarityBitcoin.contract,
-    nonce,
+    bridge: contracts.bridge,
+    clarityBitcoin: contracts.clarityBitcoin,
     network,
     provider,
   };

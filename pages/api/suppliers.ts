@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { nodeContracts } from '../../common/api-constants';
-import { contracts } from '../../common/constants';
+import { bridgeContract } from '../../common/contracts';
 import { fetchSupplierWithContract, Supplier } from '../../common/store';
 
 export async function fetchAllSuppliers() {
-  const bridge = contracts.bridge.contract;
+  const bridge = bridgeContract();
   const nextId = Number(await nodeContracts().ro(bridge.getNextSupplierId()));
   const fetchSuppliers: Promise<Supplier>[] = [];
   for (let id = 0; id < nextId; id++) {
-    fetchSuppliers.push(fetchSupplierWithContract(id, bridge));
+    fetchSuppliers.push(fetchSupplierWithContract(id));
   }
   const suppliers = await Promise.all(fetchSuppliers);
   return suppliers;

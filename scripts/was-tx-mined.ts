@@ -3,11 +3,7 @@ import { config } from 'dotenv';
 config({
   path: '.env.local',
 });
-import { tx } from '@clarigen/node';
 import { logTxid, OPERATOR_KEY, setupScript, SWAPPER_KEY } from './helpers';
-import { PostConditionMode } from 'micro-stacks/transactions';
-import { CONTRACT_ADDRESS } from '../common/constants';
-import { WatchAddressApi } from '../pages/api/watch-address';
 import { fetchTxData } from '../common/api';
 import { reverseBuffer } from '../common/htlc';
 import { bytesToHex } from 'micro-stacks/common';

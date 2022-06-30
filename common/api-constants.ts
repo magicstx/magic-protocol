@@ -3,7 +3,6 @@ import { privateKeyToStxAddress, StacksNetworkVersion } from 'micro-stacks/crypt
 import { network } from './constants';
 
 export const clarigenNodeConfig: NodeOptions = {
-  privateKey: process.env.CLARIGEN_NODE_KEY || '',
   network,
 };
 
