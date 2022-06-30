@@ -10,6 +10,7 @@ import { network } from '../constants';
 import { stacksSessionAtom } from '@micro-stacks/react';
 import { useAtomValue } from 'jotai/utils';
 import { getContracts, Contracts } from '../contracts';
+import { privateKeyState } from '../store';
 
 type Receipt<Ok, Err> = Awaited<ReturnType<typeof submitTx>>;
 
@@ -37,22 +38,22 @@ export const useTx = <Ok, Err>(builder: TxBuilder<Ok, Err>, opts: UseTxOptions =
   const [error, setError] = useState<string | undefined>();
   const [apiTransaction] = useStxTx(txId);
   const txResult = useStxTxResult<Ok | Err | null>(txId);
-  const session = useAtomValue(stacksSessionAtom);
+  const privateKey = useAtomValue(privateKeyState);
   const submitter: Submitter<Ok, Err> = useCallback(
     (_tx: ContractCalls.Public<Ok, Err>, opts: TxOptions = {}) => {
-      if (!session) throw new Error('Cannot make tx if not signed in.');
+      if (!privateKey) throw new Error('Cannot make tx if not signed in.');
       return submitTx(
         _tx,
         {
           ...opts,
-          privateKey: session.appPrivateKey,
+          privateKey,
         },
         {
           network,
         }
       );
     },
-    [session]
+    [privateKey]
   );
 
   const submit = useCallback(async () => {

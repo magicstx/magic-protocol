@@ -6,7 +6,7 @@ import { getRandomBytes } from 'micro-stacks/crypto';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { getFile } from 'micro-stacks/storage';
 import { generateHTLCAddress } from '../htlc';
-import { Supplier, QueryKeys, finalizedOutboundSwapState } from './index';
+import { Supplier, QueryKeys, finalizedOutboundSwapState, privateKeyState } from './index';
 import { atomWithQuery } from 'jotai-query-toolkit';
 import { fetchPrivate } from 'micro-stacks/common';
 import { TransactionStatus } from '../api/stacks';
@@ -143,13 +143,13 @@ export function inboundSwapKey(id: string) {
 export const inboundSwapState = atomFamilyWithQuery<string, InboundSwap>(
   (get, param) => [QueryKeys.INBOUND_SWAPS, param],
   async (get, param) => {
-    const session = get(stacksSessionAtom);
     const config = get(primaryGaiaHubConfigAtom);
-    if (!config || !session) throw new Error('Not logged in');
+    const privateKey = get(privateKeyState);
+    if (!config || !privateKey) throw new Error('Not logged in');
     const key = inboundSwapKey(param);
     const contents = (await getFile(key, {
       gaiaHubConfig: config,
-      privateKey: session.appPrivateKey,
+      privateKey,
     })) as string;
     const swap = JSON.parse(contents) as InboundSwapStarted;
     return swap;
@@ -174,13 +174,13 @@ export function outboundSwapKey(id: string) {
 export const outboundSwapStorageState = atomFamilyWithQuery<string, OutboundSwapStarted>(
   (get, param) => [QueryKeys.OUTBOUND_SWAPS_STORAGE, param],
   async (get, param) => {
-    const session = get(stacksSessionAtom);
     const config = get(primaryGaiaHubConfigAtom);
-    if (!config || !session) throw new Error('Not logged in');
+    const privateKey = get(privateKeyState);
+    if (!config || !privateKey) throw new Error('Not logged in');
     const key = outboundSwapKey(param);
     const contents = (await getFile(key, {
       gaiaHubConfig: config,
-      privateKey: session.appPrivateKey,
+      privateKey,
     })) as string;
     const swap = JSON.parse(contents) as OutboundSwapStarted;
     return swap;

@@ -1,4 +1,4 @@
-import { stacksSessionAtom } from '@micro-stacks/react';
+import { stacksSessionAtom, partialStacksSessionAtom } from '@micro-stacks/react';
 import { atom } from 'jotai';
 import { atomWithQuery, useQueryAtom, atomFamilyWithQuery } from 'jotai-query-toolkit';
 import type { Query } from 'jotai-query-toolkit/nextjs';
@@ -120,10 +120,10 @@ export const supplierState = atomFamilyWithQuery<number, Supplier>(
 );
 
 export const currentStxAddressState = atom(get => {
-  const session = get(stacksSessionAtom);
+  const session = get(partialStacksSessionAtom);
   if (!session) return null;
-  if (NETWORK_CONFIG === 'mainnet') return session.addresses.mainnet;
-  return session.addresses.testnet;
+  if (NETWORK_CONFIG === 'mainnet') return session.addresses?.mainnet || null;
+  return session.addresses?.testnet || null;
 });
 
 export const swapperIdState = atomWithQuery(QueryKeys.SWAPPERID, async get => {
@@ -168,20 +168,28 @@ export const secretState = atomWithStorage('secret', '');
 
 export const selectedSupplierState = atom<SupplierWithCapacity | null>(null);
 
+export const privateKeyState = atom(get => {
+  const session = get(stacksSessionAtom);
+  if (!session) return null;
+  return session.appPrivateKey || null;
+});
+
 export const publicKeyState = atom(get => {
   const session = get(stacksSessionAtom);
   if (!session) return null;
-  const privateKey = session.appPrivateKey;
+  const privateKey = get(privateKeyState);
+  if (!privateKey) return null;
   const publicKey = getPublicKey(privateKey, true);
   return publicKey;
 });
 
 export const gaiaConfigState = atomWithQuery(QueryKeys.GAIA_CONFIG, async get => {
   const session = get(stacksSessionAtom);
-  if (!session) return null;
+  const privateKey = get(privateKeyState);
+  if (!session || !privateKey) return null;
   const config = await generateGaiaHubConfig({
     gaiaHubUrl: session.hubUrl,
-    privateKey: session.appPrivateKey,
+    privateKey,
   });
   return config;
 });

@@ -7,6 +7,7 @@ module.exports = {
     const alias = config.resolve.alias || (config.resolve.alias = {});
     alias['jotai'] = resolve(__dirname, 'node_modules', 'jotai');
     alias['react-query'] = resolve(__dirname, 'node_modules', 'react-query');
+    alias['jotai-query-toolkit'] = resolve(__dirname, 'node_modules', 'jotai-query-toolkit');
     alias['@stitches/react'] = resolve(__dirname, 'node_modules', '@stitches/react');
     alias['@stitches/core'] = resolve(__dirname, 'node_modules', '@stitches/core');
     return {
