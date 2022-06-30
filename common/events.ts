@@ -1,4 +1,4 @@
-import { contracts } from './clarigen/single';
+import { contracts } from './clarigen';
 import type { TypedAbiFunction } from '@clarigen/core';
 
 type ResponseType<T> = T extends TypedAbiFunction<unknown[], infer R> ? R : never;

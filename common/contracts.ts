@@ -2,7 +2,7 @@ import { WebProvider } from '@clarigen/web';
 import { network, NETWORK_CONFIG } from './constants';
 import { devnetDeployment } from './clarigen/deployments/devnet';
 import { testnetDeployment } from './clarigen/deployments/testnet';
-import { contracts as contractDef } from './clarigen/single';
+import { contracts as contractDef } from './clarigen';
 import { ContractFactory, contractFactory, DeploymentPlan } from '@clarigen/core';
 import { createAssetInfo } from 'micro-stacks/transactions';
 import { splitContractId } from './utils';
@@ -11,11 +11,11 @@ export const webProvider = () => {
   return WebProvider({ network });
 };
 
-export function getDeployment() {
+export function getDeployment(): DeploymentPlan {
   if (NETWORK_CONFIG === 'mocknet') {
     return devnetDeployment;
   } else if (NETWORK_CONFIG === 'testnet') {
-    return testnetDeployment as any as DeploymentPlan;
+    return testnetDeployment;
   } else if (NETWORK_CONFIG === 'mainnet') {
     throw new Error('No deployment plan for mainnet yet.');
   }

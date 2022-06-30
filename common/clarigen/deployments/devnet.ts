@@ -70,6 +70,52 @@ export const devnetDeployment = {
           },
         ],
       },
+      {
+        id: 1,
+        transactions: [
+          {
+            'contract-call': {
+              'contract-id': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.Wrapped-Bitcoin',
+              method: 'initialize',
+              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              cost: 100000,
+              parameters: [
+                'Wrapped Bitcoin',
+                'xBTC',
+                'u8',
+                "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+              ],
+            },
+          },
+          {
+            'contract-call': {
+              'contract-id': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.Wrapped-Bitcoin',
+              method: 'add-principal-to-role',
+              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              cost: 100000,
+              parameters: ['u1', "'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM"],
+            },
+          },
+          {
+            'contract-call': {
+              'contract-id': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.Wrapped-Bitcoin',
+              method: 'mint-tokens',
+              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              cost: 100000,
+              parameters: ['u100000000000000', "'ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5"],
+            },
+          },
+          {
+            'contract-call': {
+              'contract-id': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.Wrapped-Bitcoin',
+              method: 'mint-tokens',
+              'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
+              parameters: ['u1000000000', "'ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG"],
+              cost: 1000000,
+            },
+          },
+        ],
+      },
     ],
   },
 } as const;

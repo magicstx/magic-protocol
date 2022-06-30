@@ -591,13 +591,13 @@
     "@clarigen/core" "1.0.0-next.25"
     micro-stacks "^0.5.2"
 
-"@clarigen/cli@1.0.0-next.25":
-  version "1.0.0-next.25"
-  resolved "https://registry.yarnpkg.com/@clarigen/cli/-/cli-1.0.0-next.25.tgz#ac11231dd2d10b8f3a7f00d9cb65c2fc1f7002c3"
-  integrity sha512-O8RpVpNIc3V7TTUjQHex5IBDrKY6LViSd2La3euAeaG1nKxEzPy0CMHmQZjAq4XEBrul4hg3X6dqhm2iI6MVWA==
+"@clarigen/cli@1.0.0-next.26":
+  version "1.0.0-next.26"
+  resolved "https://registry.yarnpkg.com/@clarigen/cli/-/cli-1.0.0-next.26.tgz#5925b29d0bf89a59c27772f45f338e737ed6f573"
+  integrity sha512-dwy1SqIPIOWMKzlUg7LcK1Q/3pobkrhPEs2lpL1F6au4QYgvDEOU9kOsOOEPCUjm2RhbBcJ/gsTb45t6yWswRg==
   dependencies:
     "@clarigen/claridocs" "1.0.0-next.25"
-    "@clarigen/core" "1.0.0-next.25"
+    "@clarigen/core" "1.0.0-next.26"
     "@clarigen/native-bin" "1.0.0-next.25"
     "@iarna/toml" "^2.2.5"
     "@oclif/command" "^1.8.0"
@@ -618,6 +618,13 @@
   version "1.0.0-next.25"
   resolved "https://registry.yarnpkg.com/@clarigen/core/-/core-1.0.0-next.25.tgz#f025ef3e44cc3928e5980dc813a6d0814d9b61bc"
   integrity sha512-+p6cmCa7yfqBpruMFE4TRAEAQXLkl3MTTOEwGAZcjgEbgAHX2k18rBEM+rDOKbIL1HBRJTVlU5PuBJAHZa1Fmw==
+  dependencies:
+    micro-stacks "^0.5.2"
+
+"@clarigen/core@1.0.0-next.26":
+  version "1.0.0-next.26"
+  resolved "https://registry.yarnpkg.com/@clarigen/core/-/core-1.0.0-next.26.tgz#0b60a3964c2b138214a241065a0bd4ba34c643e1"
+  integrity sha512-XkfV1p98OK11nG9hv6KZvXSCTGB2Ff2GezWdMbCPQ2kldkSfJpYaj/iUQNJf8IxZwGkSW43ushFQ4L8dADEY4g==
   dependencies:
     micro-stacks "^0.5.2"
 

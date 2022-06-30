@@ -25,13 +25,14 @@ import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { expectBuffers, makeTxHex } from './helpers';
 import { getTxHex } from '../common/api/electrum';
 import { factory, accounts } from './helpers';
+import { AllContracts, ContractFactory } from '@clarigen/core';
 
 const htlcContract = factory.bridge;
 const clarityBtc = factory.clarityBitcoin;
 let t: TestProvider;
 
 beforeAll(async () => {
-  t = await TestProvider.fromFactory(factory);
+  t = await TestProvider.fromFactory(factory as ContractFactory<AllContracts>);
 });
 
 const [sender, recipient] = publicKeys;

@@ -26,6 +26,8 @@ import {
   CoreNodeEventType,
   filterEvents,
   makeContracts,
+  ContractFactory,
+  AllContracts,
 } from '@clarigen/core';
 import { makeRandomPrivKey } from 'micro-stacks/transactions';
 import {
@@ -68,7 +70,9 @@ async function getInboundSwap(txid: Uint8Array) {
 // process.env.PRINT_CLARIGEN_STDERR = 'true';
 
 beforeAll(async () => {
-  const provider = await TestProvider.fromFactory(factory, { accounts });
+  const provider = await TestProvider.fromFactory(factory as ContractFactory<AllContracts>, {
+    accounts,
+  });
   t = provider;
 });
 

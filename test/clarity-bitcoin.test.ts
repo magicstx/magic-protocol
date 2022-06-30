@@ -1,3 +1,4 @@
+import { AllContracts, ContractFactory } from '@clarigen/core';
 import { TestProvider } from '@clarigen/test';
 import { hexToBytes } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
@@ -9,7 +10,7 @@ let t: TestProvider;
 const alice = accounts.wallet_3.address;
 
 beforeAll(async () => {
-  t = await TestProvider.fromFactory(factory);
+  t = await TestProvider.fromFactory(factory as ContractFactory<AllContracts>);
 });
 
 // btc 728908

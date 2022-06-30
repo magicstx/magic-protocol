@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { payments, Psbt, ECPair, networks } from 'bitcoinjs-lib';
 import { IntegerType, intToBigInt } from 'micro-stacks/common';
-import { contracts as contractDef } from '../common/clarigen/single';
+import { contracts as contractDef } from '../common/clarigen';
 import { deploymentFactory } from '@clarigen/core';
 import { simnetDeployment } from '../common/clarigen/deployments/simnet';
 
