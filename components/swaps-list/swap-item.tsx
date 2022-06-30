@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Box, Flex, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { styled } from '@stitches/react';
@@ -15,7 +15,8 @@ import { useQueryAtom } from 'jotai-query-toolkit';
 import { Spinner } from '../spinner';
 import { useStxTxResult } from '../../common/store/api';
 import { useFinalizedOutboundSwap } from '../../common/store';
-import { DuplicateIcon } from '../icons/duplicate';
+import { useClipboard } from '../../common/hooks/use-clipboard';
+import { Tooltip, TooltipTrigger, TooltipContent } from '../tooltip';
 
 const SwapRowComp = styled(Box, {
   borderBottom: '1px solid $border-subdued',
@@ -98,21 +99,52 @@ export const SwapRow: React.FC<RowProps> = ({
             </Text> */}
         </Box>
         <Box width={`${ROW_WIDTHS[2]}px`}>
-          {swapId ? (
-            <Stack alignItems="center" isInline spacing="12px">
-              <Text variant="Label02">
-                {truncateMiddle(swapId.replace('0x', ''), 15)}
-                {/* {swapId.replace('0x', '')} */}
-              </Text>
-              {/* <DuplicateIcon clipboardText={swapId} /> */}
-            </Stack>
-          ) : null}
+          <SwapId swapId={swapId} />
         </Box>
         <Box width={`${ROW_WIDTHS[3]}px`}>
           <StatusButton status={status}>{_buttonText || buttonText}</StatusButton>
         </Box>
       </Flex>
     </SwapRowComp>
+  );
+};
+
+export const SwapId: React.FC<{ swapId?: string }> = ({ swapId }) => {
+  const { copy } = useClipboard();
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const closeTooltip = useCallback(() => {
+    setTooltipOpen(false);
+  }, [setTooltipOpen]);
+  const onClick = useCallback(
+    (event: React.MouseEvent) => {
+      if (swapId) {
+        event.stopPropagation();
+        void copy(swapId);
+        setTooltipOpen(true);
+        const timer = setTimeout(closeTooltip, 3000);
+        return () => {
+          clearInterval(timer);
+        };
+      }
+    },
+    [copy, swapId, closeTooltip]
+  );
+
+  if (typeof swapId === 'undefined') return null;
+
+  return (
+    <Tooltip open={tooltipOpen} delayDuration={0}>
+      <TooltipTrigger asChild>
+        <Text variant="Label02" onClick={onClick}>
+          {truncateMiddle(swapId.replace('0x', ''), 15)}
+        </Text>
+      </TooltipTrigger>
+      <TooltipContent>
+        <Text variant="Caption01" color="$text">
+          Copied
+        </Text>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 

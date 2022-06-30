@@ -12,6 +12,7 @@ import { fetchPrivate } from 'micro-stacks/common';
 import { TransactionStatus } from '../api/stacks';
 import { stxTxResultState } from './api';
 import { waitForAll } from 'jotai/utils';
+import { APP_VERSION } from '../constants';
 
 export const swapIdState = atom<string | undefined>(undefined);
 
@@ -131,7 +132,7 @@ export function createReadySwap(swap: InboundSwapStarted, swapperId: number): In
   };
 }
 
-export const SWAP_STORAGE_PREFIX = 'swaps-v6/';
+export const SWAP_STORAGE_PREFIX = `swaps-${APP_VERSION}/`;
 export const INBOUND_SWAP_STORAGE_PREFIX = 'inbounds';
 export const OUTBOUND_SWAP_STORAGE_PREFIX = 'outbounds';
 
@@ -263,6 +264,7 @@ export const fullOutboundSwapState = atomFamilyWithQuery<string, FullOutboundSwa
 
 export const allSwapsState = atom<(InboundSwap | FullOutboundSwap)[]>(get => {
   const keys = get(swapsListState);
+  if (keys.length === 0) return [];
   const items = keys.map(({ dir, id }) => {
     if (dir === 'outbound') {
       return fullOutboundSwapState(id);

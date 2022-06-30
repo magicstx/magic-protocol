@@ -62,3 +62,5 @@ export function getAppIcon() {
     return envIcon;
   }
 }
+
+export const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION || 'V?';
