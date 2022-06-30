@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai/utils';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { queryClientAtom } from 'jotai-query-toolkit';
-import { coreUrl, LOCAL_URL, NETWORK_CONFIG } from '../common/constants';
+import { APP_VERSION, coreUrl, LOCAL_URL, NETWORK_CONFIG } from '../common/constants';
 import { bridgeContract } from '../common/contracts';
 import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
 import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
@@ -21,12 +21,15 @@ export const Devtools: React.FC = () => {
   const queryClient = useAtomValue(queryClientAtom);
 
   useEffect(() => {
+    const key = `REACT_QUERY_${NETWORK_CONFIG}_${APP_VERSION}`;
     const persistor = createWebStoragePersistor({
       storage: window.localStorage,
+      key,
     });
     void persistQueryClient({
       queryClient,
       persistor,
+      buster: key,
     });
   }, [queryClient]);
 

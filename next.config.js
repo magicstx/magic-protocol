@@ -1,8 +1,12 @@
 const { resolve } = require('path');
+const { version } = require('./package.json');
 
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_APP_VERSION: version,
+  },
   webpack: config => {
     const alias = config.resolve.alias || (config.resolve.alias = {});
     alias['jotai'] = resolve(__dirname, 'node_modules', 'jotai');

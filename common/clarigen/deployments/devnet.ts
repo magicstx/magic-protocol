@@ -15,7 +15,7 @@ export const devnetDeployment = {
               'remap-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
               'remap-principals': {},
               cost: 5480,
-              path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait.clar',
+              path: '.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.restricted-token-trait.clar',
             },
           },
           {
@@ -24,7 +24,7 @@ export const devnetDeployment = {
               'remap-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
               'remap-principals': {},
               cost: 8350,
-              path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar',
+              path: '.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.ft-trait.clar',
             },
           },
           {
@@ -33,7 +33,7 @@ export const devnetDeployment = {
               'remap-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
               'remap-principals': {},
               cost: 104220,
-              path: '/Users/hankstoever/magic/bridge/.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin.clar',
+              path: '.clarinet/SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin.clar',
             },
           },
           {
@@ -41,7 +41,7 @@ export const devnetDeployment = {
               'contract-name': 'clarity-bitcoin',
               'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
               cost: 412540,
-              path: '/Users/hankstoever/magic/bridge/contracts/clarity-bitcoin.clar',
+              path: 'contracts/clarity-bitcoin.clar',
             },
           },
           {
@@ -49,7 +49,7 @@ export const devnetDeployment = {
               'contract-name': 'bridge',
               'expected-sender': 'ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM',
               cost: 301490,
-              path: '/Users/hankstoever/magic/bridge/contracts/bridge.clar',
+              path: 'contracts/bridge.clar',
             },
           },
         ],

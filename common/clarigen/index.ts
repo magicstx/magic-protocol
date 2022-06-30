@@ -144,6 +144,1473 @@ export type OkType<R> = R extends ResponseOk<infer V, unknown> ? V : never;
 export type ErrType<R> = R extends ResponseErr<unknown, infer V> ? V : never;
 
 export const contracts = {
+  bridge: {
+    functions: {
+      concatBuffsFold: {
+        name: 'concat-buffs-fold',
+        access: 'private',
+        args: [
+          { name: 'b', type: { buffer: { length: 32 } } },
+          { name: 'result', type: { buffer: { length: 192 } } },
+        ],
+        outputs: { type: { buffer: { length: 192 } } },
+      } as TypedAbiFunction<[b: Uint8Array, result: Uint8Array], Uint8Array>,
+      transfer: {
+        name: 'transfer',
+        access: 'private',
+        args: [
+          { name: 'amount', type: 'uint128' },
+          { name: 'sender', type: 'principal' },
+          { name: 'recipient', type: 'principal' },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [amount: number | bigint, sender: string, recipient: string],
+        Response<boolean, bigint>
+      >,
+      updateUserInboundVolume: {
+        name: 'update-user-inbound-volume',
+        access: 'private',
+        args: [
+          { name: 'user', type: 'principal' },
+          { name: 'amount', type: 'uint128' },
+        ],
+        outputs: { type: 'bool' },
+      } as TypedAbiFunction<[user: string, amount: number | bigint], boolean>,
+      updateUserOutboundVolume: {
+        name: 'update-user-outbound-volume',
+        access: 'private',
+        args: [
+          { name: 'user', type: 'principal' },
+          { name: 'amount', type: 'uint128' },
+        ],
+        outputs: { type: 'bool' },
+      } as TypedAbiFunction<[user: string, amount: number | bigint], boolean>,
+      addFunds: {
+        name: 'add-funds',
+        access: 'public',
+        args: [{ name: 'amount', type: 'uint128' }],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<[amount: number | bigint], Response<bigint, bigint>>,
+      escrowSwap: {
+        name: 'escrow-swap',
+        access: 'public',
+        args: [
+          {
+            name: 'block',
+            type: {
+              tuple: [
+                { name: 'header', type: { buffer: { length: 80 } } },
+                { name: 'height', type: 'uint128' },
+              ],
+            },
+          },
+          { name: 'prev-blocks', type: { list: { type: { buffer: { length: 80 } }, length: 10 } } },
+          { name: 'tx', type: { buffer: { length: 1024 } } },
+          {
+            name: 'proof',
+            type: {
+              tuple: [
+                {
+                  name: 'hashes',
+                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
+                },
+                { name: 'tree-depth', type: 'uint128' },
+                { name: 'tx-index', type: 'uint128' },
+              ],
+            },
+          },
+          { name: 'output-index', type: 'uint128' },
+          { name: 'sender', type: { buffer: { length: 33 } } },
+          { name: 'recipient', type: { buffer: { length: 33 } } },
+          { name: 'expiration-buff', type: { buffer: { length: 4 } } },
+          { name: 'hash', type: { buffer: { length: 32 } } },
+          { name: 'swapper-buff', type: { buffer: { length: 4 } } },
+          { name: 'supplier-id', type: 'uint128' },
+          { name: 'min-to-receive', type: 'uint128' },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'csv', type: 'uint128' },
+                  { name: 'output-index', type: 'uint128' },
+                  { name: 'redeem-script', type: { buffer: { length: 120 } } },
+                  { name: 'sats', type: 'uint128' },
+                  { name: 'sender-public-key', type: { buffer: { length: 33 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          block: {
+            header: Uint8Array;
+            height: bigint;
+          },
+          prevBlocks: Uint8Array[],
+          tx: Uint8Array,
+          proof: {
+            hashes: Uint8Array[];
+            'tree-depth': bigint;
+            'tx-index': bigint;
+          },
+          outputIndex: number | bigint,
+          sender: Uint8Array,
+          recipient: Uint8Array,
+          expirationBuff: Uint8Array,
+          hash: Uint8Array,
+          swapperBuff: Uint8Array,
+          supplierId: number | bigint,
+          minToReceive: number | bigint
+        ],
+        Response<
+          {
+            csv: bigint;
+            'output-index': bigint;
+            'redeem-script': Uint8Array;
+            sats: bigint;
+            'sender-public-key': Uint8Array;
+          },
+          bigint
+        >
+      >,
+      finalizeOutboundSwap: {
+        name: 'finalize-outbound-swap',
+        access: 'public',
+        args: [
+          {
+            name: 'block',
+            type: {
+              tuple: [
+                { name: 'header', type: { buffer: { length: 80 } } },
+                { name: 'height', type: 'uint128' },
+              ],
+            },
+          },
+          { name: 'prev-blocks', type: { list: { type: { buffer: { length: 80 } }, length: 10 } } },
+          { name: 'tx', type: { buffer: { length: 1024 } } },
+          {
+            name: 'proof',
+            type: {
+              tuple: [
+                {
+                  name: 'hashes',
+                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
+                },
+                { name: 'tree-depth', type: 'uint128' },
+                { name: 'tx-index', type: 'uint128' },
+              ],
+            },
+          },
+          { name: 'output-index', type: 'uint128' },
+          { name: 'swap-id', type: 'uint128' },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          block: {
+            header: Uint8Array;
+            height: bigint;
+          },
+          prevBlocks: Uint8Array[],
+          tx: Uint8Array,
+          proof: {
+            hashes: Uint8Array[];
+            'tree-depth': bigint;
+            'tx-index': bigint;
+          },
+          outputIndex: number | bigint,
+          swapId: number | bigint
+        ],
+        Response<boolean, bigint>
+      >,
+      finalizeSwap: {
+        name: 'finalize-swap',
+        access: 'public',
+        args: [
+          { name: 'txid', type: { buffer: { length: 32 } } },
+          { name: 'preimage', type: { buffer: { length: 128 } } },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'expiration', type: 'uint128' },
+                  { name: 'hash', type: { buffer: { length: 32 } } },
+                  { name: 'supplier', type: 'uint128' },
+                  { name: 'swapper', type: 'uint128' },
+                  { name: 'xbtc', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [txid: Uint8Array, preimage: Uint8Array],
+        Response<
+          {
+            expiration: bigint;
+            hash: Uint8Array;
+            supplier: bigint;
+            swapper: bigint;
+            xbtc: bigint;
+          },
+          bigint
+        >
+      >,
+      initializeSwapper: {
+        name: 'initialize-swapper',
+        access: 'public',
+        args: [],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<[], Response<bigint, bigint>>,
+      initiateOutboundSwap: {
+        name: 'initiate-outbound-swap',
+        access: 'public',
+        args: [
+          { name: 'xbtc', type: 'uint128' },
+          { name: 'btc-version', type: { buffer: { length: 1 } } },
+          { name: 'btc-hash', type: { buffer: { length: 20 } } },
+          { name: 'supplier-id', type: 'uint128' },
+        ],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          xbtc: number | bigint,
+          btcVersion: Uint8Array,
+          btcHash: Uint8Array,
+          supplierId: number | bigint
+        ],
+        Response<bigint, bigint>
+      >,
+      registerSupplier: {
+        name: 'register-supplier',
+        access: 'public',
+        args: [
+          { name: 'public-key', type: { buffer: { length: 33 } } },
+          { name: 'inbound-fee', type: { optional: 'int128' } },
+          { name: 'outbound-fee', type: { optional: 'int128' } },
+          { name: 'outbound-base-fee', type: 'int128' },
+          { name: 'inbound-base-fee', type: 'int128' },
+          { name: 'funds', type: 'uint128' },
+        ],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          publicKey: Uint8Array,
+          inboundFee: bigint | null,
+          outboundFee: bigint | null,
+          outboundBaseFee: number | bigint,
+          inboundBaseFee: number | bigint,
+          funds: number | bigint
+        ],
+        Response<bigint, bigint>
+      >,
+      removeFunds: {
+        name: 'remove-funds',
+        access: 'public',
+        args: [{ name: 'amount', type: 'uint128' }],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<[amount: number | bigint], Response<bigint, bigint>>,
+      revokeExpiredInbound: {
+        name: 'revoke-expired-inbound',
+        access: 'public',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'expiration', type: 'uint128' },
+                  { name: 'hash', type: { buffer: { length: 32 } } },
+                  { name: 'supplier', type: 'uint128' },
+                  { name: 'swapper', type: 'uint128' },
+                  { name: 'xbtc', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [txid: Uint8Array],
+        Response<
+          {
+            expiration: bigint;
+            hash: Uint8Array;
+            supplier: bigint;
+            swapper: bigint;
+            xbtc: bigint;
+          },
+          bigint
+        >
+      >,
+      revokeExpiredOutbound: {
+        name: 'revoke-expired-outbound',
+        access: 'public',
+        args: [{ name: 'swap-id', type: 'uint128' }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'created-at', type: 'uint128' },
+                  { name: 'hash', type: { buffer: { length: 20 } } },
+                  { name: 'sats', type: 'uint128' },
+                  { name: 'supplier', type: 'uint128' },
+                  { name: 'swapper', type: 'principal' },
+                  { name: 'version', type: { buffer: { length: 1 } } },
+                  { name: 'xbtc', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [swapId: number | bigint],
+        Response<
+          {
+            'created-at': bigint;
+            hash: Uint8Array;
+            sats: bigint;
+            supplier: bigint;
+            swapper: string;
+            version: Uint8Array;
+            xbtc: bigint;
+          },
+          bigint
+        >
+      >,
+      updateSupplierFees: {
+        name: 'update-supplier-fees',
+        access: 'public',
+        args: [
+          { name: 'inbound-fee', type: { optional: 'int128' } },
+          { name: 'outbound-fee', type: { optional: 'int128' } },
+          { name: 'outbound-base-fee', type: 'int128' },
+          { name: 'inbound-base-fee', type: 'int128' },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'controller', type: 'principal' },
+                  { name: 'inbound-base-fee', type: 'int128' },
+                  { name: 'inbound-fee', type: { optional: 'int128' } },
+                  { name: 'outbound-base-fee', type: 'int128' },
+                  { name: 'outbound-fee', type: { optional: 'int128' } },
+                  { name: 'public-key', type: { buffer: { length: 33 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          inboundFee: bigint | null,
+          outboundFee: bigint | null,
+          outboundBaseFee: number | bigint,
+          inboundBaseFee: number | bigint
+        ],
+        Response<
+          {
+            controller: string;
+            'inbound-base-fee': bigint;
+            'inbound-fee': bigint | null;
+            'outbound-base-fee': bigint;
+            'outbound-fee': bigint | null;
+            'public-key': Uint8Array;
+          },
+          bigint
+        >
+      >,
+      updateSupplierPublicKey: {
+        name: 'update-supplier-public-key',
+        access: 'public',
+        args: [{ name: 'public-key', type: { buffer: { length: 33 } } }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'controller', type: 'principal' },
+                  { name: 'inbound-base-fee', type: 'int128' },
+                  { name: 'inbound-fee', type: { optional: 'int128' } },
+                  { name: 'outbound-base-fee', type: 'int128' },
+                  { name: 'outbound-fee', type: { optional: 'int128' } },
+                  { name: 'public-key', type: { buffer: { length: 33 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [publicKey: Uint8Array],
+        Response<
+          {
+            controller: string;
+            'inbound-base-fee': bigint;
+            'inbound-fee': bigint | null;
+            'outbound-base-fee': bigint;
+            'outbound-fee': bigint | null;
+            'public-key': Uint8Array;
+          },
+          bigint
+        >
+      >,
+      buffToU8: {
+        name: 'buff-to-u8',
+        access: 'read_only',
+        args: [{ name: 'byte', type: { buffer: { length: 1 } } }],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[byte: Uint8Array], bigint>,
+      bytesLen: {
+        name: 'bytes-len',
+        access: 'read_only',
+        args: [{ name: 'bytes', type: { buffer: { length: 4 } } }],
+        outputs: { type: { buffer: { length: 1 } } },
+      } as TypedAbiFunction<[bytes: Uint8Array], Uint8Array>,
+      concatBuffs: {
+        name: 'concat-buffs',
+        access: 'read_only',
+        args: [{ name: 'buffs', type: { list: { type: { buffer: { length: 32 } }, length: 6 } } }],
+        outputs: { type: { buffer: { length: 192 } } },
+      } as TypedAbiFunction<[buffs: Uint8Array[]], Uint8Array>,
+      generateHtlcScript: {
+        name: 'generate-htlc-script',
+        access: 'read_only',
+        args: [
+          { name: 'sender', type: { buffer: { length: 33 } } },
+          { name: 'recipient', type: { buffer: { length: 33 } } },
+          { name: 'expiration', type: { buffer: { length: 4 } } },
+          { name: 'hash', type: { buffer: { length: 32 } } },
+          { name: 'swapper', type: { buffer: { length: 4 } } },
+        ],
+        outputs: { type: { buffer: { length: 120 } } },
+      } as TypedAbiFunction<
+        [
+          sender: Uint8Array,
+          recipient: Uint8Array,
+          expiration: Uint8Array,
+          hash: Uint8Array,
+          swapper: Uint8Array
+        ],
+        Uint8Array
+      >,
+      generateHtlcScriptHash: {
+        name: 'generate-htlc-script-hash',
+        access: 'read_only',
+        args: [
+          { name: 'sender', type: { buffer: { length: 33 } } },
+          { name: 'recipient', type: { buffer: { length: 33 } } },
+          { name: 'expiration', type: { buffer: { length: 4 } } },
+          { name: 'hash', type: { buffer: { length: 32 } } },
+          { name: 'swapper', type: { buffer: { length: 4 } } },
+        ],
+        outputs: { type: { buffer: { length: 23 } } },
+      } as TypedAbiFunction<
+        [
+          sender: Uint8Array,
+          recipient: Uint8Array,
+          expiration: Uint8Array,
+          hash: Uint8Array,
+          swapper: Uint8Array
+        ],
+        Uint8Array
+      >,
+      generateOutput: {
+        name: 'generate-output',
+        access: 'read_only',
+        args: [
+          { name: 'version', type: { buffer: { length: 1 } } },
+          { name: 'hash', type: { buffer: { length: 20 } } },
+        ],
+        outputs: { type: { buffer: { length: 25 } } },
+      } as TypedAbiFunction<[version: Uint8Array, hash: Uint8Array], Uint8Array>,
+      generateP2pkhOutput: {
+        name: 'generate-p2pkh-output',
+        access: 'read_only',
+        args: [{ name: 'hash', type: { buffer: { length: 20 } } }],
+        outputs: { type: { buffer: { length: 25 } } },
+      } as TypedAbiFunction<[hash: Uint8Array], Uint8Array>,
+      generateP2shOutput: {
+        name: 'generate-p2sh-output',
+        access: 'read_only',
+        args: [{ name: 'hash', type: { buffer: { length: 20 } } }],
+        outputs: { type: { buffer: { length: 23 } } },
+      } as TypedAbiFunction<[hash: Uint8Array], Uint8Array>,
+      generateScriptHash: {
+        name: 'generate-script-hash',
+        access: 'read_only',
+        args: [{ name: 'script', type: { buffer: { length: 120 } } }],
+        outputs: { type: { buffer: { length: 23 } } },
+      } as TypedAbiFunction<[script: Uint8Array], Uint8Array>,
+      getAmountWithFeeRate: {
+        name: 'get-amount-with-fee-rate',
+        access: 'read_only',
+        args: [
+          { name: 'amount', type: 'uint128' },
+          { name: 'fee-rate', type: 'int128' },
+        ],
+        outputs: { type: 'int128' },
+      } as TypedAbiFunction<[amount: number | bigint, feeRate: number | bigint], bigint>,
+      getCompletedOutboundSwapByTxid: {
+        name: 'get-completed-outbound-swap-by-txid',
+        access: 'read_only',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        outputs: { type: { optional: 'uint128' } },
+      } as TypedAbiFunction<[txid: Uint8Array], bigint | null>,
+      getCompletedOutboundSwapTxid: {
+        name: 'get-completed-outbound-swap-txid',
+        access: 'read_only',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: { type: { optional: { buffer: { length: 32 } } } },
+      } as TypedAbiFunction<[id: number | bigint], Uint8Array | null>,
+      getEscrow: {
+        name: 'get-escrow',
+        access: 'read_only',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: { type: { optional: 'uint128' } },
+      } as TypedAbiFunction<[id: number | bigint], bigint | null>,
+      getFullInbound: {
+        name: 'get-full-inbound',
+        access: 'read_only',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'csv', type: 'uint128' },
+                  { name: 'expiration', type: 'uint128' },
+                  { name: 'hash', type: { buffer: { length: 32 } } },
+                  { name: 'output-index', type: 'uint128' },
+                  { name: 'redeem-script', type: { buffer: { length: 120 } } },
+                  { name: 'sats', type: 'uint128' },
+                  { name: 'sender-public-key', type: { buffer: { length: 33 } } },
+                  { name: 'supplier', type: 'uint128' },
+                  { name: 'swapper', type: 'uint128' },
+                  { name: 'swapper-principal', type: 'principal' },
+                  { name: 'xbtc', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [txid: Uint8Array],
+        Response<
+          {
+            csv: bigint;
+            expiration: bigint;
+            hash: Uint8Array;
+            'output-index': bigint;
+            'redeem-script': Uint8Array;
+            sats: bigint;
+            'sender-public-key': Uint8Array;
+            supplier: bigint;
+            swapper: bigint;
+            'swapper-principal': string;
+            xbtc: bigint;
+          },
+          bigint
+        >
+      >,
+      getFullSupplier: {
+        name: 'get-full-supplier',
+        access: 'read_only',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'controller', type: 'principal' },
+                  { name: 'escrow', type: 'uint128' },
+                  { name: 'funds', type: 'uint128' },
+                  { name: 'inbound-base-fee', type: 'int128' },
+                  { name: 'inbound-fee', type: { optional: 'int128' } },
+                  { name: 'outbound-base-fee', type: 'int128' },
+                  { name: 'outbound-fee', type: { optional: 'int128' } },
+                  { name: 'public-key', type: { buffer: { length: 33 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [id: number | bigint],
+        Response<
+          {
+            controller: string;
+            escrow: bigint;
+            funds: bigint;
+            'inbound-base-fee': bigint;
+            'inbound-fee': bigint | null;
+            'outbound-base-fee': bigint;
+            'outbound-fee': bigint | null;
+            'public-key': Uint8Array;
+          },
+          bigint
+        >
+      >,
+      getFunds: {
+        name: 'get-funds',
+        access: 'read_only',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[id: number | bigint], bigint>,
+      getInboundMeta: {
+        name: 'get-inbound-meta',
+        access: 'read_only',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        outputs: {
+          type: {
+            optional: {
+              tuple: [
+                { name: 'csv', type: 'uint128' },
+                { name: 'output-index', type: 'uint128' },
+                { name: 'redeem-script', type: { buffer: { length: 120 } } },
+                { name: 'sats', type: 'uint128' },
+                { name: 'sender-public-key', type: { buffer: { length: 33 } } },
+              ],
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [txid: Uint8Array],
+        {
+          csv: bigint;
+          'output-index': bigint;
+          'redeem-script': Uint8Array;
+          sats: bigint;
+          'sender-public-key': Uint8Array;
+        } | null
+      >,
+      getInboundSwap: {
+        name: 'get-inbound-swap',
+        access: 'read_only',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        outputs: {
+          type: {
+            optional: {
+              tuple: [
+                { name: 'expiration', type: 'uint128' },
+                { name: 'hash', type: { buffer: { length: 32 } } },
+                { name: 'supplier', type: 'uint128' },
+                { name: 'swapper', type: 'uint128' },
+                { name: 'xbtc', type: 'uint128' },
+              ],
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [txid: Uint8Array],
+        {
+          expiration: bigint;
+          hash: Uint8Array;
+          supplier: bigint;
+          swapper: bigint;
+          xbtc: bigint;
+        } | null
+      >,
+      getNextOutboundId: {
+        name: 'get-next-outbound-id',
+        access: 'read_only',
+        args: [],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[], bigint>,
+      getNextSupplierId: {
+        name: 'get-next-supplier-id',
+        access: 'read_only',
+        args: [],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[], bigint>,
+      getNextSwapperId: {
+        name: 'get-next-swapper-id',
+        access: 'read_only',
+        args: [],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[], bigint>,
+      getOutboundSwap: {
+        name: 'get-outbound-swap',
+        access: 'read_only',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: {
+          type: {
+            optional: {
+              tuple: [
+                { name: 'created-at', type: 'uint128' },
+                { name: 'hash', type: { buffer: { length: 20 } } },
+                { name: 'sats', type: 'uint128' },
+                { name: 'supplier', type: 'uint128' },
+                { name: 'swapper', type: 'principal' },
+                { name: 'version', type: { buffer: { length: 1 } } },
+                { name: 'xbtc', type: 'uint128' },
+              ],
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [id: number | bigint],
+        {
+          'created-at': bigint;
+          hash: Uint8Array;
+          sats: bigint;
+          supplier: bigint;
+          swapper: string;
+          version: Uint8Array;
+          xbtc: bigint;
+        } | null
+      >,
+      getPreimage: {
+        name: 'get-preimage',
+        access: 'read_only',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        outputs: { type: { optional: { buffer: { length: 128 } } } },
+      } as TypedAbiFunction<[txid: Uint8Array], Uint8Array | null>,
+      getSupplier: {
+        name: 'get-supplier',
+        access: 'read_only',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: {
+          type: {
+            optional: {
+              tuple: [
+                { name: 'controller', type: 'principal' },
+                { name: 'inbound-base-fee', type: 'int128' },
+                { name: 'inbound-fee', type: { optional: 'int128' } },
+                { name: 'outbound-base-fee', type: 'int128' },
+                { name: 'outbound-fee', type: { optional: 'int128' } },
+                { name: 'public-key', type: { buffer: { length: 33 } } },
+              ],
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [id: number | bigint],
+        {
+          controller: string;
+          'inbound-base-fee': bigint;
+          'inbound-fee': bigint | null;
+          'outbound-base-fee': bigint;
+          'outbound-fee': bigint | null;
+          'public-key': Uint8Array;
+        } | null
+      >,
+      getSupplierIdByController: {
+        name: 'get-supplier-id-by-controller',
+        access: 'read_only',
+        args: [{ name: 'controller', type: 'principal' }],
+        outputs: { type: { optional: 'uint128' } },
+      } as TypedAbiFunction<[controller: string], bigint | null>,
+      getSupplierIdByPublicKey: {
+        name: 'get-supplier-id-by-public-key',
+        access: 'read_only',
+        args: [{ name: 'public-key', type: { buffer: { length: 33 } } }],
+        outputs: { type: { optional: 'uint128' } },
+      } as TypedAbiFunction<[publicKey: Uint8Array], bigint | null>,
+      getSwapAmount: {
+        name: 'get-swap-amount',
+        access: 'read_only',
+        args: [
+          { name: 'amount', type: 'uint128' },
+          { name: 'fee-rate', type: 'int128' },
+          { name: 'base-fee', type: 'int128' },
+        ],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [amount: number | bigint, feeRate: number | bigint, baseFee: number | bigint],
+        Response<bigint, bigint>
+      >,
+      getSwapperId: {
+        name: 'get-swapper-id',
+        access: 'read_only',
+        args: [{ name: 'swapper', type: 'principal' }],
+        outputs: { type: { optional: 'uint128' } },
+      } as TypedAbiFunction<[swapper: string], bigint | null>,
+      getSwapperPrincipal: {
+        name: 'get-swapper-principal',
+        access: 'read_only',
+        args: [{ name: 'id', type: 'uint128' }],
+        outputs: { type: { optional: 'principal' } },
+      } as TypedAbiFunction<[id: number | bigint], string | null>,
+      getTotalInboundVolume: {
+        name: 'get-total-inbound-volume',
+        access: 'read_only',
+        args: [],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[], bigint>,
+      getTotalOutboundVolume: {
+        name: 'get-total-outbound-volume',
+        access: 'read_only',
+        args: [],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[], bigint>,
+      getTotalVolume: {
+        name: 'get-total-volume',
+        access: 'read_only',
+        args: [],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[], bigint>,
+      getUserInboundVolume: {
+        name: 'get-user-inbound-volume',
+        access: 'read_only',
+        args: [{ name: 'user', type: 'principal' }],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[user: string], bigint>,
+      getUserOutboundVolume: {
+        name: 'get-user-outbound-volume',
+        access: 'read_only',
+        args: [{ name: 'user', type: 'principal' }],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[user: string], bigint>,
+      getUserTotalVolume: {
+        name: 'get-user-total-volume',
+        access: 'read_only',
+        args: [{ name: 'user', type: 'principal' }],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[user: string], bigint>,
+      readUint32: {
+        name: 'read-uint32',
+        access: 'read_only',
+        args: [
+          { name: 'num', type: { buffer: { length: 4 } } },
+          { name: 'length', type: 'uint128' },
+        ],
+        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
+      } as TypedAbiFunction<[num: Uint8Array, length: number | bigint], Response<bigint, bigint>>,
+      validateBtcAddr: {
+        name: 'validate-btc-addr',
+        access: 'read_only',
+        args: [
+          { name: 'version', type: { buffer: { length: 1 } } },
+          { name: 'hash', type: { buffer: { length: 20 } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[version: Uint8Array, hash: Uint8Array], Response<boolean, bigint>>,
+      validateExpiration: {
+        name: 'validate-expiration',
+        access: 'read_only',
+        args: [
+          { name: 'expiration', type: 'uint128' },
+          { name: 'mined-height', type: 'uint128' },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [expiration: number | bigint, minedHeight: number | bigint],
+        Response<boolean, bigint>
+      >,
+      validateFee: {
+        name: 'validate-fee',
+        access: 'read_only',
+        args: [{ name: 'fee-opt', type: { optional: 'int128' } }],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[feeOpt: bigint | null], Response<boolean, bigint>>,
+      validateOutboundRevocable: {
+        name: 'validate-outbound-revocable',
+        access: 'read_only',
+        args: [{ name: 'swap-id', type: 'uint128' }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'created-at', type: 'uint128' },
+                  { name: 'hash', type: { buffer: { length: 20 } } },
+                  { name: 'sats', type: 'uint128' },
+                  { name: 'supplier', type: 'uint128' },
+                  { name: 'swapper', type: 'principal' },
+                  { name: 'version', type: { buffer: { length: 1 } } },
+                  { name: 'xbtc', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [swapId: number | bigint],
+        Response<
+          {
+            'created-at': bigint;
+            hash: Uint8Array;
+            sats: bigint;
+            supplier: bigint;
+            swapper: string;
+            version: Uint8Array;
+            xbtc: bigint;
+          },
+          bigint
+        >
+      >,
+    },
+    maps: {
+      completedOutboundSwapTxids: {
+        name: 'completed-outbound-swap-txids',
+        key: { buffer: { length: 32 } },
+        value: 'uint128',
+      } as TypedAbiMap<Uint8Array, bigint>,
+      completedOutboundSwaps: {
+        name: 'completed-outbound-swaps',
+        key: 'uint128',
+        value: { buffer: { length: 32 } },
+      } as TypedAbiMap<bigint, Uint8Array>,
+      inboundMeta: {
+        name: 'inbound-meta',
+        key: { buffer: { length: 32 } },
+        value: {
+          tuple: [
+            { name: 'csv', type: 'uint128' },
+            { name: 'output-index', type: 'uint128' },
+            { name: 'redeem-script', type: { buffer: { length: 120 } } },
+            { name: 'sats', type: 'uint128' },
+            { name: 'sender-public-key', type: { buffer: { length: 33 } } },
+          ],
+        },
+      } as TypedAbiMap<
+        Uint8Array,
+        {
+          csv: bigint;
+          'output-index': bigint;
+          'redeem-script': Uint8Array;
+          sats: bigint;
+          'sender-public-key': Uint8Array;
+        }
+      >,
+      inboundPreimages: {
+        name: 'inbound-preimages',
+        key: { buffer: { length: 32 } },
+        value: { buffer: { length: 128 } },
+      } as TypedAbiMap<Uint8Array, Uint8Array>,
+      inboundSwaps: {
+        name: 'inbound-swaps',
+        key: { buffer: { length: 32 } },
+        value: {
+          tuple: [
+            { name: 'expiration', type: 'uint128' },
+            { name: 'hash', type: { buffer: { length: 32 } } },
+            { name: 'supplier', type: 'uint128' },
+            { name: 'swapper', type: 'uint128' },
+            { name: 'xbtc', type: 'uint128' },
+          ],
+        },
+      } as TypedAbiMap<
+        Uint8Array,
+        {
+          expiration: bigint;
+          hash: Uint8Array;
+          supplier: bigint;
+          swapper: bigint;
+          xbtc: bigint;
+        }
+      >,
+      outboundSwaps: {
+        name: 'outbound-swaps',
+        key: 'uint128',
+        value: {
+          tuple: [
+            { name: 'created-at', type: 'uint128' },
+            { name: 'hash', type: { buffer: { length: 20 } } },
+            { name: 'sats', type: 'uint128' },
+            { name: 'supplier', type: 'uint128' },
+            { name: 'swapper', type: 'principal' },
+            { name: 'version', type: { buffer: { length: 1 } } },
+            { name: 'xbtc', type: 'uint128' },
+          ],
+        },
+      } as TypedAbiMap<
+        bigint,
+        {
+          'created-at': bigint;
+          hash: Uint8Array;
+          sats: bigint;
+          supplier: bigint;
+          swapper: string;
+          version: Uint8Array;
+          xbtc: bigint;
+        }
+      >,
+      supplierByController: {
+        name: 'supplier-by-controller',
+        key: 'principal',
+        value: 'uint128',
+      } as TypedAbiMap<string, bigint>,
+      supplierById: {
+        name: 'supplier-by-id',
+        key: 'uint128',
+        value: {
+          tuple: [
+            { name: 'controller', type: 'principal' },
+            { name: 'inbound-base-fee', type: 'int128' },
+            { name: 'inbound-fee', type: { optional: 'int128' } },
+            { name: 'outbound-base-fee', type: 'int128' },
+            { name: 'outbound-fee', type: { optional: 'int128' } },
+            { name: 'public-key', type: { buffer: { length: 33 } } },
+          ],
+        },
+      } as TypedAbiMap<
+        bigint,
+        {
+          controller: string;
+          'inbound-base-fee': bigint;
+          'inbound-fee': bigint | null;
+          'outbound-base-fee': bigint;
+          'outbound-fee': bigint | null;
+          'public-key': Uint8Array;
+        }
+      >,
+      supplierByPublicKey: {
+        name: 'supplier-by-public-key',
+        key: { buffer: { length: 33 } },
+        value: 'uint128',
+      } as TypedAbiMap<Uint8Array, bigint>,
+      supplierEscrow: { name: 'supplier-escrow', key: 'uint128', value: 'uint128' } as TypedAbiMap<
+        bigint,
+        bigint
+      >,
+      supplierFunds: { name: 'supplier-funds', key: 'uint128', value: 'uint128' } as TypedAbiMap<
+        bigint,
+        bigint
+      >,
+      swapperById: { name: 'swapper-by-id', key: 'uint128', value: 'principal' } as TypedAbiMap<
+        bigint,
+        string
+      >,
+      swapperByPrincipal: {
+        name: 'swapper-by-principal',
+        key: 'principal',
+        value: 'uint128',
+      } as TypedAbiMap<string, bigint>,
+      userInboundVolumeMap: {
+        name: 'user-inbound-volume-map',
+        key: 'principal',
+        value: 'uint128',
+      } as TypedAbiMap<string, bigint>,
+      userOutboundVolumeMap: {
+        name: 'user-outbound-volume-map',
+        key: 'principal',
+        value: 'uint128',
+      } as TypedAbiMap<string, bigint>,
+    },
+    variables: {
+      bUFF_TO_BYTE: {
+        name: 'BUFF_TO_BYTE',
+        type: {
+          list: {
+            type: {
+              buffer: {
+                length: 1,
+              },
+            },
+            length: 256,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Uint8Array[]>,
+      eRR_ADD_FUNDS: {
+        name: 'ERR_ADD_FUNDS',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_ALREADY_FINALIZED: {
+        name: 'ERR_ALREADY_FINALIZED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_ESCROW_EXPIRED: {
+        name: 'ERR_ESCROW_EXPIRED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_FEE_INVALID: {
+        name: 'ERR_FEE_INVALID',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INCONSISTENT_FEES: {
+        name: 'ERR_INCONSISTENT_FEES',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INSUFFICIENT_AMOUNT: {
+        name: 'ERR_INSUFFICIENT_AMOUNT',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INSUFFICIENT_FUNDS: {
+        name: 'ERR_INSUFFICIENT_FUNDS',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INVALID_BTC_ADDR: {
+        name: 'ERR_INVALID_BTC_ADDR',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INVALID_ESCROW: {
+        name: 'ERR_INVALID_ESCROW',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INVALID_EXPIRATION: {
+        name: 'ERR_INVALID_EXPIRATION',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INVALID_HASH: {
+        name: 'ERR_INVALID_HASH',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INVALID_OUTPUT: {
+        name: 'ERR_INVALID_OUTPUT',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INVALID_PREIMAGE: {
+        name: 'ERR_INVALID_PREIMAGE',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INVALID_SUPPLIER: {
+        name: 'ERR_INVALID_SUPPLIER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_INVALID_TX: {
+        name: 'ERR_INVALID_TX',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_PANIC: {
+        name: 'ERR_PANIC',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_READ_UINT: {
+        name: 'ERR_READ_UINT',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_REVOKE_INBOUND_IS_FINALIZED: {
+        name: 'ERR_REVOKE_INBOUND_IS_FINALIZED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_REVOKE_INBOUND_NOT_EXPIRED: {
+        name: 'ERR_REVOKE_INBOUND_NOT_EXPIRED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_REVOKE_OUTBOUND_IS_FINALIZED: {
+        name: 'ERR_REVOKE_OUTBOUND_IS_FINALIZED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_REVOKE_OUTBOUND_NOT_EXPIRED: {
+        name: 'ERR_REVOKE_OUTBOUND_NOT_EXPIRED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_SUPPLIER_EXISTS: {
+        name: 'ERR_SUPPLIER_EXISTS',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_SUPPLIER_NOT_FOUND: {
+        name: 'ERR_SUPPLIER_NOT_FOUND',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_SWAPPER_EXISTS: {
+        name: 'ERR_SWAPPER_EXISTS',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_SWAPPER_NOT_FOUND: {
+        name: 'ERR_SWAPPER_NOT_FOUND',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_SWAP_NOT_FOUND: {
+        name: 'ERR_SWAP_NOT_FOUND',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_TRANSFER: {
+        name: 'ERR_TRANSFER',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_TXID_USED: {
+        name: 'ERR_TXID_USED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_TX_NOT_MINED: {
+        name: 'ERR_TX_NOT_MINED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eRR_UNAUTHORIZED: {
+        name: 'ERR_UNAUTHORIZED',
+        type: {
+          response: {
+            ok: 'none',
+            error: 'uint128',
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Response<null, bigint>>,
+      eSCROW_EXPIRATION: {
+        name: 'ESCROW_EXPIRATION',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      mIN_EXPIRATION: {
+        name: 'MIN_EXPIRATION',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      oUTBOUND_EXPIRATION: {
+        name: 'OUTBOUND_EXPIRATION',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      p2PKH_VERSION: {
+        name: 'P2PKH_VERSION',
+        type: {
+          buffer: {
+            length: 1,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Uint8Array>,
+      p2SH_VERSION: {
+        name: 'P2SH_VERSION',
+        type: {
+          buffer: {
+            length: 1,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Uint8Array>,
+      rEVOKED_INBOUND_PREIMAGE: {
+        name: 'REVOKED_INBOUND_PREIMAGE',
+        type: {
+          buffer: {
+            length: 1,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Uint8Array>,
+      rEVOKED_OUTBOUND_TXID: {
+        name: 'REVOKED_OUTBOUND_TXID',
+        type: {
+          buffer: {
+            length: 1,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Uint8Array>,
+      nextOutboundId: {
+        name: 'next-outbound-id',
+        type: 'uint128',
+        access: 'variable',
+      } as TypedAbiVariable<bigint>,
+      nextSupplierId: {
+        name: 'next-supplier-id',
+        type: 'uint128',
+        access: 'variable',
+      } as TypedAbiVariable<bigint>,
+      nextSwapperId: {
+        name: 'next-swapper-id',
+        type: 'uint128',
+        access: 'variable',
+      } as TypedAbiVariable<bigint>,
+      totalInboundVolumeVar: {
+        name: 'total-inbound-volume-var',
+        type: 'uint128',
+        access: 'variable',
+      } as TypedAbiVariable<bigint>,
+      totalOutboundVolumeVar: {
+        name: 'total-outbound-volume-var',
+        type: 'uint128',
+        access: 'variable',
+      } as TypedAbiVariable<bigint>,
+    },
+    constants: {},
+    fungible_tokens: [],
+    non_fungible_tokens: [],
+    contractName: 'bridge',
+  },
+  restrictedTokenTrait: {
+    functions: {},
+    maps: {},
+    variables: {},
+    constants: {},
+    fungible_tokens: [],
+    non_fungible_tokens: [],
+    contractName: 'restricted-token-trait',
+  },
   wrappedBitcoin: {
     functions: {
       addPrincipalToRole: {
@@ -2039,1473 +3506,6 @@ export const contracts = {
     non_fungible_tokens: [],
     contractName: 'clarity-bitcoin',
   },
-  ftTrait: {
-    functions: {},
-    maps: {},
-    variables: {},
-    constants: {},
-    fungible_tokens: [],
-    non_fungible_tokens: [],
-    contractName: 'ft-trait',
-  },
-  bridge: {
-    functions: {
-      concatBuffsFold: {
-        name: 'concat-buffs-fold',
-        access: 'private',
-        args: [
-          { name: 'b', type: { buffer: { length: 32 } } },
-          { name: 'result', type: { buffer: { length: 192 } } },
-        ],
-        outputs: { type: { buffer: { length: 192 } } },
-      } as TypedAbiFunction<[b: Uint8Array, result: Uint8Array], Uint8Array>,
-      transfer: {
-        name: 'transfer',
-        access: 'private',
-        args: [
-          { name: 'amount', type: 'uint128' },
-          { name: 'sender', type: 'principal' },
-          { name: 'recipient', type: 'principal' },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [amount: number | bigint, sender: string, recipient: string],
-        Response<boolean, bigint>
-      >,
-      updateUserInboundVolume: {
-        name: 'update-user-inbound-volume',
-        access: 'private',
-        args: [
-          { name: 'user', type: 'principal' },
-          { name: 'amount', type: 'uint128' },
-        ],
-        outputs: { type: 'bool' },
-      } as TypedAbiFunction<[user: string, amount: number | bigint], boolean>,
-      updateUserOutboundVolume: {
-        name: 'update-user-outbound-volume',
-        access: 'private',
-        args: [
-          { name: 'user', type: 'principal' },
-          { name: 'amount', type: 'uint128' },
-        ],
-        outputs: { type: 'bool' },
-      } as TypedAbiFunction<[user: string, amount: number | bigint], boolean>,
-      addFunds: {
-        name: 'add-funds',
-        access: 'public',
-        args: [{ name: 'amount', type: 'uint128' }],
-        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
-      } as TypedAbiFunction<[amount: number | bigint], Response<bigint, bigint>>,
-      escrowSwap: {
-        name: 'escrow-swap',
-        access: 'public',
-        args: [
-          {
-            name: 'block',
-            type: {
-              tuple: [
-                { name: 'header', type: { buffer: { length: 80 } } },
-                { name: 'height', type: 'uint128' },
-              ],
-            },
-          },
-          { name: 'prev-blocks', type: { list: { type: { buffer: { length: 80 } }, length: 10 } } },
-          { name: 'tx', type: { buffer: { length: 1024 } } },
-          {
-            name: 'proof',
-            type: {
-              tuple: [
-                {
-                  name: 'hashes',
-                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
-                },
-                { name: 'tree-depth', type: 'uint128' },
-                { name: 'tx-index', type: 'uint128' },
-              ],
-            },
-          },
-          { name: 'output-index', type: 'uint128' },
-          { name: 'sender', type: { buffer: { length: 33 } } },
-          { name: 'recipient', type: { buffer: { length: 33 } } },
-          { name: 'expiration-buff', type: { buffer: { length: 4 } } },
-          { name: 'hash', type: { buffer: { length: 32 } } },
-          { name: 'swapper-buff', type: { buffer: { length: 4 } } },
-          { name: 'supplier-id', type: 'uint128' },
-          { name: 'min-to-receive', type: 'uint128' },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'csv', type: 'uint128' },
-                  { name: 'output-index', type: 'uint128' },
-                  { name: 'redeem-script', type: { buffer: { length: 120 } } },
-                  { name: 'sats', type: 'uint128' },
-                  { name: 'sender-public-key', type: { buffer: { length: 33 } } },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          block: {
-            header: Uint8Array;
-            height: bigint;
-          },
-          prevBlocks: Uint8Array[],
-          tx: Uint8Array,
-          proof: {
-            hashes: Uint8Array[];
-            'tree-depth': bigint;
-            'tx-index': bigint;
-          },
-          outputIndex: number | bigint,
-          sender: Uint8Array,
-          recipient: Uint8Array,
-          expirationBuff: Uint8Array,
-          hash: Uint8Array,
-          swapperBuff: Uint8Array,
-          supplierId: number | bigint,
-          minToReceive: number | bigint
-        ],
-        Response<
-          {
-            csv: bigint;
-            'output-index': bigint;
-            'redeem-script': Uint8Array;
-            sats: bigint;
-            'sender-public-key': Uint8Array;
-          },
-          bigint
-        >
-      >,
-      finalizeOutboundSwap: {
-        name: 'finalize-outbound-swap',
-        access: 'public',
-        args: [
-          {
-            name: 'block',
-            type: {
-              tuple: [
-                { name: 'header', type: { buffer: { length: 80 } } },
-                { name: 'height', type: 'uint128' },
-              ],
-            },
-          },
-          { name: 'prev-blocks', type: { list: { type: { buffer: { length: 80 } }, length: 10 } } },
-          { name: 'tx', type: { buffer: { length: 1024 } } },
-          {
-            name: 'proof',
-            type: {
-              tuple: [
-                {
-                  name: 'hashes',
-                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
-                },
-                { name: 'tree-depth', type: 'uint128' },
-                { name: 'tx-index', type: 'uint128' },
-              ],
-            },
-          },
-          { name: 'output-index', type: 'uint128' },
-          { name: 'swap-id', type: 'uint128' },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [
-          block: {
-            header: Uint8Array;
-            height: bigint;
-          },
-          prevBlocks: Uint8Array[],
-          tx: Uint8Array,
-          proof: {
-            hashes: Uint8Array[];
-            'tree-depth': bigint;
-            'tx-index': bigint;
-          },
-          outputIndex: number | bigint,
-          swapId: number | bigint
-        ],
-        Response<boolean, bigint>
-      >,
-      finalizeSwap: {
-        name: 'finalize-swap',
-        access: 'public',
-        args: [
-          { name: 'txid', type: { buffer: { length: 32 } } },
-          { name: 'preimage', type: { buffer: { length: 128 } } },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'expiration', type: 'uint128' },
-                  { name: 'hash', type: { buffer: { length: 32 } } },
-                  { name: 'supplier', type: 'uint128' },
-                  { name: 'swapper', type: 'uint128' },
-                  { name: 'xbtc', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [txid: Uint8Array, preimage: Uint8Array],
-        Response<
-          {
-            expiration: bigint;
-            hash: Uint8Array;
-            supplier: bigint;
-            swapper: bigint;
-            xbtc: bigint;
-          },
-          bigint
-        >
-      >,
-      initializeSwapper: {
-        name: 'initialize-swapper',
-        access: 'public',
-        args: [],
-        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
-      } as TypedAbiFunction<[], Response<bigint, bigint>>,
-      initiateOutboundSwap: {
-        name: 'initiate-outbound-swap',
-        access: 'public',
-        args: [
-          { name: 'xbtc', type: 'uint128' },
-          { name: 'btc-version', type: { buffer: { length: 1 } } },
-          { name: 'btc-hash', type: { buffer: { length: 20 } } },
-          { name: 'supplier-id', type: 'uint128' },
-        ],
-        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [
-          xbtc: number | bigint,
-          btcVersion: Uint8Array,
-          btcHash: Uint8Array,
-          supplierId: number | bigint
-        ],
-        Response<bigint, bigint>
-      >,
-      registerSupplier: {
-        name: 'register-supplier',
-        access: 'public',
-        args: [
-          { name: 'public-key', type: { buffer: { length: 33 } } },
-          { name: 'inbound-fee', type: { optional: 'int128' } },
-          { name: 'outbound-fee', type: { optional: 'int128' } },
-          { name: 'outbound-base-fee', type: 'int128' },
-          { name: 'inbound-base-fee', type: 'int128' },
-          { name: 'funds', type: 'uint128' },
-        ],
-        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [
-          publicKey: Uint8Array,
-          inboundFee: bigint | null,
-          outboundFee: bigint | null,
-          outboundBaseFee: number | bigint,
-          inboundBaseFee: number | bigint,
-          funds: number | bigint
-        ],
-        Response<bigint, bigint>
-      >,
-      removeFunds: {
-        name: 'remove-funds',
-        access: 'public',
-        args: [{ name: 'amount', type: 'uint128' }],
-        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
-      } as TypedAbiFunction<[amount: number | bigint], Response<bigint, bigint>>,
-      revokeExpiredInbound: {
-        name: 'revoke-expired-inbound',
-        access: 'public',
-        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'expiration', type: 'uint128' },
-                  { name: 'hash', type: { buffer: { length: 32 } } },
-                  { name: 'supplier', type: 'uint128' },
-                  { name: 'swapper', type: 'uint128' },
-                  { name: 'xbtc', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [txid: Uint8Array],
-        Response<
-          {
-            expiration: bigint;
-            hash: Uint8Array;
-            supplier: bigint;
-            swapper: bigint;
-            xbtc: bigint;
-          },
-          bigint
-        >
-      >,
-      revokeExpiredOutbound: {
-        name: 'revoke-expired-outbound',
-        access: 'public',
-        args: [{ name: 'swap-id', type: 'uint128' }],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'created-at', type: 'uint128' },
-                  { name: 'hash', type: { buffer: { length: 20 } } },
-                  { name: 'sats', type: 'uint128' },
-                  { name: 'supplier', type: 'uint128' },
-                  { name: 'swapper', type: 'principal' },
-                  { name: 'version', type: { buffer: { length: 1 } } },
-                  { name: 'xbtc', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [swapId: number | bigint],
-        Response<
-          {
-            'created-at': bigint;
-            hash: Uint8Array;
-            sats: bigint;
-            supplier: bigint;
-            swapper: string;
-            version: Uint8Array;
-            xbtc: bigint;
-          },
-          bigint
-        >
-      >,
-      updateSupplierFees: {
-        name: 'update-supplier-fees',
-        access: 'public',
-        args: [
-          { name: 'inbound-fee', type: { optional: 'int128' } },
-          { name: 'outbound-fee', type: { optional: 'int128' } },
-          { name: 'outbound-base-fee', type: 'int128' },
-          { name: 'inbound-base-fee', type: 'int128' },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'controller', type: 'principal' },
-                  { name: 'inbound-base-fee', type: 'int128' },
-                  { name: 'inbound-fee', type: { optional: 'int128' } },
-                  { name: 'outbound-base-fee', type: 'int128' },
-                  { name: 'outbound-fee', type: { optional: 'int128' } },
-                  { name: 'public-key', type: { buffer: { length: 33 } } },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          inboundFee: bigint | null,
-          outboundFee: bigint | null,
-          outboundBaseFee: number | bigint,
-          inboundBaseFee: number | bigint
-        ],
-        Response<
-          {
-            controller: string;
-            'inbound-base-fee': bigint;
-            'inbound-fee': bigint | null;
-            'outbound-base-fee': bigint;
-            'outbound-fee': bigint | null;
-            'public-key': Uint8Array;
-          },
-          bigint
-        >
-      >,
-      updateSupplierPublicKey: {
-        name: 'update-supplier-public-key',
-        access: 'public',
-        args: [{ name: 'public-key', type: { buffer: { length: 33 } } }],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'controller', type: 'principal' },
-                  { name: 'inbound-base-fee', type: 'int128' },
-                  { name: 'inbound-fee', type: { optional: 'int128' } },
-                  { name: 'outbound-base-fee', type: 'int128' },
-                  { name: 'outbound-fee', type: { optional: 'int128' } },
-                  { name: 'public-key', type: { buffer: { length: 33 } } },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [publicKey: Uint8Array],
-        Response<
-          {
-            controller: string;
-            'inbound-base-fee': bigint;
-            'inbound-fee': bigint | null;
-            'outbound-base-fee': bigint;
-            'outbound-fee': bigint | null;
-            'public-key': Uint8Array;
-          },
-          bigint
-        >
-      >,
-      buffToU8: {
-        name: 'buff-to-u8',
-        access: 'read_only',
-        args: [{ name: 'byte', type: { buffer: { length: 1 } } }],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[byte: Uint8Array], bigint>,
-      bytesLen: {
-        name: 'bytes-len',
-        access: 'read_only',
-        args: [{ name: 'bytes', type: { buffer: { length: 4 } } }],
-        outputs: { type: { buffer: { length: 1 } } },
-      } as TypedAbiFunction<[bytes: Uint8Array], Uint8Array>,
-      concatBuffs: {
-        name: 'concat-buffs',
-        access: 'read_only',
-        args: [{ name: 'buffs', type: { list: { type: { buffer: { length: 32 } }, length: 6 } } }],
-        outputs: { type: { buffer: { length: 192 } } },
-      } as TypedAbiFunction<[buffs: Uint8Array[]], Uint8Array>,
-      generateHtlcScript: {
-        name: 'generate-htlc-script',
-        access: 'read_only',
-        args: [
-          { name: 'sender', type: { buffer: { length: 33 } } },
-          { name: 'recipient', type: { buffer: { length: 33 } } },
-          { name: 'expiration', type: { buffer: { length: 4 } } },
-          { name: 'hash', type: { buffer: { length: 32 } } },
-          { name: 'swapper', type: { buffer: { length: 4 } } },
-        ],
-        outputs: { type: { buffer: { length: 120 } } },
-      } as TypedAbiFunction<
-        [
-          sender: Uint8Array,
-          recipient: Uint8Array,
-          expiration: Uint8Array,
-          hash: Uint8Array,
-          swapper: Uint8Array
-        ],
-        Uint8Array
-      >,
-      generateHtlcScriptHash: {
-        name: 'generate-htlc-script-hash',
-        access: 'read_only',
-        args: [
-          { name: 'sender', type: { buffer: { length: 33 } } },
-          { name: 'recipient', type: { buffer: { length: 33 } } },
-          { name: 'expiration', type: { buffer: { length: 4 } } },
-          { name: 'hash', type: { buffer: { length: 32 } } },
-          { name: 'swapper', type: { buffer: { length: 4 } } },
-        ],
-        outputs: { type: { buffer: { length: 23 } } },
-      } as TypedAbiFunction<
-        [
-          sender: Uint8Array,
-          recipient: Uint8Array,
-          expiration: Uint8Array,
-          hash: Uint8Array,
-          swapper: Uint8Array
-        ],
-        Uint8Array
-      >,
-      generateOutput: {
-        name: 'generate-output',
-        access: 'read_only',
-        args: [
-          { name: 'version', type: { buffer: { length: 1 } } },
-          { name: 'hash', type: { buffer: { length: 20 } } },
-        ],
-        outputs: { type: { buffer: { length: 25 } } },
-      } as TypedAbiFunction<[version: Uint8Array, hash: Uint8Array], Uint8Array>,
-      generateP2pkhOutput: {
-        name: 'generate-p2pkh-output',
-        access: 'read_only',
-        args: [{ name: 'hash', type: { buffer: { length: 20 } } }],
-        outputs: { type: { buffer: { length: 25 } } },
-      } as TypedAbiFunction<[hash: Uint8Array], Uint8Array>,
-      generateP2shOutput: {
-        name: 'generate-p2sh-output',
-        access: 'read_only',
-        args: [{ name: 'hash', type: { buffer: { length: 20 } } }],
-        outputs: { type: { buffer: { length: 23 } } },
-      } as TypedAbiFunction<[hash: Uint8Array], Uint8Array>,
-      generateScriptHash: {
-        name: 'generate-script-hash',
-        access: 'read_only',
-        args: [{ name: 'script', type: { buffer: { length: 120 } } }],
-        outputs: { type: { buffer: { length: 23 } } },
-      } as TypedAbiFunction<[script: Uint8Array], Uint8Array>,
-      getAmountWithFeeRate: {
-        name: 'get-amount-with-fee-rate',
-        access: 'read_only',
-        args: [
-          { name: 'amount', type: 'uint128' },
-          { name: 'fee-rate', type: 'int128' },
-        ],
-        outputs: { type: 'int128' },
-      } as TypedAbiFunction<[amount: number | bigint, feeRate: number | bigint], bigint>,
-      getCompletedOutboundSwapByTxid: {
-        name: 'get-completed-outbound-swap-by-txid',
-        access: 'read_only',
-        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
-        outputs: { type: { optional: 'uint128' } },
-      } as TypedAbiFunction<[txid: Uint8Array], bigint | null>,
-      getCompletedOutboundSwapTxid: {
-        name: 'get-completed-outbound-swap-txid',
-        access: 'read_only',
-        args: [{ name: 'id', type: 'uint128' }],
-        outputs: { type: { optional: { buffer: { length: 32 } } } },
-      } as TypedAbiFunction<[id: number | bigint], Uint8Array | null>,
-      getEscrow: {
-        name: 'get-escrow',
-        access: 'read_only',
-        args: [{ name: 'id', type: 'uint128' }],
-        outputs: { type: { optional: 'uint128' } },
-      } as TypedAbiFunction<[id: number | bigint], bigint | null>,
-      getFullInbound: {
-        name: 'get-full-inbound',
-        access: 'read_only',
-        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'csv', type: 'uint128' },
-                  { name: 'expiration', type: 'uint128' },
-                  { name: 'hash', type: { buffer: { length: 32 } } },
-                  { name: 'output-index', type: 'uint128' },
-                  { name: 'redeem-script', type: { buffer: { length: 120 } } },
-                  { name: 'sats', type: 'uint128' },
-                  { name: 'sender-public-key', type: { buffer: { length: 33 } } },
-                  { name: 'supplier', type: 'uint128' },
-                  { name: 'swapper', type: 'uint128' },
-                  { name: 'swapper-principal', type: 'principal' },
-                  { name: 'xbtc', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [txid: Uint8Array],
-        Response<
-          {
-            csv: bigint;
-            expiration: bigint;
-            hash: Uint8Array;
-            'output-index': bigint;
-            'redeem-script': Uint8Array;
-            sats: bigint;
-            'sender-public-key': Uint8Array;
-            supplier: bigint;
-            swapper: bigint;
-            'swapper-principal': string;
-            xbtc: bigint;
-          },
-          bigint
-        >
-      >,
-      getFullSupplier: {
-        name: 'get-full-supplier',
-        access: 'read_only',
-        args: [{ name: 'id', type: 'uint128' }],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'controller', type: 'principal' },
-                  { name: 'escrow', type: 'uint128' },
-                  { name: 'funds', type: 'uint128' },
-                  { name: 'inbound-base-fee', type: 'int128' },
-                  { name: 'inbound-fee', type: { optional: 'int128' } },
-                  { name: 'outbound-base-fee', type: 'int128' },
-                  { name: 'outbound-fee', type: { optional: 'int128' } },
-                  { name: 'public-key', type: { buffer: { length: 33 } } },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [id: number | bigint],
-        Response<
-          {
-            controller: string;
-            escrow: bigint;
-            funds: bigint;
-            'inbound-base-fee': bigint;
-            'inbound-fee': bigint | null;
-            'outbound-base-fee': bigint;
-            'outbound-fee': bigint | null;
-            'public-key': Uint8Array;
-          },
-          bigint
-        >
-      >,
-      getFunds: {
-        name: 'get-funds',
-        access: 'read_only',
-        args: [{ name: 'id', type: 'uint128' }],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[id: number | bigint], bigint>,
-      getInboundMeta: {
-        name: 'get-inbound-meta',
-        access: 'read_only',
-        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
-        outputs: {
-          type: {
-            optional: {
-              tuple: [
-                { name: 'csv', type: 'uint128' },
-                { name: 'output-index', type: 'uint128' },
-                { name: 'redeem-script', type: { buffer: { length: 120 } } },
-                { name: 'sats', type: 'uint128' },
-                { name: 'sender-public-key', type: { buffer: { length: 33 } } },
-              ],
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [txid: Uint8Array],
-        {
-          csv: bigint;
-          'output-index': bigint;
-          'redeem-script': Uint8Array;
-          sats: bigint;
-          'sender-public-key': Uint8Array;
-        } | null
-      >,
-      getInboundSwap: {
-        name: 'get-inbound-swap',
-        access: 'read_only',
-        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
-        outputs: {
-          type: {
-            optional: {
-              tuple: [
-                { name: 'expiration', type: 'uint128' },
-                { name: 'hash', type: { buffer: { length: 32 } } },
-                { name: 'supplier', type: 'uint128' },
-                { name: 'swapper', type: 'uint128' },
-                { name: 'xbtc', type: 'uint128' },
-              ],
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [txid: Uint8Array],
-        {
-          expiration: bigint;
-          hash: Uint8Array;
-          supplier: bigint;
-          swapper: bigint;
-          xbtc: bigint;
-        } | null
-      >,
-      getNextOutboundId: {
-        name: 'get-next-outbound-id',
-        access: 'read_only',
-        args: [],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[], bigint>,
-      getNextSupplierId: {
-        name: 'get-next-supplier-id',
-        access: 'read_only',
-        args: [],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[], bigint>,
-      getNextSwapperId: {
-        name: 'get-next-swapper-id',
-        access: 'read_only',
-        args: [],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[], bigint>,
-      getOutboundSwap: {
-        name: 'get-outbound-swap',
-        access: 'read_only',
-        args: [{ name: 'id', type: 'uint128' }],
-        outputs: {
-          type: {
-            optional: {
-              tuple: [
-                { name: 'created-at', type: 'uint128' },
-                { name: 'hash', type: { buffer: { length: 20 } } },
-                { name: 'sats', type: 'uint128' },
-                { name: 'supplier', type: 'uint128' },
-                { name: 'swapper', type: 'principal' },
-                { name: 'version', type: { buffer: { length: 1 } } },
-                { name: 'xbtc', type: 'uint128' },
-              ],
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [id: number | bigint],
-        {
-          'created-at': bigint;
-          hash: Uint8Array;
-          sats: bigint;
-          supplier: bigint;
-          swapper: string;
-          version: Uint8Array;
-          xbtc: bigint;
-        } | null
-      >,
-      getPreimage: {
-        name: 'get-preimage',
-        access: 'read_only',
-        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
-        outputs: { type: { optional: { buffer: { length: 128 } } } },
-      } as TypedAbiFunction<[txid: Uint8Array], Uint8Array | null>,
-      getSupplier: {
-        name: 'get-supplier',
-        access: 'read_only',
-        args: [{ name: 'id', type: 'uint128' }],
-        outputs: {
-          type: {
-            optional: {
-              tuple: [
-                { name: 'controller', type: 'principal' },
-                { name: 'inbound-base-fee', type: 'int128' },
-                { name: 'inbound-fee', type: { optional: 'int128' } },
-                { name: 'outbound-base-fee', type: 'int128' },
-                { name: 'outbound-fee', type: { optional: 'int128' } },
-                { name: 'public-key', type: { buffer: { length: 33 } } },
-              ],
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [id: number | bigint],
-        {
-          controller: string;
-          'inbound-base-fee': bigint;
-          'inbound-fee': bigint | null;
-          'outbound-base-fee': bigint;
-          'outbound-fee': bigint | null;
-          'public-key': Uint8Array;
-        } | null
-      >,
-      getSupplierIdByController: {
-        name: 'get-supplier-id-by-controller',
-        access: 'read_only',
-        args: [{ name: 'controller', type: 'principal' }],
-        outputs: { type: { optional: 'uint128' } },
-      } as TypedAbiFunction<[controller: string], bigint | null>,
-      getSupplierIdByPublicKey: {
-        name: 'get-supplier-id-by-public-key',
-        access: 'read_only',
-        args: [{ name: 'public-key', type: { buffer: { length: 33 } } }],
-        outputs: { type: { optional: 'uint128' } },
-      } as TypedAbiFunction<[publicKey: Uint8Array], bigint | null>,
-      getSwapAmount: {
-        name: 'get-swap-amount',
-        access: 'read_only',
-        args: [
-          { name: 'amount', type: 'uint128' },
-          { name: 'fee-rate', type: 'int128' },
-          { name: 'base-fee', type: 'int128' },
-        ],
-        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [amount: number | bigint, feeRate: number | bigint, baseFee: number | bigint],
-        Response<bigint, bigint>
-      >,
-      getSwapperId: {
-        name: 'get-swapper-id',
-        access: 'read_only',
-        args: [{ name: 'swapper', type: 'principal' }],
-        outputs: { type: { optional: 'uint128' } },
-      } as TypedAbiFunction<[swapper: string], bigint | null>,
-      getSwapperPrincipal: {
-        name: 'get-swapper-principal',
-        access: 'read_only',
-        args: [{ name: 'id', type: 'uint128' }],
-        outputs: { type: { optional: 'principal' } },
-      } as TypedAbiFunction<[id: number | bigint], string | null>,
-      getTotalInboundVolume: {
-        name: 'get-total-inbound-volume',
-        access: 'read_only',
-        args: [],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[], bigint>,
-      getTotalOutboundVolume: {
-        name: 'get-total-outbound-volume',
-        access: 'read_only',
-        args: [],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[], bigint>,
-      getTotalVolume: {
-        name: 'get-total-volume',
-        access: 'read_only',
-        args: [],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[], bigint>,
-      getUserInboundVolume: {
-        name: 'get-user-inbound-volume',
-        access: 'read_only',
-        args: [{ name: 'user', type: 'principal' }],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[user: string], bigint>,
-      getUserOutboundVolume: {
-        name: 'get-user-outbound-volume',
-        access: 'read_only',
-        args: [{ name: 'user', type: 'principal' }],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[user: string], bigint>,
-      getUserTotalVolume: {
-        name: 'get-user-total-volume',
-        access: 'read_only',
-        args: [{ name: 'user', type: 'principal' }],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[user: string], bigint>,
-      readUint32: {
-        name: 'read-uint32',
-        access: 'read_only',
-        args: [
-          { name: 'num', type: { buffer: { length: 4 } } },
-          { name: 'length', type: 'uint128' },
-        ],
-        outputs: { type: { response: { ok: 'uint128', error: 'uint128' } } },
-      } as TypedAbiFunction<[num: Uint8Array, length: number | bigint], Response<bigint, bigint>>,
-      validateBtcAddr: {
-        name: 'validate-btc-addr',
-        access: 'read_only',
-        args: [
-          { name: 'version', type: { buffer: { length: 1 } } },
-          { name: 'hash', type: { buffer: { length: 20 } } },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<[version: Uint8Array, hash: Uint8Array], Response<boolean, bigint>>,
-      validateExpiration: {
-        name: 'validate-expiration',
-        access: 'read_only',
-        args: [
-          { name: 'expiration', type: 'uint128' },
-          { name: 'mined-height', type: 'uint128' },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [expiration: number | bigint, minedHeight: number | bigint],
-        Response<boolean, bigint>
-      >,
-      validateFee: {
-        name: 'validate-fee',
-        access: 'read_only',
-        args: [{ name: 'fee-opt', type: { optional: 'int128' } }],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<[feeOpt: bigint | null], Response<boolean, bigint>>,
-      validateOutboundRevocable: {
-        name: 'validate-outbound-revocable',
-        access: 'read_only',
-        args: [{ name: 'swap-id', type: 'uint128' }],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'created-at', type: 'uint128' },
-                  { name: 'hash', type: { buffer: { length: 20 } } },
-                  { name: 'sats', type: 'uint128' },
-                  { name: 'supplier', type: 'uint128' },
-                  { name: 'swapper', type: 'principal' },
-                  { name: 'version', type: { buffer: { length: 1 } } },
-                  { name: 'xbtc', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [swapId: number | bigint],
-        Response<
-          {
-            'created-at': bigint;
-            hash: Uint8Array;
-            sats: bigint;
-            supplier: bigint;
-            swapper: string;
-            version: Uint8Array;
-            xbtc: bigint;
-          },
-          bigint
-        >
-      >,
-    },
-    maps: {
-      completedOutboundSwapTxids: {
-        name: 'completed-outbound-swap-txids',
-        key: { buffer: { length: 32 } },
-        value: 'uint128',
-      } as TypedAbiMap<Uint8Array, bigint>,
-      completedOutboundSwaps: {
-        name: 'completed-outbound-swaps',
-        key: 'uint128',
-        value: { buffer: { length: 32 } },
-      } as TypedAbiMap<bigint, Uint8Array>,
-      inboundMeta: {
-        name: 'inbound-meta',
-        key: { buffer: { length: 32 } },
-        value: {
-          tuple: [
-            { name: 'csv', type: 'uint128' },
-            { name: 'output-index', type: 'uint128' },
-            { name: 'redeem-script', type: { buffer: { length: 120 } } },
-            { name: 'sats', type: 'uint128' },
-            { name: 'sender-public-key', type: { buffer: { length: 33 } } },
-          ],
-        },
-      } as TypedAbiMap<
-        Uint8Array,
-        {
-          csv: bigint;
-          'output-index': bigint;
-          'redeem-script': Uint8Array;
-          sats: bigint;
-          'sender-public-key': Uint8Array;
-        }
-      >,
-      inboundPreimages: {
-        name: 'inbound-preimages',
-        key: { buffer: { length: 32 } },
-        value: { buffer: { length: 128 } },
-      } as TypedAbiMap<Uint8Array, Uint8Array>,
-      inboundSwaps: {
-        name: 'inbound-swaps',
-        key: { buffer: { length: 32 } },
-        value: {
-          tuple: [
-            { name: 'expiration', type: 'uint128' },
-            { name: 'hash', type: { buffer: { length: 32 } } },
-            { name: 'supplier', type: 'uint128' },
-            { name: 'swapper', type: 'uint128' },
-            { name: 'xbtc', type: 'uint128' },
-          ],
-        },
-      } as TypedAbiMap<
-        Uint8Array,
-        {
-          expiration: bigint;
-          hash: Uint8Array;
-          supplier: bigint;
-          swapper: bigint;
-          xbtc: bigint;
-        }
-      >,
-      outboundSwaps: {
-        name: 'outbound-swaps',
-        key: 'uint128',
-        value: {
-          tuple: [
-            { name: 'created-at', type: 'uint128' },
-            { name: 'hash', type: { buffer: { length: 20 } } },
-            { name: 'sats', type: 'uint128' },
-            { name: 'supplier', type: 'uint128' },
-            { name: 'swapper', type: 'principal' },
-            { name: 'version', type: { buffer: { length: 1 } } },
-            { name: 'xbtc', type: 'uint128' },
-          ],
-        },
-      } as TypedAbiMap<
-        bigint,
-        {
-          'created-at': bigint;
-          hash: Uint8Array;
-          sats: bigint;
-          supplier: bigint;
-          swapper: string;
-          version: Uint8Array;
-          xbtc: bigint;
-        }
-      >,
-      supplierByController: {
-        name: 'supplier-by-controller',
-        key: 'principal',
-        value: 'uint128',
-      } as TypedAbiMap<string, bigint>,
-      supplierById: {
-        name: 'supplier-by-id',
-        key: 'uint128',
-        value: {
-          tuple: [
-            { name: 'controller', type: 'principal' },
-            { name: 'inbound-base-fee', type: 'int128' },
-            { name: 'inbound-fee', type: { optional: 'int128' } },
-            { name: 'outbound-base-fee', type: 'int128' },
-            { name: 'outbound-fee', type: { optional: 'int128' } },
-            { name: 'public-key', type: { buffer: { length: 33 } } },
-          ],
-        },
-      } as TypedAbiMap<
-        bigint,
-        {
-          controller: string;
-          'inbound-base-fee': bigint;
-          'inbound-fee': bigint | null;
-          'outbound-base-fee': bigint;
-          'outbound-fee': bigint | null;
-          'public-key': Uint8Array;
-        }
-      >,
-      supplierByPublicKey: {
-        name: 'supplier-by-public-key',
-        key: { buffer: { length: 33 } },
-        value: 'uint128',
-      } as TypedAbiMap<Uint8Array, bigint>,
-      supplierEscrow: { name: 'supplier-escrow', key: 'uint128', value: 'uint128' } as TypedAbiMap<
-        bigint,
-        bigint
-      >,
-      supplierFunds: { name: 'supplier-funds', key: 'uint128', value: 'uint128' } as TypedAbiMap<
-        bigint,
-        bigint
-      >,
-      swapperById: { name: 'swapper-by-id', key: 'uint128', value: 'principal' } as TypedAbiMap<
-        bigint,
-        string
-      >,
-      swapperByPrincipal: {
-        name: 'swapper-by-principal',
-        key: 'principal',
-        value: 'uint128',
-      } as TypedAbiMap<string, bigint>,
-      userInboundVolumeMap: {
-        name: 'user-inbound-volume-map',
-        key: 'principal',
-        value: 'uint128',
-      } as TypedAbiMap<string, bigint>,
-      userOutboundVolumeMap: {
-        name: 'user-outbound-volume-map',
-        key: 'principal',
-        value: 'uint128',
-      } as TypedAbiMap<string, bigint>,
-    },
-    variables: {
-      bUFF_TO_BYTE: {
-        name: 'BUFF_TO_BYTE',
-        type: {
-          list: {
-            type: {
-              buffer: {
-                length: 1,
-              },
-            },
-            length: 256,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Uint8Array[]>,
-      eRR_ADD_FUNDS: {
-        name: 'ERR_ADD_FUNDS',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_ALREADY_FINALIZED: {
-        name: 'ERR_ALREADY_FINALIZED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_ESCROW_EXPIRED: {
-        name: 'ERR_ESCROW_EXPIRED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_FEE_INVALID: {
-        name: 'ERR_FEE_INVALID',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INCONSISTENT_FEES: {
-        name: 'ERR_INCONSISTENT_FEES',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INSUFFICIENT_AMOUNT: {
-        name: 'ERR_INSUFFICIENT_AMOUNT',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INSUFFICIENT_FUNDS: {
-        name: 'ERR_INSUFFICIENT_FUNDS',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INVALID_BTC_ADDR: {
-        name: 'ERR_INVALID_BTC_ADDR',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INVALID_ESCROW: {
-        name: 'ERR_INVALID_ESCROW',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INVALID_EXPIRATION: {
-        name: 'ERR_INVALID_EXPIRATION',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INVALID_HASH: {
-        name: 'ERR_INVALID_HASH',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INVALID_OUTPUT: {
-        name: 'ERR_INVALID_OUTPUT',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INVALID_PREIMAGE: {
-        name: 'ERR_INVALID_PREIMAGE',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INVALID_SUPPLIER: {
-        name: 'ERR_INVALID_SUPPLIER',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_INVALID_TX: {
-        name: 'ERR_INVALID_TX',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_PANIC: {
-        name: 'ERR_PANIC',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_READ_UINT: {
-        name: 'ERR_READ_UINT',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_REVOKE_INBOUND_IS_FINALIZED: {
-        name: 'ERR_REVOKE_INBOUND_IS_FINALIZED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_REVOKE_INBOUND_NOT_EXPIRED: {
-        name: 'ERR_REVOKE_INBOUND_NOT_EXPIRED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_REVOKE_OUTBOUND_IS_FINALIZED: {
-        name: 'ERR_REVOKE_OUTBOUND_IS_FINALIZED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_REVOKE_OUTBOUND_NOT_EXPIRED: {
-        name: 'ERR_REVOKE_OUTBOUND_NOT_EXPIRED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_SUPPLIER_EXISTS: {
-        name: 'ERR_SUPPLIER_EXISTS',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_SUPPLIER_NOT_FOUND: {
-        name: 'ERR_SUPPLIER_NOT_FOUND',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_SWAPPER_EXISTS: {
-        name: 'ERR_SWAPPER_EXISTS',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_SWAPPER_NOT_FOUND: {
-        name: 'ERR_SWAPPER_NOT_FOUND',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_SWAP_NOT_FOUND: {
-        name: 'ERR_SWAP_NOT_FOUND',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_TRANSFER: {
-        name: 'ERR_TRANSFER',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_TXID_USED: {
-        name: 'ERR_TXID_USED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_TX_NOT_MINED: {
-        name: 'ERR_TX_NOT_MINED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eRR_UNAUTHORIZED: {
-        name: 'ERR_UNAUTHORIZED',
-        type: {
-          response: {
-            ok: 'none',
-            error: 'uint128',
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Response<null, bigint>>,
-      eSCROW_EXPIRATION: {
-        name: 'ESCROW_EXPIRATION',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      mIN_EXPIRATION: {
-        name: 'MIN_EXPIRATION',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      oUTBOUND_EXPIRATION: {
-        name: 'OUTBOUND_EXPIRATION',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      p2PKH_VERSION: {
-        name: 'P2PKH_VERSION',
-        type: {
-          buffer: {
-            length: 1,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Uint8Array>,
-      p2SH_VERSION: {
-        name: 'P2SH_VERSION',
-        type: {
-          buffer: {
-            length: 1,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Uint8Array>,
-      rEVOKED_INBOUND_PREIMAGE: {
-        name: 'REVOKED_INBOUND_PREIMAGE',
-        type: {
-          buffer: {
-            length: 1,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Uint8Array>,
-      rEVOKED_OUTBOUND_TXID: {
-        name: 'REVOKED_OUTBOUND_TXID',
-        type: {
-          buffer: {
-            length: 1,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Uint8Array>,
-      nextOutboundId: {
-        name: 'next-outbound-id',
-        type: 'uint128',
-        access: 'variable',
-      } as TypedAbiVariable<bigint>,
-      nextSupplierId: {
-        name: 'next-supplier-id',
-        type: 'uint128',
-        access: 'variable',
-      } as TypedAbiVariable<bigint>,
-      nextSwapperId: {
-        name: 'next-swapper-id',
-        type: 'uint128',
-        access: 'variable',
-      } as TypedAbiVariable<bigint>,
-      totalInboundVolumeVar: {
-        name: 'total-inbound-volume-var',
-        type: 'uint128',
-        access: 'variable',
-      } as TypedAbiVariable<bigint>,
-      totalOutboundVolumeVar: {
-        name: 'total-outbound-volume-var',
-        type: 'uint128',
-        access: 'variable',
-      } as TypedAbiVariable<bigint>,
-    },
-    constants: {},
-    fungible_tokens: [],
-    non_fungible_tokens: [],
-    contractName: 'bridge',
-  },
   testUtils: {
     functions: {
       setBurnHeader: {
@@ -3553,15 +3553,6 @@ export const contracts = {
     fungible_tokens: [],
     non_fungible_tokens: [],
     contractName: 'test-utils',
-  },
-  restrictedTokenTrait: {
-    functions: {},
-    maps: {},
-    variables: {},
-    constants: {},
-    fungible_tokens: [],
-    non_fungible_tokens: [],
-    contractName: 'restricted-token-trait',
   },
   supplierWrapper: {
     functions: {
@@ -3752,5 +3743,14 @@ export const contracts = {
     fungible_tokens: [],
     non_fungible_tokens: [],
     contractName: 'supplier-wrapper',
+  },
+  ftTrait: {
+    functions: {},
+    maps: {},
+    variables: {},
+    constants: {},
+    fungible_tokens: [],
+    non_fungible_tokens: [],
+    contractName: 'ft-trait',
   },
 } as const;

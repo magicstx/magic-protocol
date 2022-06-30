@@ -1,0 +1,51 @@
+---
+id: 0
+name: Testnet xBTC setup
+network: testnet
+stacks-node: "http://stacks-node-api.testnet.stacks.co"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-call:
+            contract-id: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1.Wrapped-Bitcoin
+            method: initialize
+            expected-sender: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1
+            cost: 100000
+            parameters:
+              - '"xBTC"'
+              - '"xBTC"'
+              - u8
+              - "'ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1"
+        - contract-call:
+            contract-id: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1.Wrapped-Bitcoin
+            method: add-principal-to-role
+            expected-sender: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1
+            cost: 100000
+            parameters:
+              - u1
+              - "'ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1"
+        - contract-call:
+            contract-id: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1.Wrapped-Bitcoin
+            method: set-token-uri
+            expected-sender: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1
+            cost: 100000
+            parameters:
+              - 'u"https://wrapped.com/xbtc.json"'
+        - contract-call:
+            contract-id: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1.Wrapped-Bitcoin
+            method: mint-tokens
+            expected-sender: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1
+            cost: 100000
+            parameters:
+              - u100000000000000
+              - "'ST142DZR05DXTGSTBP4ZK57H8C7J2T8PBJDNT39FD"
+        - contract-call:
+            contract-id: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1.Wrapped-Bitcoin
+            method: mint-tokens
+            expected-sender: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1
+            parameters:
+              - u1000000000
+              - "'ST1H49Q7KM36Z82MHHWCQ92YANMGPPKSHEC0DW9RW"
+            cost: 1000000
