@@ -14,7 +14,8 @@
 
 #nprogress .bar {
   /* background: #29d; */
-  background: #27c4f5 linear-gradient(to right,#27c4f5,#a307ba,#fd8d32,#70c050,#27c4f5);
+  /* background: #27c4f5 linear-gradient(to right,#27c4f5,#a307ba,#fd8d32,#70c050,#27c4f5); */
+  background: var(--colors-grey-100);
   background-size: 500%;
   animation: 2s linear infinite barprogress, .3s fadein;
 
@@ -24,7 +25,7 @@
   left: 0;
 
   width: 100%;
-  height: 2px;
+  height: 3px;
 }
 
 /* Fancy blur effect */
