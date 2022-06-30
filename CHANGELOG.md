@@ -1,5 +1,23 @@
 # bridge-ui
 
+## 0.5.0
+
+### Minor Changes
+
+- [`6e076a7`](https://github.com/magicstx/bridge/commit/6e076a7d503e61199ed7c426f1682c8c1edccdc9) Thanks [@dumbledope](https://github.com/dumbledope)! - Fixed an issue where validating outbound swap expiry used `block-height` instead of `burn-block-height`.
+
+  In `bridge.clar`, outbound swaps have a `created-at` field which is set when the swap is initiated. This field represents the **burn** block height where the swap transaction was confirmed.
+
+  In the `revoke-outbound-swap` function, there is validation to ensure that the swap has expired (200 blocks have passed). Unfortunately, this function was checking the **Stacks** block height, not the burn block height.
+
+  While not exploitable, this unfortunately would prevent users from revoking outbound swaps in production environments. This is because a Stacks block height is thousands of blocks lower than burn chain heights - meaning it would take years for a swap to "expire".
+
+  The fix was to change line 759 in `bridge.clar` to use `burn-block-height` instead of `block-height`.
+
+* [`3027586`](https://github.com/magicstx/bridge/commit/3027586805ec3e0eb73230dcce7e77da7cbfcd9f) Thanks [@dumbledope](https://github.com/dumbledope)! - Added better `print` events to major contract calls, which allows for better off-chain monitoring.
+
+- [`515f698`](https://github.com/magicstx/bridge/commit/515f698fbfe88e49e9621ff2ad6b83006f8af473) Thanks [@dumbledope](https://github.com/dumbledope)! - Updated the project to use the official xBTC contract, using Clarinet requirements for development.
+
 ## 0.4.0
 
 ### Minor Changes
