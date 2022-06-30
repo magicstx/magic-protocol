@@ -153,7 +153,6 @@ export function useSwapForm() {
   const submit = useAtomCallback(
     useCallback(
       async (get, set) => {
-        if (!isValid) return;
         nProgress.start();
         if (outputToken === 'xbtc') {
           await submitInbound();
