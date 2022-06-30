@@ -1,9 +1,9 @@
-import { useQueryAtom } from 'jotai-query-toolkit';
+import { useAtomValue } from 'jotai/utils';
 import { xbtcAssetId } from '../contracts';
 import { balancesState } from '../store/api';
 
 export const useBalances = () => {
-  const [balances] = useQueryAtom(balancesState);
+  const balances = useAtomValue(balancesState);
   if (!balances) throw new Error('Cannot get balances if logged out.');
   const xbtcId = xbtcAssetId();
   return {

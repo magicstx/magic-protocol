@@ -52,10 +52,15 @@ export const listUnspentState = atomFamilyWithQuery<string, ListUnspentApiOk>(
   }
 );
 
-export const balancesState = atomWithQuery<AddressBalanceResponse | null>(
-  QueryKeys.BALANCES,
-  async get => {
-    const address = get(currentStxAddressState);
+export const balancesState = atom(get => {
+  const address = get(currentStxAddressState);
+  if (!address) return null;
+  return get(addressBalanceState(address));
+});
+
+export const addressBalanceState = atomFamilyWithQuery<string, AddressBalanceResponse | null>(
+  (get, address) => ['stxAddressBalances', address],
+  async (get, address) => {
     if (!address) return null;
     return getBalances(address);
   }
