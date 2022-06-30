@@ -11,6 +11,7 @@ import { atomWithQuery } from 'jotai-query-toolkit';
 import { fetchPrivate } from 'micro-stacks/common';
 import { TransactionStatus } from '../api/stacks';
 import { stxTxResultState } from './api';
+import { waitForAll } from 'jotai/utils';
 
 export const swapIdState = atom<string | undefined>(undefined);
 
@@ -151,7 +152,8 @@ export const inboundSwapState = atomFamilyWithQuery<string, InboundSwap>(
     })) as string;
     const swap = JSON.parse(contents) as InboundSwapStarted;
     return swap;
-  }
+  },
+  { refetchInterval: false }
 );
 
 export const useInboundSwapStorage = (id: string) => useQueryAtom(inboundSwapState(id));
@@ -255,17 +257,18 @@ export const fullOutboundSwapState = atomFamilyWithQuery<string, FullOutboundSwa
       };
     }
     return swap;
-  }
+  },
+  { refetchInterval: 60000 }
 );
 
 export const allSwapsState = atom<(InboundSwap | FullOutboundSwap)[]>(get => {
   const keys = get(swapsListState);
   const items = keys.map(({ dir, id }) => {
     if (dir === 'outbound') {
-      return get(fullOutboundSwapState(id));
+      return fullOutboundSwapState(id);
     }
-    const swap = get(inboundSwapState(id));
+    const swap = inboundSwapState(id);
     return swap;
   });
-  return items;
+  return get(waitForAll(items));
 });

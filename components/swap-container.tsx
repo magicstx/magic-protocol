@@ -19,6 +19,7 @@ import { useAtomValue } from 'jotai/utils';
 import { SelectSupplier } from './select-supplier';
 import { RegisterSwap } from './inbound/register';
 import { CSSTypes } from '@nelson-ui/core';
+import { PendingSwapContainer } from './pending-swap';
 
 export const SwapContainer: React.FC = () => {
   const {
@@ -76,6 +77,7 @@ export const SwapContainer: React.FC = () => {
   }
   return (
     <Stack spacing="$row-y">
+      <PendingSwapContainer />
       <CenterBox noPadding>
         <Stack spacing="$6" px="$row-x">
           <SwapField dir="from" />
