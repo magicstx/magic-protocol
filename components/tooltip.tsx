@@ -91,7 +91,7 @@ export type TooltipRender = (attrs: TippyAttrs) => ReactNode;
 export const TooltipTippy: React.FC<{
   render: ReactNode;
   children: ReactElement;
-  tippyProps?: Props;
+  tippyProps?: Partial<Props>;
 }> = ({ render, children, tippyProps }) => {
   return (
     <Tippy
