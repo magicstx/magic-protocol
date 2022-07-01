@@ -7,7 +7,7 @@
     "dev:transfer": "clarinet deployments apply -p deployments/xbtc.devnet-plan.yaml",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint -d common",
     "script": "node -r @swc-node/register",
     "r": "DOTENV_CONFIG_PATH=\".env.local\" node -r @swc-node/register -r dotenv/config",
     "clarinet": "../clarinet/target/release/clarinet",

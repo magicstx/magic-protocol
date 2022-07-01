@@ -166,6 +166,12 @@ export const InboundSwapItem: React.FC<{ id: string }> = ({ id }) => {
       if (swap.finalizeTxStatus === 'pending') return { status: 'pending' };
       return { status: 'error', buttonText: 'Error' };
     }
+    if ('recoveryTxid' in swap) {
+      return {
+        status: 'success',
+        buttonText: 'Recovered',
+      };
+    }
     if ('pendingBtcTxid' in swap) {
       return { status: 'pending' };
     }

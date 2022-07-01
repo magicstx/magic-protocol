@@ -1,5 +1,5 @@
-import { useAtom } from 'jotai';
-import { deserializeCV, ResponseOkCV, UIntCV } from 'micro-stacks/clarity';
+import type { ResponseOkCV, UIntCV } from 'micro-stacks/clarity';
+import { deserializeCV } from 'micro-stacks/clarity';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
 import { useOutboundSwap as useOutboundSwapState, useFinalizedOutboundSwap } from '../store';

@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { useInboundSwap } from '../../common/hooks/use-inbound-swap';
-import { Stack, Flex } from '@nelson-ui/react';
+import { Stack, Flex, Box } from '@nelson-ui/react';
 import { useBtcTx, useStxTx, useCoreApiInfo } from '../../common/store/api';
 import { Alert, AlertHeader, AlertText } from '../alert';
 import { Text } from '../text';
-import { ErrorIcon } from '../icons/error';
-import { Button } from '../button';
+import { StatusButton } from '../button';
 import { useInput } from '../../common/hooks/use-input';
 import { useAtom } from 'jotai';
 import { btcAddressState } from '../../common/store';
@@ -38,34 +37,47 @@ export const SwapRedeem: React.FC = () => {
 
   return (
     <Alert>
-      <Stack spacing="$2">
+      <Stack spacing="20px">
         <AlertHeader>Supplier no longer has enough xBTC</AlertHeader>
         {isExpired ? (
           <>
-            <AlertText>You can now safely withdraw your BTC from escrow.</AlertText>
-            <AlertText>Enter the BTC address you&apos;d like to return funds to:</AlertText>
+            <Stack spacing="8px">
+              <AlertText>You can now safely withdraw your BTC from escrow.</AlertText>
+              <AlertText>Enter the BTC address you&apos;d like to return funds to:</AlertText>
+            </Stack>
             {txid ? (
               <Text variant="Body02">{txid}</Text>
             ) : (
-              <Stack spacing="$4" mt="$4">
+              <Stack spacing="20px">
                 <Input {...btcAddress} placeholder="Enter a non-segwit address" />
-                <Button onClick={submitRedeem}>Continue</Button>
+                <Box>
+                  <StatusButton onClick={submitRedeem} status="error" showIcon={false}>
+                    Continue
+                  </StatusButton>
+                </Box>
               </Stack>
             )}
           </>
         ) : (
           <>
-            <AlertText>
-              Something is wrong with the supplier. They may add funds momentarily or you may need
-              to cancel and recover.{' '}
-            </AlertText>
-            <AlertText>
-              Your funds are safely escrowed, but for security you can only remove them {waitBlocks}{' '}
-              blocks from now ({waitTime}).
-            </AlertText>
-            <AlertText>
-              You can return to this swap anytime from your history page to check the countdown.
-            </AlertText>
+            <Stack spacing="8px">
+              <AlertText>
+                Something is wrong with the supplier. They may add funds momentarily or you may need
+                to cancel and recover.{' '}
+              </AlertText>
+              <AlertText>
+                Your funds are safely escrowed, but for security you can only remove them{' '}
+                {waitBlocks} blocks from now ({waitTime}).
+              </AlertText>
+              <AlertText>
+                You can return to this swap anytime from your history page to check the countdown.
+              </AlertText>
+            </Stack>
+            <Box>
+              <StatusButton status="error" showIcon={false} disabled>
+                Wait {waitBlocks} blocks
+              </StatusButton>
+            </Box>
           </>
         )}
       </Stack>

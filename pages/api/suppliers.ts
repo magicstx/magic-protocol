@@ -23,5 +23,5 @@ export interface SuppliersApi {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<SuppliersApi>) {
   const suppliers = await fetchAllSuppliers();
-  return res.status(200).json({ suppliers });
+  return res.status(200).setHeader('Cache-Control', 'max-age=600').json({ suppliers });
 }

@@ -8,6 +8,7 @@ import { Text } from '../components/text';
 import { keyframes } from '@nelson-ui/core';
 import { baseTheme } from '../common/theme';
 import { Buttons, StatusButtons } from '../components/design-system/design-buttons';
+import { Alerts } from '../components/design-system/alerts';
 
 const magicBg = keyframes({
   '0%': { backgroundPosition: '10% 0%' },
@@ -31,6 +32,7 @@ const UiPage: NextPage = () => {
     <Layout>
       <Buttons />
       <StatusButtons />
+      <Alerts />
       <Stack spacing="$row-y">{colorRows}</Stack>
       <Stack spacing="$row-y">
         <Text variant="Label01">Current:</Text>

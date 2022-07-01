@@ -5,11 +5,19 @@ import { Text } from '../text';
 
 export const StatusButtons: React.FC = () => {
   return (
-    <Grid gridTemplateColumns="1fr 1fr 1fr 1fr" gridColumnGap="$3" gridRowGap="$4" width="100%">
+    <Grid
+      gridTemplateColumns="0.5fr 1fr 1fr 1fr 1fr"
+      gridColumnGap="$3"
+      gridRowGap="$4"
+      width="100%"
+      alignItems="center"
+    >
+      <Box />
       <Text>Success</Text>
       <Text>Pending</Text>
       <Text>Pending Error</Text>
       <Text>Canceled</Text>
+      <Box />
       <Box>
         <StatusButton status="success">Successful</StatusButton>
       </Box>
@@ -22,13 +30,40 @@ export const StatusButtons: React.FC = () => {
       <Box>
         <StatusButton status="canceled">Canceled</StatusButton>
       </Box>
+      <Text>Disabled</Text>
+      <Box>
+        <StatusButton disabled status="success">
+          Successful
+        </StatusButton>
+      </Box>
+      <Box>
+        <StatusButton disabled status="pending">
+          Pending
+        </StatusButton>
+      </Box>
+      <Box>
+        <StatusButton disabled status="error">
+          Pending
+        </StatusButton>
+      </Box>
+      <Box>
+        <StatusButton disabled status="canceled">
+          Canceled
+        </StatusButton>
+      </Box>
     </Grid>
   );
 };
 
 export const Buttons: React.FC = () => {
   return (
-    <Grid gridTemplateColumns="1fr 1fr 1fr 1fr" gridColumnGap="$3" gridRowGap="$4" width="100%">
+    <Grid
+      gridTemplateColumns="1fr 1fr 1fr 1fr"
+      gridColumnGap="$3"
+      gridRowGap="$4"
+      width="100%"
+      alignItems="center"
+    >
       <Text variant="Label01"></Text>
       <Text variant="Label01">Big</Text>
       <Text variant="Label01">Normal</Text>

@@ -42,6 +42,7 @@ export const ButtonComp = styled(Box, {
           backgroundColor: '$primary-action-subdued',
           color: '$onSurface-text-subdued',
         },
+        pointerEvents: 'none',
       },
     },
     connected: {
@@ -120,6 +121,10 @@ const StatusButtonComp = styled(Box, {
   padding: '14px 19px 14px 17px',
   borderRadius: '10px',
   cursor: 'pointer',
+  '&[disabled]': {
+    opacity: '0.6',
+    pointerEvents: 'none',
+  },
   variants: {
     status: {
       success: {
@@ -147,12 +152,11 @@ const StatusButtonComp = styled(Box, {
 
 export type ButtonStatus = VariantProps<typeof StatusButtonComp>['status'];
 
-export const StatusButton: React.FC<BoxProps & VariantProps<typeof StatusButtonComp>> = ({
-  status,
-  children,
-  ...props
-}) => {
+export const StatusButton: React.FC<
+  BoxProps & VariantProps<typeof StatusButtonComp> & { showIcon?: boolean }
+> = ({ status, children, showIcon = true, ...props }) => {
   const icon = useMemo(() => {
+    if (!showIcon) return null;
     if (status === 'success') {
       return <CheckIcon color="var(--colors-green-500)" />;
     } else if (status === 'pending') {
@@ -163,7 +167,7 @@ export const StatusButton: React.FC<BoxProps & VariantProps<typeof StatusButtonC
       return <CheckIcon color="var(--colors-light-onSurface-text-dim" />;
     }
     return null;
-  }, [status]);
+  }, [status, showIcon]);
   return (
     <StatusButtonComp status={status} display="inline-block" {...props}>
       <Stack isInline alignItems="center" spacing="8px">

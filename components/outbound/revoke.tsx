@@ -11,7 +11,7 @@ const UNRESPONSIVE_MIN_DELAY = 4;
 const OUTBOUND_EXPIRATION = 200;
 
 export const SwapRevoke: React.FC = () => {
-  const { swap, revokeTxid, submitRevoke } = useOutboundSwap();
+  const { swap, submitRevoke } = useOutboundSwap();
   const [coreInfo] = useCoreApiInfo();
   const blocksSinceStart = useMemo(() => {
     if (swap === null) return 0;
@@ -31,12 +31,12 @@ export const SwapRevoke: React.FC = () => {
 
   return (
     <Alert>
-      <Stack spacing="$2">
+      <Stack spacing="20px">
         <AlertHeader>Supplier not responsive</AlertHeader>
         {isExpired ? (
           <>
             <AlertText>You can now safely cancel your swap and get your xBTC back.</AlertText>
-            <Box mt="$3">
+            <Box>
               <StatusButton status="error" onClick={submitRevoke}>
                 Cancel
               </StatusButton>
@@ -44,17 +44,24 @@ export const SwapRevoke: React.FC = () => {
           </>
         ) : (
           <>
-            <AlertText>
-              Something is wrong with the supplier. They may add funds momentarily or you may need
-              to cancel and recover.{' '}
-            </AlertText>
-            <AlertText>
-              Your funds are safely escrowed, but for security you can only remove them {waitBlocks}{' '}
-              blocks from now ({waitTime}).
-            </AlertText>
-            <AlertText>
-              You can return to this swap anytime from your history page to check the countdown.
-            </AlertText>
+            <Stack spacing="8px">
+              <AlertText>
+                Something is wrong with the supplier. They may add funds momentarily or you may need
+                to cancel and recover.{' '}
+              </AlertText>
+              <AlertText>
+                Your funds are safely escrowed, but for security you can only remove them{' '}
+                {waitBlocks} blocks from now ({waitTime}).
+              </AlertText>
+              <AlertText>
+                You can return to this swap anytime from your history page to check the countdown.
+              </AlertText>
+            </Stack>
+            <Box>
+              <StatusButton status="error" showIcon={false} disabled>
+                Wait {waitBlocks} blocks
+              </StatusButton>
+            </Box>
           </>
         )}
       </Stack>
