@@ -29,6 +29,7 @@ export default async function handler(
       const scriptHash = getScriptHash(output);
       const balances = await client.blockchain_scripthash_getBalance(bytesToHex(scriptHash));
       const balance = BigInt(balances.unconfirmed) + BigInt(balances.confirmed);
+      res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=30');
       return res.status(200).send({
         balance: balance.toString(),
       });
