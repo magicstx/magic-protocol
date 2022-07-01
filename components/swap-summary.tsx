@@ -34,7 +34,7 @@ export const SwapSummary: React.FC = () => {
 
   const tooltipContent = useMemo(() => {
     return (
-      <Stack spacing="$3" width="365px">
+      <Stack spacing="6px" width="365px">
         <SpaceBetween>
           <Text variant="Caption01" color="$text">
             Supplier fee
@@ -72,9 +72,12 @@ export const SwapSummary: React.FC = () => {
     <TooltipTippy
       render={tooltipContent}
       tippyProps={{ followCursor: true, placement: 'bottom', offset: [0, 30] }}
+      containerProps={{
+        padding: '17px 19px 19px 19px',
+      }}
     >
       <SpaceBetween
-        padding="17px 19px 19px 19px"
+        padding="22px 24px"
         backgroundColor="$dark-surface-very-subdued"
         onClick={showOverride}
         cursor="pointer"

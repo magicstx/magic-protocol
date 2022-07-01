@@ -12,4 +12,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default withMicroStacks(Home, undefined, []);
+export default withMicroStacks(Home);

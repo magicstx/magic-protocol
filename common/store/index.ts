@@ -120,7 +120,7 @@ export const supplierState = atomFamilyWithQuery<number, Supplier>(
 );
 
 export const currentStxAddressState = atom(get => {
-  const session = get(partialStacksSessionAtom);
+  const session = get(stacksSessionAtom);
   if (!session) return null;
   if (NETWORK_CONFIG === 'mainnet') return session.addresses?.mainnet || null;
   return session.addresses?.testnet || null;

@@ -1,10 +1,9 @@
 import React, { ReactNode, memo } from 'react';
-import { IS_SSR } from 'jotai-query-toolkit';
 import { Flex } from '@nelson-ui/react';
-import { StarIcon } from './icons/star';
 import { keyframes } from '@nelson-ui/core';
 import { Box } from '@nelson-ui/react';
 import { styled } from '@stitches/react';
+import { useIsSSR } from '../common/hooks/use-is-ssr';
 
 const spin = keyframes({
   '0%': { transform: 'rotateY(0deg)' },
@@ -51,7 +50,8 @@ export const SafeSuspense: React.FC<{
   onlyOnClient?: boolean;
   fallback: NonNullable<ReactNode> | null;
 }> = ({ fallback, onlyOnClient, children }) => {
-  if (IS_SSR && onlyOnClient) return <>{children}</>;
-  if (IS_SSR) return <>{fallback}</>;
+  const isSSR = useIsSSR();
+  if (isSSR && onlyOnClient) return <>{children}</>;
+  if (isSSR) return <>{fallback}</>;
   return <React.Suspense fallback={fallback}>{children}</React.Suspense>;
 };

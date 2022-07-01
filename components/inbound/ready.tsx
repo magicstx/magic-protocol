@@ -16,8 +16,15 @@ export const SwapReady: React.FC = () => {
 
   useDeepEffect(() => {
     console.log(txWatch);
-    if ('txid' in txWatch && txWatch.txid !== footerSwapId) {
-      setSwapId(txWatch.txid);
+    if ('txid' in txWatch) {
+      if (txWatch.txid !== footerSwapId) {
+        setSwapId(txWatch.txid);
+      }
+      if (!('pendingBtcTxid' in swap)) {
+        void updateSwap({
+          pendingBtcTxid: txWatch.txid,
+        });
+      }
     }
     if (step === 'warned' && txWatch.status === 'confirmed') {
       console.log('updating', txWatch.txData);

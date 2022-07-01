@@ -1,13 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useAuth } from '@micro-stacks/react';
-import { Box, Stack } from '@nelson-ui/react';
 import { useRouter } from 'next/router';
 import { Button } from './button';
 import { useAtomValue } from 'jotai/utils';
 import { currentStxAddressState } from '../common/store';
 import { truncateMiddle } from '../common/utils';
-import { Spinner } from './spinner';
-import { Text } from './text';
 
 export const WalletConnectButton: React.FC = () => {
   const [isHover, setIsHover] = useState(false);

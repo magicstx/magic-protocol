@@ -6,7 +6,7 @@ import Tippy from '@tippyjs/react/headless';
 import type { Placement, Content, Props } from 'tippy.js';
 import { followCursor } from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
-import { Box } from '@nelson-ui/react';
+import { Box, BoxProps } from '@nelson-ui/react';
 
 const slideUpAndFade = keyframes({
   '0%': { opacity: 0, transform: 'translateY(2px)' },
@@ -60,7 +60,7 @@ export const TooltipContent = StyledContent;
 
 const StyledTooltip = styled('div', {
   borderRadius: 4,
-  padding: '10px 15px',
+  padding: '12px 16px',
   fontSize: 15,
   lineHeight: 1,
   color: '$text',
@@ -92,12 +92,17 @@ export const TooltipTippy: React.FC<{
   render: ReactNode;
   children: ReactElement;
   tippyProps?: Partial<Props>;
-}> = ({ render, children, tippyProps }) => {
+  containerProps?: BoxProps;
+}> = ({ render, children, tippyProps, containerProps }) => {
   return (
     <Tippy
       {...tippyProps}
       plugins={[followCursor]}
-      render={attrs => <StyledTooltip {...attrs}>{render}</StyledTooltip>}
+      render={attrs => (
+        <StyledTooltip {...containerProps} {...attrs}>
+          {render}
+        </StyledTooltip>
+      )}
     >
       {children}
     </Tippy>

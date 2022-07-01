@@ -16,7 +16,7 @@ import { Spinner } from '../spinner';
 import { useStxTxResult } from '../../common/store/api';
 import { useFinalizedOutboundSwap } from '../../common/store';
 import { useClipboard } from '../../common/hooks/use-clipboard';
-import { Tooltip, TooltipTrigger, TooltipContent } from '../tooltip';
+import { TooltipTippy } from '../tooltip';
 
 const SwapRowComp = styled(Box, {
   borderBottom: '1px solid $border-subdued',
@@ -111,16 +111,16 @@ export const SwapRow: React.FC<RowProps> = ({
 
 export const SwapId: React.FC<{ swapId?: string }> = ({ swapId }) => {
   const { copy } = useClipboard();
-  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [showCopied, setShowCopied] = useState(false);
   const closeTooltip = useCallback(() => {
-    setTooltipOpen(false);
-  }, [setTooltipOpen]);
+    setShowCopied(false);
+  }, [setShowCopied]);
   const onClick = useCallback(
     (event: React.MouseEvent) => {
       if (swapId) {
         event.stopPropagation();
         void copy(swapId);
-        setTooltipOpen(true);
+        setShowCopied(true);
         const timer = setTimeout(closeTooltip, 3000);
         return () => {
           clearInterval(timer);
@@ -133,18 +133,24 @@ export const SwapId: React.FC<{ swapId?: string }> = ({ swapId }) => {
   if (typeof swapId === 'undefined') return null;
 
   return (
-    <Tooltip open={tooltipOpen} delayDuration={0}>
-      <TooltipTrigger asChild>
-        <Text variant="Label02" onClick={onClick}>
-          {truncateMiddle(swapId.replace('0x', ''), 15)}
-        </Text>
-      </TooltipTrigger>
-      <TooltipContent>
+    <TooltipTippy
+      tippyProps={{
+        trigger: 'mouseenter focus click',
+        followCursor: true,
+      }}
+      render={
         <Text variant="Caption01" color="$text">
-          Copied
+          {showCopied ? 'Copied' : 'Copy'}
         </Text>
-      </TooltipContent>
-    </Tooltip>
+      }
+      containerProps={{
+        padding: '12px 16px',
+      }}
+    >
+      <Text variant="Label02" onClick={onClick}>
+        {truncateMiddle(swapId.replace('0x', ''), 15)}
+      </Text>
+    </TooltipTippy>
   );
 };
 
@@ -153,7 +159,8 @@ export const InboundSwapItem: React.FC<{ id: string }> = ({ id }) => {
   const router = useRouter();
 
   const swapId = useMemo(() => {
-    return 'btcTxid' in swap ? swap.btcTxid : '';
+    if ('btcTxid' in swap) return swap.btcTxid;
+    return 'pendingBtcTxid' in swap ? swap.pendingBtcTxid : '';
   }, [swap]);
   const statusInfo: { status: ButtonStatus; buttonText?: string } = useMemo(() => {
     if ('finalizeTxStatus' in swap) {
@@ -161,7 +168,7 @@ export const InboundSwapItem: React.FC<{ id: string }> = ({ id }) => {
       if (swap.finalizeTxStatus === 'pending') return { status: 'pending' };
       return { status: 'error', buttonText: 'Error' };
     }
-    if ('btcTxid' in swap) {
+    if ('pendingBtcTxid' in swap) {
       return { status: 'pending' };
     }
     return { status: 'success', buttonText: 'Started' };

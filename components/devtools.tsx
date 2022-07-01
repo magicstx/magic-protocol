@@ -21,6 +21,9 @@ export const Devtools: React.FC = () => {
   const queryClient = useAtomValue(queryClientAtom);
 
   useEffect(() => {
+    // toggle to enable persistence
+    const PERSIST_QUERIES = false;
+    if (!PERSIST_QUERIES) return;
     const key = `REACT_QUERY_${NETWORK_CONFIG}_${APP_VERSION}`;
     const persistor = createWebStoragePersistor({
       storage: window.localStorage,

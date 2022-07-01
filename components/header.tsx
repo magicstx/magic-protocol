@@ -11,6 +11,7 @@ import { getAppIcon, getAppName, NETWORK_CONFIG } from '../common/constants';
 import { BurstIcon } from './icons/burst';
 import { StarIcon } from './icons/star';
 import Image from 'next/image';
+import { useIsSSR } from '../common/hooks/use-is-ssr';
 
 export const Balance: React.FC<{ label: string; amount: string; decimals: number }> = ({
   amount,
@@ -44,6 +45,7 @@ export const Balances: React.FC = () => {
 
 export function Header() {
   const { isSignedIn, session } = useAuth();
+  const isSSR = useIsSSR();
   const appName = useMemo(() => {
     return getAppName();
   }, []);
@@ -64,7 +66,7 @@ export function Header() {
             {appName}
           </Link>
         </SpaceBetween>
-        {isSignedIn ? (
+        {isSignedIn && !isSSR ? (
           <>
             <Link href="/swaps" variant="Label01">
               Swap history
@@ -78,12 +80,16 @@ export function Header() {
         ) : null}
       </SpaceBetween>
       <Stack isInline spacing="40px">
-        {session?.appPrivateKey ? (
-          <SafeSuspense fallback={<></>}>
-            <Balances />
-          </SafeSuspense>
-        ) : null}
-        <WalletConnectButton />
+        {isSSR ? null : (
+          <>
+            {session?.appPrivateKey ? (
+              <SafeSuspense fallback={<></>}>
+                <Balances />
+              </SafeSuspense>
+            ) : null}
+            <WalletConnectButton />
+          </>
+        )}
       </Stack>
     </SpaceBetween>
   );

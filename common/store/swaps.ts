@@ -39,7 +39,11 @@ export interface InboundSwapWarned extends InboundSwapReady {
   warned: true;
 }
 
-export interface InboundSwapSent extends InboundSwapReady {
+export interface InboundSwapBtcPending extends InboundSwapWarned {
+  pendingBtcTxid: string;
+}
+
+export interface InboundSwapSent extends InboundSwapBtcPending {
   btcTxid: string;
   satsAmount: string;
   outputIndex: number;
@@ -65,6 +69,7 @@ export type InboundSwap =
   | InboundSwapStarted
   | InboundSwapReady
   | InboundSwapWarned
+  | InboundSwapBtcPending
   | InboundSwapSent
   | InboundSwapEscrowed
   | InboundSwapRecovered
