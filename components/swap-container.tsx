@@ -1,8 +1,9 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useRef } from 'react';
 import { Box, Stack } from '@nelson-ui/react';
 import { Text } from './text';
 import { SwapField, SwapInput } from './swap-input';
 import { FlipIcon } from './icons/flip';
+import { ReverseIcon } from './icons/reverse';
 import { SwapSummary } from './swap-summary';
 import { Button } from './button';
 import { CenterBox } from './center-box';
@@ -20,6 +21,7 @@ import { SelectSupplier } from './select-supplier';
 import { RegisterSwap } from './inbound/register';
 import type { CSSTypes } from '@nelson-ui/core';
 import { PendingSwapContainer } from './pending-swap';
+import { useHover } from 'usehooks-ts';
 
 export const SwapContainer: React.FC = () => {
   const {
@@ -38,6 +40,8 @@ export const SwapContainer: React.FC = () => {
   const showOverrideSupplier = useAtomValue(showOverrideSupplierState);
   const pendingRegisterSwapper = useAtomValue(pendingRegisterSwapperState);
   const signIn = useCallback(() => handleSignIn(), [handleSignIn]);
+  const hoverRef = useRef(null);
+  const isHoverFlip = useHover(hoverRef);
   const swapButton = useMemo(() => {
     if (!isSignedIn) {
       return (
@@ -83,7 +87,20 @@ export const SwapContainer: React.FC = () => {
           <SwapField dir="from" />
         </Stack>
         <Box position="relative" width="100%">
-          <FlipIcon mx="auto" width="36px" onClick={switchDirection} cursor="pointer" zIndex="2" />
+          <Box ref={hoverRef} size={36} mx="auto">
+            {isHoverFlip ? (
+              <ReverseIcon onClick={switchDirection} mx="auto" cursor="pointer" zIndex="2" />
+            ) : (
+              <FlipIcon
+                mx="auto"
+                width="36px"
+                height="36px"
+                onClick={switchDirection}
+                cursor="pointer"
+                zIndex="2"
+              />
+            )}
+          </Box>
           <Box
             width="100%"
             position="absolute"
