@@ -168,7 +168,7 @@ export const InboundSwapItem: React.FC<{ id: string }> = ({ id }) => {
     }
     if ('recoveryTxid' in swap) {
       return {
-        status: 'success',
+        status: 'canceled',
         buttonText: 'Recovered',
       };
     }
