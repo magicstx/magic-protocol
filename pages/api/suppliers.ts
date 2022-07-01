@@ -1,7 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { nodeContracts } from '../../common/api-constants';
 import { bridgeContract } from '../../common/contracts';
-import { fetchSupplierWithContract, Supplier } from '../../common/store';
+import type { Supplier } from '../../common/store';
+import { fetchSupplierWithContract } from '../../common/store';
 
 export async function fetchAllSuppliers() {
   const bridge = bridgeContract();

@@ -2,14 +2,12 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Box, Flex, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { styled } from '@stitches/react';
-import {
-  outboundSwapStorageState,
-  SwapListItem,
-  useInboundSwapStorage,
-} from '../../common/store/swaps';
+import type { SwapListItem } from '../../common/store/swaps';
+import { outboundSwapStorageState, useInboundSwapStorage } from '../../common/store/swaps';
 import { satsToBtc, truncateMiddle } from '../../common/utils';
 import format from 'date-fns/format';
-import { ButtonStatus, StatusButton } from '../button';
+import type { ButtonStatus } from '../button';
+import { StatusButton } from '../button';
 import { useRouter } from 'next/router';
 import { useQueryAtom } from 'jotai-query-toolkit';
 import { Spinner } from '../spinner';

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, BoxProps } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box } from '@nelson-ui/react';
 
 export const BtcIcon: React.FC<BoxProps & { size?: number }> = ({ size = 28, ...props }) => {
   return (

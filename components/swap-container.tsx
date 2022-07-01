@@ -18,7 +18,7 @@ import { useSwapperId } from '../common/store';
 import { useAtomValue } from 'jotai/utils';
 import { SelectSupplier } from './select-supplier';
 import { RegisterSwap } from './inbound/register';
-import { CSSTypes } from '@nelson-ui/core';
+import type { CSSTypes } from '@nelson-ui/core';
 import { PendingSwapContainer } from './pending-swap';
 
 export const SwapContainer: React.FC = () => {

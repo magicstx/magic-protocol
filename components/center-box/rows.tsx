@@ -1,4 +1,5 @@
-import { Box, BoxProps, Flex, SpaceBetween } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box, Flex, SpaceBetween } from '@nelson-ui/react';
 import React from 'react';
 import { CheckIcon } from '../icons/check';
 import { ExternalTx } from '../icons/external-tx';

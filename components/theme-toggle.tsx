@@ -1,6 +1,7 @@
-import { Box, BoxProps, useThemeEffect } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box, useThemeEffect } from '@nelson-ui/react';
 import React, { useState } from 'react';
-import { SwitchProps } from '@radix-ui/react-switch';
+import type { SwitchProps } from '@radix-ui/react-switch';
 import * as SwitchPrimitive from '@radix-ui/react-switch';
 
 const StyledSwitch = {

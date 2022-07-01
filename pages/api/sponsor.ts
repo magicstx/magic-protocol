@@ -1,11 +1,11 @@
+import type { StacksTransaction } from 'micro-stacks/transactions';
 import {
   AddressHashMode,
   broadcastTransaction,
   deserializeTransaction,
   sponsorTransaction,
-  StacksTransaction,
 } from 'micro-stacks/transactions';
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { fetchAccountNonce } from '../../common/api/stacks';
 import { sponsorAddress } from '../../common/api-constants';
 import { network } from '../../common/constants';

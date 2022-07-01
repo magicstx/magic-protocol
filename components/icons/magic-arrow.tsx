@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, BoxProps } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box } from '@nelson-ui/react';
 
 export const MagicArrow: React.FC<BoxProps> = props => {
   return (

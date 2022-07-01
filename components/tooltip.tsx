@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { keyframes } from '@nelson-ui/core';
 import { styled } from '@stitches/react';
@@ -6,7 +6,8 @@ import Tippy from '@tippyjs/react/headless';
 import type { Placement, Content, Props } from 'tippy.js';
 import { followCursor } from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
-import { Box, BoxProps } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box } from '@nelson-ui/react';
 
 const slideUpAndFade = keyframes({
   '0%': { opacity: 0, transform: 'translateY(2px)' },

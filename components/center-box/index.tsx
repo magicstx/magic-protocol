@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Box, Stack, Flex, BoxProps, StackProps } from '@nelson-ui/react';
+import type { StackProps } from '@nelson-ui/react';
+import { Box, Stack, Flex, BoxProps } from '@nelson-ui/react';
 import { Text } from '../text';
 import { useSwapId } from '../../common/store/swaps';
 export * from './rows';

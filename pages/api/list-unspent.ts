@@ -1,10 +1,10 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { address as bAddress } from 'bitcoinjs-lib';
 import { btcNetwork } from '../../common/constants';
 import { getScriptHash } from '../../common/htlc';
 import { getTxData, listUnspent, TxData, withElectrumClient } from '../../common/api/electrum';
 import { infoApi } from '../../common/api/stacks';
-import { Unspent } from 'electrum-client-sl';
+import type { Unspent } from 'electrum-client-sl';
 import { bytesToHex } from 'micro-stacks/common';
 
 export interface ListUnspentApiOk {

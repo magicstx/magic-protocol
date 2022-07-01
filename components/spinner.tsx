@@ -1,5 +1,6 @@
 import { keyframes } from '@nelson-ui/core';
-import { BoxProps, Box } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box } from '@nelson-ui/react';
 import React from 'react';
 import { styled } from '../common/theme';
 

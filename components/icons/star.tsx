@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Box, BoxProps } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box } from '@nelson-ui/react';
 
 export const StarIcon: React.FC<BoxProps & { h?: number }> = ({ h = 25, ...props }) => {
   const [height, width] = useMemo(() => {

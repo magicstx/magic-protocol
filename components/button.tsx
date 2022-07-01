@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
-import { Box, BoxProps, Stack } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box, Stack } from '@nelson-ui/react';
 import { keyframes } from '@nelson-ui/core';
-import { styled, VariantProps } from '@stitches/react';
+import type { VariantProps } from '@stitches/react';
+import { styled } from '@stitches/react';
 import { Text } from './text';
 import { CheckIcon } from './icons/check';
 import { PendingIcon } from './icons/pending';

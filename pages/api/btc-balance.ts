@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { address as bAddress } from 'bitcoinjs-lib';
 import { btcNetwork } from '../../common/constants';
 import { getScriptHash } from '../../common/htlc';

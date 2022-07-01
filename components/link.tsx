@@ -2,7 +2,8 @@ import React from 'react';
 import NextLink from 'next/link';
 import { BoxProps } from '@nelson-ui/react';
 import { getTxUrl } from '../common/utils';
-import { Text, TextProps } from './text';
+import type { TextProps } from './text';
+import { Text } from './text';
 
 export interface LinkProps extends TextProps {
   href: string;

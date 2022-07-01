@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { getTxData } from '../../common/api/electrum';
 
 type Data = Awaited<ReturnType<typeof getTxData>>;

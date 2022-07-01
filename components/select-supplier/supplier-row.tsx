@@ -8,8 +8,9 @@ import { CheckSelected } from '../icons/check-selected';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { amountState, showOverrideSupplierState } from '../../common/hooks/use-swap-form';
 import { useAutoSelectSupplier } from '../../common/hooks/use-auto-select-supplier';
-import { Token } from '../swap-input';
-import { SupplierWithCapacity, useBtcBalance } from '../../common/store/api';
+import type { Token } from '../swap-input';
+import type { SupplierWithCapacity } from '../../common/store/api';
+import { useBtcBalance } from '../../common/store/api';
 import { Spinner } from '../spinner';
 
 const RowComp = styled(Box, {

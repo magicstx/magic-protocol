@@ -1,4 +1,5 @@
-import React, { ReactNode, memo } from 'react';
+import type { ReactNode } from 'react';
+import React, { memo } from 'react';
 import { Flex } from '@nelson-ui/react';
 import { keyframes } from '@nelson-ui/core';
 import { Box } from '@nelson-ui/react';

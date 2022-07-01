@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { Box, BoxProps } from '@nelson-ui/react';
+import type { BoxProps } from '@nelson-ui/react';
+import { Box } from '@nelson-ui/react';
 import { useClipboard } from '../../common/hooks/use-clipboard';
 import { Tooltip, TooltipTrigger, TooltipContent } from '../tooltip';
 import { Text } from '../text';

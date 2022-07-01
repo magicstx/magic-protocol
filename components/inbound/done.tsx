@@ -10,7 +10,7 @@ import { BtcIcon } from '../icons/btc';
 import { Text } from '../text';
 import { MagicArrow } from '../icons/magic-arrow';
 import BigNumber from 'bignumber.js';
-import { TransactionStatus } from '../../common/api/stacks';
+import type { TransactionStatus } from '../../common/api/stacks';
 
 export const FinalRow: React.FC<{ txId: string; status: TransactionStatus }> = ({
   txId,
