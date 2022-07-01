@@ -1,6 +1,12 @@
+import { ReactElement, ReactNode } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import { keyframes } from '@nelson-ui/core';
 import { styled } from '@stitches/react';
+import Tippy from '@tippyjs/react/headless';
+import type { Placement, Content, Props } from 'tippy.js';
+import { followCursor } from 'tippy.js';
+import 'tippy.js/dist/tippy.css';
+import { Box } from '@nelson-ui/react';
 
 const slideUpAndFade = keyframes({
   '0%': { opacity: 0, transform: 'translateY(2px)' },
@@ -51,3 +57,49 @@ const StyledArrow = styled(TooltipPrimitive.Arrow, {
 export const Tooltip = TooltipPrimitive.Root;
 export const TooltipTrigger = TooltipPrimitive.Trigger;
 export const TooltipContent = StyledContent;
+
+const StyledTooltip = styled('div', {
+  borderRadius: 4,
+  padding: '10px 15px',
+  fontSize: 15,
+  lineHeight: 1,
+  color: '$text',
+  backgroundColor: '$grey-900',
+  boxShadow: 'hsl(206 22% 7% / 35%) 0px 10px 38px -10px, hsl(206 22% 7% / 20%) 0px 10px 20px -15px',
+  '@media (prefers-reduced-motion: no-preference)': {
+    animationDuration: '400ms',
+    animationTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+    animationFillMode: 'forwards',
+    willChange: 'transform, opacity',
+    '&[data-state="delayed-open"]': {
+      '&[data-side="top"]': { animationName: slideDownAndFade },
+      '&[data-side="right"]': { animationName: slideLeftAndFade },
+      '&[data-side="bottom"]': { animationName: slideUpAndFade },
+      '&[data-side="left"]': { animationName: slideRightAndFade },
+    },
+  },
+});
+
+export type TippyAttrs = {
+  'data-placement': Placement;
+  'data-reference-hidden'?: string;
+  'data-escaped'?: string;
+};
+
+export type TooltipRender = (attrs: TippyAttrs) => ReactNode;
+
+export const TooltipTippy: React.FC<{
+  render: ReactNode;
+  children: ReactElement;
+  tippyProps?: Props;
+}> = ({ render, children, tippyProps }) => {
+  return (
+    <Tippy
+      {...tippyProps}
+      plugins={[followCursor]}
+      render={attrs => <StyledTooltip {...attrs}>{render}</StyledTooltip>}
+    >
+      {children}
+    </Tippy>
+  );
+};

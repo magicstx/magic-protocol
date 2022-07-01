@@ -12,7 +12,7 @@ import { fetchPrivate } from 'micro-stacks/common';
 import { TransactionStatus } from '../api/stacks';
 import { stxTxResultState } from './api';
 import { waitForAll } from 'jotai/utils';
-import { APP_VERSION } from '../constants';
+import { APP_VERSION, NETWORK_CONFIG } from '../constants';
 
 export const swapIdState = atom<string | undefined>(undefined);
 
@@ -132,7 +132,7 @@ export function createReadySwap(swap: InboundSwapStarted, swapperId: number): In
   };
 }
 
-export const SWAP_STORAGE_PREFIX = `swaps-${APP_VERSION}/`;
+export const SWAP_STORAGE_PREFIX = `swaps-${NETWORK_CONFIG}-${APP_VERSION}/`;
 export const INBOUND_SWAP_STORAGE_PREFIX = 'inbounds';
 export const OUTBOUND_SWAP_STORAGE_PREFIX = 'outbounds';
 

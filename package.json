@@ -44,6 +44,7 @@
     "@stitches/core": "1.2.6",
     "@stitches/react": "1.2.8",
     "@tabler/icons": "^1.44.0",
+    "@tippyjs/react": "^4.2.6",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",
     "bitcoinjs-lib": "^5.2.0",
@@ -75,6 +76,7 @@
     "react-toastify": "^8.2.0",
     "redis": "4.0.0-rc.4",
     "stable-hash": "^0.0.2",
+    "tippy.js": "^6.3.7",
     "toad-scheduler": "^1.6.0",
     "usehooks-ts": "^2.1.1",
     "uuid": "^8.3.2"
