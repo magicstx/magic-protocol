@@ -1,10 +1,10 @@
+import type { StacksNetwork } from 'micro-stacks/network';
 import {
   HIRO_MAINNET_DEFAULT,
   HIRO_MOCKNET_DEFAULT,
   HIRO_TESTNET_DEFAULT,
   StacksMainnet,
   StacksMocknet,
-  StacksNetwork,
   StacksTestnet,
 } from 'micro-stacks/network';
 import { networks } from 'bitcoinjs-lib';
@@ -40,7 +40,7 @@ function getLocalUrl() {
   const hostedUrl = process.env.NEXT_PUBLIC_VERCEL_URL;
   return (
     process.env.NEXT_PUBLIC_LOCAL_URL ||
-    (hostedUrl ? `https://${hostedUrl}` : 'http://localhost:3000')
+    (hostedUrl ? `https://${hostedUrl}` : 'http://localhost:4444')
   );
 }
 
