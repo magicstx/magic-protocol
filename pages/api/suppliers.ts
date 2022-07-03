@@ -1,15 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { nodeContracts } from '../../common/api-constants';
 import { bridgeContract } from '../../common/contracts';
-import type { Supplier } from '../../common/store';
-import { fetchSupplierWithContract } from '../../common/store';
+import { fetchSupplierWithCapacity } from '../../common/api/electrum';
+import type { SupplierWithCapacity } from '../../common/store/api';
 
 export async function fetchAllSuppliers() {
   const bridge = bridgeContract();
   const nextId = Number(await nodeContracts().ro(bridge.getNextSupplierId()));
-  const fetchSuppliers: Promise<Supplier>[] = [];
+  const fetchSuppliers: Promise<SupplierWithCapacity>[] = [];
   for (let id = 0; id < nextId; id++) {
-    fetchSuppliers.push(fetchSupplierWithContract(id));
+    fetchSuppliers.push(fetchSupplierWithCapacity(id));
   }
   const suppliers = await Promise.all(fetchSuppliers);
   return suppliers;

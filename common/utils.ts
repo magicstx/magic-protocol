@@ -1,10 +1,11 @@
-import { bytesToBigInt, IntegerType, intToBigInt as _intToBigInt } from 'micro-stacks/common';
+import type { IntegerType } from 'micro-stacks/common';
+import { bytesToBigInt, intToBigInt as _intToBigInt } from 'micro-stacks/common';
 import BigNumber from 'bignumber.js';
 import { address as bAddress, networks, payments, Transaction } from 'bitcoinjs-lib';
 import { coreUrl, btcNetwork, NETWORK_CONFIG } from './constants';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { base58checkEncode, hashRipemd160 } from 'micro-stacks/crypto';
-import { Supplier } from './store';
+import type { Supplier } from './store';
 
 export function getTxUrl(txId: string) {
   const id = getTxId(txId);
@@ -23,12 +24,14 @@ export function getBtcTxUrl(txId: string) {
   return `${base}${NETWORK_CONFIG === 'mainnet' ? '' : 'testnet/'}tx/${txId}`;
 }
 
-export function intToString(int: IntegerType) {
+export type IntegerOrBN = IntegerType | BigNumber;
+
+export function intToString(int: IntegerOrBN) {
   const str = typeof int === 'bigint' ? int.toString() : String(int);
   return str;
 }
 
-export function satsToBtc(sats: IntegerType, minDecimals?: number) {
+export function satsToBtc(sats: IntegerOrBN, minDecimals?: number) {
   const n = new BigNumber(intToString(sats)).shiftedBy(-8).decimalPlaces(8);
   if (typeof minDecimals === 'undefined') return n.toFormat();
   const rounded = n.toFormat(minDecimals);
@@ -36,8 +39,12 @@ export function satsToBtc(sats: IntegerType, minDecimals?: number) {
   return rounded.length > normal.length ? rounded : normal;
 }
 
-export function btcToSats(btc: IntegerType) {
-  return new BigNumber(intToString(btc)).shiftedBy(8).decimalPlaces(0).toString();
+export function btcToSatsBN(btc: IntegerOrBN) {
+  return new BigNumber(intToString(btc)).shiftedBy(8).decimalPlaces(0);
+}
+
+export function btcToSats(btc: IntegerOrBN) {
+  return btcToSatsBN(btc).toString();
 }
 
 /**
@@ -77,7 +84,7 @@ export function bpsToPercent(bps: number) {
   return new BigNumber(bps).dividedBy(100).toString();
 }
 
-export function intToBigInt(num: IntegerType | BigNumber) {
+export function intToBigInt(num: IntegerOrBN) {
   if (num instanceof Uint8Array) {
     return bytesToBigInt(num);
   }
@@ -89,9 +96,13 @@ export function intToBigInt(num: IntegerType | BigNumber) {
   return BigInt(bn.toString());
 }
 
-export function getSwapAmount(amount: IntegerType, feeRate: IntegerType, baseFee?: IntegerType) {
+export function getSwapAmount(
+  amount: IntegerOrBN,
+  feeRate: IntegerType,
+  baseFee: IntegerType | null
+) {
   const withBps = (intToBigInt(amount) * (10000n - _intToBigInt(feeRate, true))) / 10000n;
-  if (typeof baseFee !== 'undefined') {
+  if (baseFee !== null) {
     return withBps - intToBigInt(baseFee);
   }
   return withBps;

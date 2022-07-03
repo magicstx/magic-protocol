@@ -12,6 +12,8 @@ import { BurstIcon } from './icons/burst';
 import { StarIcon } from './icons/star';
 import Image from 'next/image';
 import { useIsSSR } from '../common/hooks/use-is-ssr';
+import { useAtomValue } from 'jotai/utils';
+import { balancesState } from '../common/store/api';
 
 export const Balance: React.FC<{ label: string; amount: string; decimals: number }> = ({
   amount,
@@ -34,7 +36,7 @@ export const Balance: React.FC<{ label: string; amount: string; decimals: number
 };
 
 export const Balances: React.FC = () => {
-  const balances = useBalances();
+  const balances = useAtomValue(balancesState);
   return (
     <Stack isInline spacing="40px">
       <Balance label="xBTC" amount={balances.xbtc} decimals={8} />

@@ -1,31 +1,31 @@
 import React, { useCallback, useMemo } from 'react';
 import { Stack, SpaceBetween, Flex } from '@nelson-ui/react';
 import { GearIcon } from './icons/gear';
-import { showOverrideSupplierState, useSwapForm } from '../common/hooks/use-swap-form';
+import {
+  amountInvalidState,
+  baseFeeState,
+  feeFromRateState,
+  feePercentState,
+  outputTokenState,
+  showOverrideSupplierState,
+  txFeeBtcState,
+  txFeePercentState,
+} from '../common/store/swap-form';
 import { Text } from './text';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { TooltipTippy } from './tooltip';
-import { getSwapAmount, satsToBtc } from '../common/utils';
-import BigNumber from 'bignumber.js';
+import { satsToBtc } from '../common/utils';
 
 export const SwapSummary: React.FC = () => {
-  const {
-    feePercent,
-    outputAmount,
-    amount,
-    outputToken,
-    txFeePercent,
-    txFeeBtc,
-    supplierBaseFee,
-    supplierFeeRate,
-  } = useSwapForm();
+  const txFeePercent = useAtomValue(txFeePercentState);
+  const txFeeBtc = useAtomValue(txFeeBtcState);
+  const supplierBaseFee = useAtomValue(baseFeeState);
+  const feePercent = useAtomValue(feePercentState);
+  const amountInvalid = useAtomValue(amountInvalidState);
+  const outputToken = useAtomValue(outputTokenState);
   const receiveToken = outputToken === 'btc' ? 'BTC' : 'xBTC';
-  const feeFromRate = useMemo(() => {
-    const amountBN = new BigNumber(amount.value).shiftedBy(8).decimalPlaces(0);
-    const sats = getSwapAmount(amountBN.toString(), supplierFeeRate);
-    const diff = amountBN.minus(sats.toString());
-    return satsToBtc(diff.toString());
-  }, [amount.value, supplierFeeRate]);
+  const feeFromRate = useAtomValue(feeFromRateState);
+
   const showOverride = useAtomCallback(
     useCallback((get, set) => {
       set(showOverrideSupplierState, true);
@@ -64,7 +64,7 @@ export const SwapSummary: React.FC = () => {
     );
   }, [feePercent, feeFromRate, supplierBaseFee]);
 
-  if (outputAmount === '0') {
+  if (amountInvalid) {
     return null;
   }
 

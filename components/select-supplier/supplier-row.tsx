@@ -1,13 +1,12 @@
 import React, { Suspense, useCallback, useMemo } from 'react';
 import { Text } from '../text';
-import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
-import { Supplier, selectedSupplierState } from '../../common/store';
+import { Box, Flex, Stack } from '@nelson-ui/react';
+import { selectedSupplierState } from '../../common/store';
 import { styled } from '@stitches/react';
 import { bpsToPercent, satsToBtc, truncateMiddle } from '../../common/utils';
 import { CheckSelected } from '../icons/check-selected';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
-import { amountState, showOverrideSupplierState } from '../../common/hooks/use-swap-form';
-import { useAutoSelectSupplier } from '../../common/hooks/use-auto-select-supplier';
+import { currentSupplierState, showOverrideSupplierState } from '../../common/store/swap-form';
 import type { Token } from '../swap-input';
 import type { SupplierWithCapacity } from '../../common/store/api';
 import { useBtcBalance } from '../../common/store/api';
@@ -66,8 +65,7 @@ export const SupplierBaseRow: React.FC<{
   fee: number;
   baseFee: number;
 }> = ({ supplier, capacity, fee: _fee, baseFee, outputToken }) => {
-  const amount = useAtomValue(amountState);
-  const { supplier: selectedOp } = useAutoSelectSupplier(amount, outputToken.toLowerCase());
+  const selectedOp = useAtomValue(currentSupplierState);
   const selected = selectedOp.id === supplier.id;
   const select = useAtomCallback(
     useCallback(

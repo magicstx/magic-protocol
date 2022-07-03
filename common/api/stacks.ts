@@ -6,14 +6,17 @@ import type {
   Transaction as ApiTx,
 } from '@stacks/stacks-blockchain-api-types';
 import { deserializeCV } from 'micro-stacks/clarity';
-import { cvToValue } from '@clarigen/core';
+import { cvToValue, hexToCvValue } from '@clarigen/core';
 import { network, coreUrl } from '../constants';
 import { getTxId } from '../utils';
 import {
   fetchBlockByBurnBlockHash,
   fetchBlockByBurnBlockHeight,
   fetchCoreApiInfo,
+  fetchContractEventsById,
 } from 'micro-stacks/api';
+import { bridgeAddress, bridgeContract } from '../contracts';
+import type { BridgeEvent, Print } from '../events';
 
 export const apiConfig = new Configuration({
   fetchApi: fetch,
@@ -132,4 +135,30 @@ export async function getBalances(address: string): Promise<AddressBalanceRespon
   const res = await fetch(url);
   const data = (await res.json()) as AddressBalanceResponse;
   return data;
+}
+
+type ApiEvents = Awaited<ReturnType<typeof fetchContractEventsById>>;
+
+export async function getBridgeEvents(offset = 0): Promise<BridgeEvent[]> {
+  const contractId = bridgeContract().identifier;
+  const response = (await fetchContractEventsById({
+    url: network.getCoreApiUrl(),
+    contract_id: contractId,
+    unanchored: true,
+    offset,
+  })) as unknown as { results: ApiEvents };
+  const prints: BridgeEvent[] = [];
+  response.results.forEach(event => {
+    if (event.event_type !== 'smart_contract_log') return;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const v = hexToCvValue(event.contract_log.value.hex);
+    if ('topic' in v) {
+      const print = v as Print;
+      prints.push({
+        print,
+        txid: event.tx_id,
+      });
+    }
+  });
+  return prints;
 }

@@ -11,12 +11,14 @@ import type { WatchAddressApi } from '../../pages/api/watch-address';
 import type { TxData } from '../api';
 import { fetchTxData } from '../api';
 import type { Transaction } from '../api/stacks';
+import { getBridgeEvents } from '../api/stacks';
 import { getBalances, getTx, getTxResult } from '../api/stacks';
 import { LOCAL_URL, network } from '../constants';
 import { pubKeyToBtcAddress } from '../utils';
 import { fetchCoreApiInfo } from 'micro-stacks/api';
 import { atom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
+import { xbtcAssetId } from '../contracts';
 
 export const stxTxState = atomFamilyWithQuery<string | undefined, Transaction | null>(
   (get, txId) => [QueryKeys.STX_TX, txId],
@@ -56,9 +58,19 @@ export const listUnspentState = atomFamilyWithQuery<string, ListUnspentApiOk>(
 );
 
 export const balancesState = atom(get => {
+  const defaultBalances = {
+    stx: '0',
+    xbtc: '0',
+  };
   const address = get(currentStxAddressState);
-  if (!address) return null;
-  return get(addressBalanceState(address));
+  if (!address) return defaultBalances;
+  const balances = get(addressBalanceState(address));
+  if (balances === null) return defaultBalances;
+  const xbtcId = xbtcAssetId();
+  return {
+    xbtc: balances.fungible_tokens[xbtcId]?.balance || '0',
+    stx: balances.stx.balance,
+  };
 });
 
 export const addressBalanceState = atomFamilyWithQuery<string, AddressBalanceResponse | null>(
@@ -101,14 +113,12 @@ export type SupplierWithCapacity = Supplier & { btc: string };
 
 export const suppliersWithCapacityState = atom<SupplierWithCapacity[]>(get => {
   const suppliers = get(suppliersState);
-  const capacityAtoms = suppliers.map(supplier => {
-    const btc = get(btcBalanceState(supplier.publicKey));
-    return {
-      ...supplier,
-      btc,
-    };
-  });
-  return capacityAtoms;
+  return suppliers;
+});
+
+export const bridgeEventsState = atomWithQuery('BRIDGE_EVENTS', async () => {
+  const events = await getBridgeEvents();
+  return events;
 });
 
 // hooks

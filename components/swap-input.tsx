@@ -4,11 +4,19 @@ import { styled } from '@stitches/react';
 import { BtcIcon } from './icons/btc';
 import capitalize from 'lodash-es/capitalize';
 import { XBtcIcon } from './icons/xbtc';
-import { useSwapForm } from '../common/hooks/use-swap-form';
-import { useBalances } from '../common/hooks/use-balances';
 import BigNumber from 'bignumber.js';
 import { useAuth } from '@micro-stacks/react';
 import { Text } from './text';
+import { useAtomCallback, useAtomValue } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import {
+  amountState,
+  inputTokenState,
+  outputAmountBtcState,
+  outputTokenState,
+} from '../common/store/swap-form';
+import { balancesState } from '../common/store/api';
+import { useInput } from '../common/hooks/use-input';
 
 export type Token = 'btc' | 'xbtc';
 
@@ -49,15 +57,14 @@ export const SwapLabel: React.FC<{ token: Token }> = ({ token }) => {
 };
 
 const SwapBalance: React.FC = () => {
-  const { amount } = useSwapForm();
-  const balances = useBalances();
-
-  const maxBalance = useMemo(() => {
-    return new BigNumber(balances.xbtc).shiftedBy(-8);
-  }, [balances.xbtc]);
-  const setMaxAmount = useCallback(() => {
-    amount.setter(maxBalance.toString());
-  }, [maxBalance, amount]);
+  const setMaxAmount = useAtomCallback(
+    useCallback((get, set) => {
+      const balances = get(balancesState);
+      const { xbtc } = balances;
+      const maxBalance = new BigNumber(xbtc).shiftedBy(-8);
+      set(amountState, maxBalance.toString());
+    }, [])
+  );
 
   return (
     <Text
@@ -107,7 +114,10 @@ export interface SwapFieldProps {
 }
 
 export const SwapField: React.FC<SwapFieldProps> = ({ dir }) => {
-  const { inputToken, outputToken, amount, outputAmount } = useSwapForm();
+  const inputToken = useAtomValue(inputTokenState);
+  const outputToken = useAtomValue(outputTokenState);
+  const outputAmount = useAtomValue(outputAmountBtcState);
+  const amount = useInput(useAtom(amountState));
   const { isSignedIn } = useAuth();
   const token = dir === 'from' ? inputToken : outputToken;
   const inputProps = useMemo(() => {

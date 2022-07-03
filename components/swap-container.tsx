@@ -7,69 +7,84 @@ import { ReverseIcon } from './icons/reverse';
 import { SwapSummary } from './swap-summary';
 import { Button } from './button';
 import { CenterBox } from './center-box';
+import { useSwapForm } from '../common/hooks/use-swap-form';
 import {
+  inputTokenState,
+  isOutboundState,
+  outputTokenState,
   pendingRegisterSwapperState,
   showOverrideSupplierState,
-  useSwapForm,
-} from '../common/hooks/use-swap-form';
+  swapFormErrorState,
+  swapFormValidState,
+} from '../common/store/swap-form';
 import { PendingInit } from './outbound/pending';
 import { useAuth } from '@micro-stacks/react';
 import { Input } from './form';
-import { useSwapperId } from '../common/store';
-import { useAtomValue } from 'jotai/utils';
+import { btcAddressState, useSwapperId } from '../common/store';
+import { useAtomValue, useAtomCallback } from 'jotai/utils';
 import { SelectSupplier } from './select-supplier';
 import { RegisterSwap } from './inbound/register';
 import type { CSSTypes } from '@nelson-ui/core';
 import { PendingSwapContainer } from './pending-swap';
 import { useHover } from 'usehooks-ts';
+import { useAtom } from 'jotai';
+import { pendingInitOutboundState } from '../common/hooks/tx/use-initiate-outbound';
+import { useInput } from '../common/hooks/use-input';
+
+export const SwapButton: React.FC = () => {
+  const { submit } = useSwapForm();
+  const { isSignedIn, handleSignIn } = useAuth();
+  const signIn = useCallback(() => handleSignIn(), [handleSignIn]);
+  const swapperId = useSwapperId();
+  const isValid = useAtomValue(swapFormValidState);
+  const isOutbound = useAtomValue(isOutboundState);
+  if (!isSignedIn) {
+    return (
+      <Button onClick={signIn} size="big">
+        Connect Wallet
+      </Button>
+    );
+  }
+  if (swapperId === null && !isOutbound) {
+    return (
+      <Button onClick={submit} size="big">
+        Authorize
+      </Button>
+    );
+  }
+  if (!isValid) {
+    return (
+      <Button onClick={submit} size="big" disabled={true}>
+        Swap
+      </Button>
+    );
+  }
+  return (
+    <Button onClick={submit} size="big" magic={true}>
+      Swap
+    </Button>
+  );
+};
 
 export const SwapContainer: React.FC = () => {
-  const {
-    switchDirection,
-    outputToken,
-    isValid,
-    submit,
-    btcAddress,
-    pendingInitOutbound,
-    errorMessage,
-    validBtc,
-  } = useSwapForm();
+  const switchDirection = useAtomCallback(
+    useCallback((get, set) => {
+      const outputToken = get(outputTokenState);
+      set(inputTokenState, outputToken);
+    }, [])
+  );
+  const isOutbound = useAtomValue(isOutboundState);
+  const errorMessage = useAtomValue(swapFormErrorState);
+  const pendingInitOutbound = useAtomValue(pendingInitOutboundState);
+  const isValid = useAtomValue(swapFormValidState);
+  const btcAddress = useInput(useAtom(btcAddressState));
   const swapperId = useSwapperId();
-  const isOutbound = outputToken === 'btc';
   const { isSignedIn, handleSignIn } = useAuth();
   const showOverrideSupplier = useAtomValue(showOverrideSupplierState);
   const pendingRegisterSwapper = useAtomValue(pendingRegisterSwapperState);
   const signIn = useCallback(() => handleSignIn(), [handleSignIn]);
   const hoverRef = useRef(null);
   const isHoverFlip = useHover(hoverRef);
-  const swapButton = useMemo(() => {
-    if (!isSignedIn) {
-      return (
-        <Button onClick={signIn} size="big">
-          Connect Wallet
-        </Button>
-      );
-    }
-    if (swapperId === null && outputToken === 'xbtc') {
-      return (
-        <Button onClick={submit} size="big">
-          Authorize
-        </Button>
-      );
-    }
-    if (!isValid) {
-      return (
-        <Button onClick={submit} size="big" disabled={true}>
-          Swap
-        </Button>
-      );
-    }
-    return (
-      <Button onClick={submit} size="big" magic={true}>
-        Swap
-      </Button>
-    );
-  }, [isSignedIn, swapperId, submit, isValid, outputToken, signIn]);
   if (pendingInitOutbound) {
     return <PendingInit />;
   }
@@ -144,7 +159,7 @@ export const SwapContainer: React.FC = () => {
           Before you can swap, you need to authorize the bridge contract
         </Text>
       ) : null}
-      {swapButton}
+      <SwapButton />
     </Stack>
   );
 };

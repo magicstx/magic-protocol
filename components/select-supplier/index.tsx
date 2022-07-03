@@ -2,11 +2,12 @@ import React, { useMemo } from 'react';
 import { Text } from '../text';
 import { Box, Stack } from '@nelson-ui/react';
 import { SupplierRow, ROW_WIDTHS } from './supplier-row';
-import { useSwapForm } from '../../common/hooks/use-swap-form';
 import { useSuppliersWithCapacity } from '../../common/store/api';
+import { useAtomValue } from 'jotai/utils';
+import { outputTokenState } from '../../common/store/swap-form';
 
 export const SelectSupplier: React.FC = () => {
-  const { outputToken } = useSwapForm();
+  const outputToken = useAtomValue(outputTokenState);
 
   const suppliers = useSuppliersWithCapacity();
 

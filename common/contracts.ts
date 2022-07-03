@@ -3,7 +3,8 @@ import { network, NETWORK_CONFIG } from './constants';
 import { devnetDeployment } from './clarigen/deployments/devnet';
 import { testnetDeployment } from './clarigen/deployments/testnet';
 import { contracts as contractDef } from './clarigen';
-import { ContractFactory, deploymentFactory, DeploymentPlan } from '@clarigen/core';
+import type { ContractFactory, DeploymentPlan } from '@clarigen/core';
+import { deploymentFactory } from '@clarigen/core';
 import { createAssetInfo } from 'micro-stacks/transactions';
 import { splitContractId } from './utils';
 

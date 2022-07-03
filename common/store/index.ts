@@ -7,10 +7,12 @@ import { getPublicKey } from 'noble-secp256k1';
 import type { SuppliersApi } from '../../pages/api/suppliers';
 import { LOCAL_URL, webProvider, NETWORK_CONFIG } from '../constants';
 import { generateGaiaHubConfig } from 'micro-stacks/storage';
-import { bytesToHex, hexToBytes, IntegerType } from 'micro-stacks/common';
+import type { IntegerType } from 'micro-stacks/common';
+import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { intToString } from '../utils';
 import type { SupplierWithCapacity } from './api';
 import { bridgeContract, getContracts } from '../contracts';
+import { fetchBtcBalanceForPublicKey } from '../api/electrum';
 
 export enum QueryKeys {
   SUPPLIERID = 'supplierById',

@@ -1,10 +1,12 @@
 import ElectrumClient from 'electrum-client-sl';
-import { reverseBuffer } from '../htlc';
+import { getScriptHash, reverseBuffer } from '../htlc';
 import { confirmationsToHeight, findStacksBlockAtHeight } from './stacks';
-import { NETWORK_CONFIG } from '../constants';
-import { Transaction } from 'bitcoinjs-lib';
-import { bytesToHex } from 'micro-stacks/common';
-import { btcToSats } from '../utils';
+import { btcNetwork, NETWORK_CONFIG } from '../constants';
+import { Transaction, address as bAddress } from 'bitcoinjs-lib';
+import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import { btcToSats, pubKeyToBtcAddress } from '../utils';
+import type { SupplierWithCapacity } from '../store/api';
+import { fetchSupplierWithContract } from '../store';
 
 export function getElectrumConfig() {
   const defaultHost = process.env.ELECTRUM_HOST;
@@ -121,4 +123,29 @@ export async function listUnspent(scriptHash: Uint8Array) {
   return withElectrumClient(async electrumClient => {
     return electrumClient.blockchain_scripthash_listunspent(bytesToHex(scriptHash));
   });
+}
+
+export async function fetchBtcBalanceForPublicKey(publicKey: Uint8Array) {
+  const address = pubKeyToBtcAddress(publicKey);
+  return fetchBtcBalance(address);
+}
+
+export async function fetchBtcBalance(address: string) {
+  return await withElectrumClient(async client => {
+    const output = bAddress.toOutputScript(address, btcNetwork);
+    const scriptHash = getScriptHash(output);
+    const balances = await client.blockchain_scripthash_getBalance(bytesToHex(scriptHash));
+    const balance = BigInt(balances.unconfirmed) + BigInt(balances.confirmed);
+    return balance;
+  });
+}
+
+export async function fetchSupplierWithCapacity(id: number): Promise<SupplierWithCapacity> {
+  const supplier = await fetchSupplierWithContract(id);
+  const publicKey = hexToBytes(supplier.publicKey);
+  const btc = await fetchBtcBalanceForPublicKey(publicKey);
+  return {
+    ...supplier,
+    btc: btc.toString(),
+  };
 }

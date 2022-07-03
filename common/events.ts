@@ -1,4 +1,4 @@
-import { contracts } from './clarigen';
+import type { contracts } from './clarigen';
 import type { TypedAbiFunction } from '@clarigen/core';
 
 type ResponseType<T> = T extends TypedAbiFunction<unknown[], infer R> ? R : never;
@@ -45,7 +45,7 @@ export type RevokeOutboundPrint = OutboundSwapResponse & {
   'swap-id': BigInt;
 };
 
-export type Prints =
+export type Print =
   | EscrowPrint
   | FinalizeInboundPrint
   | RevokeInboundPrint
@@ -53,19 +53,24 @@ export type Prints =
   | FinalizeOutboundPrint
   | RevokeOutboundPrint;
 
-export const isEscrowPrint = (val: Prints): val is EscrowPrint => val.topic === 'escrow';
-export const isFinalizeInboundPrint = (val: Prints): val is FinalizeInboundPrint =>
+export interface BridgeEvent {
+  txid: string;
+  print: Print;
+}
+
+export const isEscrowPrint = (val: Print): val is EscrowPrint => val.topic === 'escrow';
+export const isFinalizeInboundPrint = (val: Print): val is FinalizeInboundPrint =>
   val.topic === 'finalize-inbound';
-export const isRevokeInboundPrint = (val: Prints): val is RevokeInboundPrint =>
+export const isRevokeInboundPrint = (val: Print): val is RevokeInboundPrint =>
   val.topic === 'revoke-inbound';
-export const isInitiateOutboundPrint = (val: Prints): val is InitiateOutboundPrint =>
+export const isInitiateOutboundPrint = (val: Print): val is InitiateOutboundPrint =>
   val.topic === 'initiate-outbound';
-export const isFinalizeOutboundPrint = (val: Prints): val is FinalizeOutboundPrint =>
+export const isFinalizeOutboundPrint = (val: Print): val is FinalizeOutboundPrint =>
   val.topic === 'finalize-outbound';
-export const isRevokeOutboundPrint = (val: Prints): val is RevokeOutboundPrint =>
+export const isRevokeOutboundPrint = (val: Print): val is RevokeOutboundPrint =>
   val.topic === 'revoke-outbound';
 
-export function getEventWithPrint<T extends Prints>(prints: Prints[], topic: T['topic']): T {
+export function getEventWithPrint<T extends Print>(prints: Print[], topic: T['topic']): T {
   const [found] = prints.filter(p => p.topic === topic);
   if (typeof found === 'undefined') {
     throw new Error(`No print with topic '${topic}'`);
@@ -73,21 +78,21 @@ export function getEventWithPrint<T extends Prints>(prints: Prints[], topic: T['
   return found as T;
 }
 
-export function getEscrowPrint(prints: Prints[]) {
+export function getEscrowPrint(prints: Print[]) {
   return getEventWithPrint<EscrowPrint>(prints, 'escrow');
 }
-export function getFinalizeInboundPrint(prints: Prints[]) {
+export function getFinalizeInboundPrint(prints: Print[]) {
   return getEventWithPrint<FinalizeInboundPrint>(prints, 'finalize-inbound');
 }
-export function getRevokeInboundPrint(prints: Prints[]) {
+export function getRevokeInboundPrint(prints: Print[]) {
   return getEventWithPrint<RevokeInboundPrint>(prints, 'revoke-inbound');
 }
-export function getInitiateOutboundPrint(prints: Prints[]) {
+export function getInitiateOutboundPrint(prints: Print[]) {
   return getEventWithPrint<InitiateOutboundPrint>(prints, 'initiate-outbound');
 }
-export function getFinalizeOutboundPrint(prints: Prints[]) {
+export function getFinalizeOutboundPrint(prints: Print[]) {
   return getEventWithPrint<FinalizeOutboundPrint>(prints, 'finalize-outbound');
 }
-export function getRevokeOutboundPrint(prints: Prints[]) {
+export function getRevokeOutboundPrint(prints: Print[]) {
   return getEventWithPrint<RevokeOutboundPrint>(prints, 'revoke-outbound');
 }

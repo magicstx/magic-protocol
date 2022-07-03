@@ -2,11 +2,11 @@ import React, { useCallback, useEffect } from 'react';
 import { Stack } from '@nelson-ui/react';
 import { useRegisterSwapper } from '../../common/hooks/tx/use-register-swapper';
 import { CenterBox, PendingRow } from '../center-box';
-import { swapperIdState, useSwapperId } from '../../common/store';
+import { swapperIdState } from '../../common/store';
 import { logger } from '../../common/logger';
 import { useQueryAtom } from 'jotai-query-toolkit';
 import { useAtom } from 'jotai';
-import { pendingRegisterSwapperState } from '../../common/hooks/use-swap-form';
+import { pendingRegisterSwapperState } from '../../common/store/swap-form';
 import { useAtomCallback } from 'jotai/utils';
 
 export const RegisterSwap: React.FC = () => {

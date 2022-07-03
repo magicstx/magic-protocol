@@ -5,11 +5,12 @@ import { withMicroStacks } from '../common/with-micro-stacks';
 import { SwapContainer } from '../components/swap-container';
 import { makeGetServerSideProps } from '@micro-stacks/nextjs';
 import { suppliersQuery } from '../common/store';
+import { Activity } from '../components/activity';
 
-const Home: NextPage = () => {
+const ActivityPage: NextPage = () => {
   return (
     <Layout>
-      <SwapContainer />
+      <Activity />
     </Layout>
   );
 };
@@ -20,4 +21,4 @@ export const getServerSideProps = makeGetServerSideProps([
   },
 ]);
 
-export default withMicroStacks(Home);
+export default withMicroStacks(ActivityPage);
