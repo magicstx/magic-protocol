@@ -1,16 +1,14 @@
 import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
 import { styled } from '@stitches/react';
-import { useQueryAtom } from 'jotai-query-toolkit';
 import React, { useMemo } from 'react';
-import type { BridgeEvent } from '../../common/events';
-import { isFinalizeOutboundPrint } from '../../common/events';
-import { isInitiateOutboundPrint, Print } from '../../common/events';
-import { bridgeEventsState, useStxTx } from '../../common/store/api';
-import { getOutboundAddress, satsToBtc } from '../../common/utils';
+import type { FormattedBridgeEvent } from '../../common/events';
+import { formattedBridgeEventsState, useStxTx } from '../../common/store/api';
 import { ExternalTx } from '../icons/external-tx';
 import { Text } from '../text';
 import formatDistance from 'date-fns/formatDistance';
 import { SafeSuspense } from '../safe-suspense';
+import { useAtomValue } from 'jotai/utils';
+import { useDeepMemo } from '../../common/hooks/use-deep-effect';
 
 const EventRowComp = styled(Box, {
   borderBottom: '1px solid $border-subdued',
@@ -33,37 +31,24 @@ export const TxDate: React.FC<{ txid: string }> = ({ txid }) => {
   return <>{distance}</>;
 };
 
-export const EventRow: React.FC<{ event: BridgeEvent }> = ({ event }) => {
-  const { txid, print } = event;
-
-  const title = useMemo(() => {
-    if (isInitiateOutboundPrint(print)) return 'Outbound swap started';
-    if (isFinalizeOutboundPrint(print)) return 'Outbound swap finalized';
-    return print.topic;
-  }, [print]);
-
-  const desc = useMemo(() => {
-    if (isInitiateOutboundPrint(print)) {
-      return `${satsToBtc(print.xbtc)} xBTC ${'\u279E'} ${satsToBtc(print.sats)} BTC`;
-    }
-    if (isFinalizeOutboundPrint(print)) {
-      return `${satsToBtc(print.sats)} BTC to ${getOutboundAddress(print.hash, print.version)}`;
-    }
-  }, [print]);
+export const EventRow: React.FC<{ event: FormattedBridgeEvent }> = ({ event }) => {
+  const { txid, print, title, description } = event;
   return (
     <EventRowComp>
       <SpaceBetween alignItems="center">
         <Stack spacing="12px">
           <Text variant="Label02">{title}</Text>
-          <Text variant="Caption02">{desc}</Text>
+          <Text variant="Caption02">{description}</Text>
         </Stack>
         <Stack spacing="12px" justifyContent={'end'}>
-          <Text variant="Label01" color="$text-dim">
+          <Text variant="Caption02" color="$text-dim">
             <SafeSuspense fallback={<></>}>
               <TxDate txid={txid}></TxDate>{' '}
             </SafeSuspense>
           </Text>
-          <ExternalTx txId={txid} />
+          <Flex justifyContent="end">
+            <ExternalTx txId={txid} />
+          </Flex>
         </Stack>
       </SpaceBetween>
     </EventRowComp>
@@ -71,9 +56,9 @@ export const EventRow: React.FC<{ event: BridgeEvent }> = ({ event }) => {
 };
 
 export const Activity: React.FC = () => {
-  const [events] = useQueryAtom(bridgeEventsState);
+  const events = useAtomValue(formattedBridgeEventsState);
 
-  const rows = useMemo(() => {
+  const rows = useDeepMemo(() => {
     return events.map(event => <EventRow event={event} key={event.txid} />);
   }, [events]);
   return (

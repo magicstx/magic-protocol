@@ -2,9 +2,9 @@ import React from 'react';
 import type { BoxProps } from '@nelson-ui/react';
 import { Box } from '@nelson-ui/react';
 
-export const ExternalLinkIcon: React.FC<BoxProps> = props => {
+export const ExternalLinkIcon: React.FC<BoxProps & { href?: string }> = ({ href, ...props }) => {
   return (
-    <Box size={14} {...props}>
+    <Box as="a" href={href} target="_blank" size={14} {...props}>
       <svg
         width="14"
         height="14"

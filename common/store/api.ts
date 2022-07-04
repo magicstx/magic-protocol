@@ -19,6 +19,8 @@ import { fetchCoreApiInfo } from 'micro-stacks/api';
 import { atom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 import { xbtcAssetId } from '../contracts';
+import type { FormattedBridgeEvent } from '../events';
+import { getPrintDescription, getPrintTitle } from '../events';
 
 export const stxTxState = atomFamilyWithQuery<string | undefined, Transaction | null>(
   (get, txId) => [QueryKeys.STX_TX, txId],
@@ -119,6 +121,15 @@ export const suppliersWithCapacityState = atom<SupplierWithCapacity[]>(get => {
 export const bridgeEventsState = atomWithQuery('BRIDGE_EVENTS', async () => {
   const events = await getBridgeEvents();
   return events;
+});
+
+export const formattedBridgeEventsState = atom<FormattedBridgeEvent[]>(get => {
+  const events = get(bridgeEventsState);
+  return events.map(event => ({
+    ...event,
+    description: getPrintDescription(event.print),
+    title: getPrintTitle(event.print),
+  }));
 });
 
 // hooks

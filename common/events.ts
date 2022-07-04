@@ -1,5 +1,7 @@
 import type { contracts } from './clarigen';
 import type { TypedAbiFunction } from '@clarigen/core';
+import { getOutboundAddress, satsToBtc } from './utils';
+import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 
 type ResponseType<T> = T extends TypedAbiFunction<unknown[], infer R> ? R : never;
 
@@ -95,4 +97,43 @@ export function getFinalizeOutboundPrint(prints: Print[]) {
 }
 export function getRevokeOutboundPrint(prints: Print[]) {
   return getEventWithPrint<RevokeOutboundPrint>(prints, 'revoke-outbound');
+}
+
+export interface FormattedBridgeEvent extends BridgeEvent {
+  description: string;
+  title: string;
+}
+
+export function getPrintTitle(print: Print) {
+  switch (print.topic) {
+    case 'escrow':
+      return 'Inbound swap started';
+    case 'initiate-outbound':
+      return 'Outbound swap started';
+    case 'finalize-outbound':
+      return 'Outbound swap finalized';
+    case 'finalize-inbound':
+      return 'Inbound swap finished';
+    case 'revoke-inbound':
+      return 'Inbound swap recovered';
+    case 'revoke-outbound':
+      return 'Outbound swap revoked';
+  }
+}
+
+export function getPrintDescription(print: Print) {
+  switch (print.topic) {
+    case 'initiate-outbound':
+      return `${satsToBtc(print.xbtc)} xBTC ${'\u279E'} ${satsToBtc(print.sats)} BTC`;
+    case 'finalize-outbound':
+      return `${satsToBtc(print.sats)} BTC to ${getOutboundAddress(print.hash, print.version)}`;
+    case 'escrow':
+      return `${satsToBtc(print.sats)} BTC ${'\u279E'} ${satsToBtc(print.xbtc)} xBTC`;
+    case 'finalize-inbound':
+      return `${satsToBtc(print.xbtc)} xBTC`;
+    case 'revoke-inbound':
+      return `BTC recovered in ${bytesToHex(print.txid)}`;
+    case 'revoke-outbound':
+      return `${satsToBtc(print.xbtc)} xBTC recovered`;
+  }
 }

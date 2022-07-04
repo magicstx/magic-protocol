@@ -12,5 +12,5 @@ export const ExternalTx: React.FC<{ txId?: string; btcTxId?: string }> = ({
     return undefined;
   }, [txId, btcTxId]);
   if (typeof url === 'undefined') return null;
-  return <ExternalLinkIcon cursor="pointer" onClick={() => window.open(url, '_blank')} />;
+  return <ExternalLinkIcon href={url} />;
 };
