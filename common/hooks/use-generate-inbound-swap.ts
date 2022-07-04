@@ -2,7 +2,8 @@ import { useGaia } from '@micro-stacks/react';
 import { useAtomCallback } from 'jotai/utils';
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
-import { Supplier, publicKeyState, swapperIdState, useSwapperId } from '../store';
+import type { Supplier } from '../store';
+import { publicKeyState, swapperIdState } from '../store';
 import { createInboundSwap, inboundSwapKey } from '../store/swaps';
 
 interface Generate {
@@ -12,13 +13,13 @@ interface Generate {
 
 export function useGenerateInboundSwap() {
   const { putFile } = useGaia();
-  const swapperId = useSwapperId();
   const router = useRouter();
   const testQuery = router.query.test;
 
   const generate = useAtomCallback(
     useCallback(
       async (get, set, { supplier, inputAmount }: Generate) => {
+        const swapperId = get(swapperIdState);
         const publicKey = get(publicKeyState);
         if (!publicKey) throw new Error('Invalid user state');
         const expiration = testQuery === 'error' ? 10 : undefined;
@@ -37,7 +38,7 @@ export function useGenerateInboundSwap() {
         await putFile(key, JSON.stringify(swap), { encrypt: true });
         return swap;
       },
-      [putFile, swapperId, testQuery]
+      [putFile, testQuery]
     )
   );
 

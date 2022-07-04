@@ -12,7 +12,7 @@ import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { intToString } from '../utils';
 import type { SupplierWithCapacity } from './api';
 import { bridgeContract, getContracts } from '../contracts';
-import { fetchBtcBalanceForPublicKey } from '../api/electrum';
+import { useQueryAtomValue } from '../hooks/use-query-value';
 
 export enum QueryKeys {
   SUPPLIERID = 'supplierById',
@@ -78,11 +78,10 @@ export async function fetchAllSuppliersApi() {
 export async function fetchSwapperId(address: string) {
   try {
     const _id = await webProvider.ro(bridgeContract().getSwapperId(address));
-    const id = _id === null ? null : Number(_id);
-    return { id };
+    return _id === null ? null : Number(_id);
   } catch (error) {
     console.error(error);
-    return { id: null };
+    return null;
   }
 }
 
@@ -128,12 +127,13 @@ export const currentStxAddressState = atom(get => {
   return session.addresses?.testnet || null;
 });
 
-export const swapperIdState = atomWithQuery(QueryKeys.SWAPPERID, async get => {
+export const swapperIdState = atomWithQuery<number | null>(QueryKeys.SWAPPERID, async get => {
   const address = get(currentStxAddressState);
-  if (!address) return { id: null };
+  if (!address) return null;
   const id = await fetchSwapperId(address);
   return id;
 });
+swapperIdState.debugLabel = 'swapperId';
 
 export const suppliersState = atomWithQuery(QueryKeys.SUPPLIERS, async get => {
   const suppliers = await fetchAllSuppliersApi();
@@ -237,9 +237,9 @@ export const swapperIdQuery = (address: string): Query => {
 // ---
 export const useSupplier = (id: number) => useQueryAtom(supplierState(id));
 export const useSwapperId = () => {
-  const [val] = useQueryAtom(swapperIdState);
-  if (val === null) return null;
-  return val.id;
+  return useQueryAtomValue(swapperIdState);
+  // const [val] = useQueryAtom(swapperIdState);
+  // return val;
 };
 export const useSuppliers = () => useQueryAtom(suppliersState);
 

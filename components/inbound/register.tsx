@@ -10,8 +10,7 @@ import { pendingRegisterSwapperState } from '../../common/store/swap-form';
 import { useAtomCallback } from 'jotai/utils';
 
 export const RegisterSwap: React.FC = () => {
-  const [swapperIdVal, { setQueryData }] = useQueryAtom(swapperIdState);
-  const swapperId = swapperIdVal.id;
+  const [swapperId, { setQueryData }] = useQueryAtom(swapperIdState);
   const { submit, txId, txResult } = useRegisterSwapper();
   const [_, setPendingRegister] = useAtom(pendingRegisterSwapperState);
 
@@ -22,7 +21,7 @@ export const RegisterSwap: React.FC = () => {
         logger.debug('Registration TX result:', txResult);
         logger.debug('Setting swapper ID from tx result');
         const id = Number(txResult);
-        setQueryData({ data: { id } });
+        setQueryData({ data: id });
         set(pendingRegisterSwapperState, false);
       },
       [txResult, setQueryData]

@@ -21,6 +21,7 @@ import { useAtomValue } from 'jotai/utils';
 import { xbtcAssetId } from '../contracts';
 import type { FormattedBridgeEvent } from '../events';
 import { getPrintDescription, getPrintTitle } from '../events';
+import { useQueryAtomValue } from '../hooks/use-query-value';
 
 export const stxTxState = atomFamilyWithQuery<string | undefined, Transaction | null>(
   (get, txId) => [QueryKeys.STX_TX, txId],
@@ -146,7 +147,7 @@ export const useCoreApiInfo = () => useQueryAtom(coreApiInfoState);
 
 export function useStxTxResult<T>(txId: string | undefined) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const [result] = useQueryAtom(stxTxResultState(txId));
+  const result = useQueryAtomValue(stxTxResultState(txId));
   return result as T;
 }
 

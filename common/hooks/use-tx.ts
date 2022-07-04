@@ -3,7 +3,7 @@ import type { ContractCalls } from '@clarigen/core';
 import { tx as submitTx } from '@clarigen/web';
 import { sponsorTransaction } from '../api';
 import { getTxId } from '../utils';
-import { useStxTx, useStxTxResult } from '../store/api';
+import { stxTxState, useStxTx, useStxTxResult } from '../store/api';
 import { bytesToHex } from 'micro-stacks/common';
 import type { ContractCallTxOptions } from 'micro-stacks/connect';
 import { network } from '../constants';
@@ -12,6 +12,7 @@ import { useAtomValue } from 'jotai/utils';
 import type { Contracts } from '../contracts';
 import { getContracts } from '../contracts';
 import { privateKeyState } from '../store';
+import { useQueryAtomValue } from './use-query-value';
 
 type Receipt<Ok, Err> = Awaited<ReturnType<typeof submitTx>>;
 
@@ -37,7 +38,10 @@ interface UseTxOptions {
 export const useTx = <Ok, Err>(builder: TxBuilder<Ok, Err>, opts: UseTxOptions = {}) => {
   const [txId, setTxId] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
-  const [apiTransaction] = useStxTx(txId);
+  const txAtom = stxTxState(txId);
+  txAtom.debugLabel = 'stxTx';
+  const apiTransaction = useQueryAtomValue(txAtom);
+  // const [apiTransaction] = useStxTx(txId);
   const txResult = useStxTxResult<Ok | Err | null>(txId);
   const privateKey = useAtomValue(privateKeyState);
   const submitter: Submitter<Ok, Err> = useCallback(

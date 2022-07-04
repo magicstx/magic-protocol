@@ -1,7 +1,8 @@
 import { useGaia } from '@micro-stacks/react';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
-import { createId, outboundSwapKey, OutboundSwapStarted } from '../store/swaps';
+import type { OutboundSwapStarted } from '../store/swaps';
+import { createId, outboundSwapKey } from '../store/swaps';
 
 interface Generate {
   txId: string;

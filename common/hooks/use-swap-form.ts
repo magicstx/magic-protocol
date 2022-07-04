@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useInput } from './use-input';
 import { useAtom } from 'jotai';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
-import { btcAddressState, suppliersState, swapperIdState, useSwapperId } from '../store';
+import { btcAddressState, suppliersState, swapperIdState } from '../store';
 import { useGenerateInboundSwap } from './use-generate-inbound-swap';
 import { useRouter } from 'next/router';
 import { pendingInitOutboundState, useInitiateOutbound } from './tx/use-initiate-outbound';
@@ -29,7 +29,7 @@ export function useSwapForm() {
   const submitInbound = useAtomCallback(
     useCallback(
       async (get, set) => {
-        const { id: swapperId } = get(swapperIdState);
+        const swapperId = get(swapperIdState);
         const suppliers = get(suppliersState);
         const amountBN = get(amountSatsBNState);
         const supplier = get(currentSupplierState);
