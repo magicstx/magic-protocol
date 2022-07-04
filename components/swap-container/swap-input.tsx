@@ -1,12 +1,12 @@
 import React, { useMemo, useCallback } from 'react';
 import { Box, Stack, Flex, SpaceBetween } from '@nelson-ui/react';
 import { styled } from '@stitches/react';
-import { BtcIcon } from './icons/btc';
+import { BtcIcon } from '../icons/btc';
 import capitalize from 'lodash-es/capitalize';
-import { XBtcIcon } from './icons/xbtc';
+import { XBtcIcon } from '../icons/xbtc';
 import BigNumber from 'bignumber.js';
 import { useAuth } from '@micro-stacks/react';
-import { Text } from './text';
+import { Text } from '../text';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { useAtom } from 'jotai';
 import {
@@ -14,9 +14,9 @@ import {
   inputTokenState,
   outputAmountBtcState,
   outputTokenState,
-} from '../common/store/swap-form';
-import { balancesState } from '../common/store/api';
-import { useInput } from '../common/hooks/use-input';
+} from '../../common/store/swap-form';
+import { balancesState } from '../../common/store/api';
+import { useInput } from '../../common/hooks/use-input';
 
 export type Token = 'btc' | 'xbtc';
 

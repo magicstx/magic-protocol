@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { Stack, SpaceBetween, Flex } from '@nelson-ui/react';
-import { GearIcon } from './icons/gear';
+import { GearIcon } from '../icons/gear';
 import {
   amountInvalidState,
   baseFeeState,
@@ -10,11 +10,11 @@ import {
   showOverrideSupplierState,
   txFeeBtcState,
   txFeePercentState,
-} from '../common/store/swap-form';
-import { Text } from './text';
+} from '../../common/store/swap-form';
+import { Text } from '../text';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
-import { TooltipTippy } from './tooltip';
-import { satsToBtc } from '../common/utils';
+import { TooltipTippy } from '../tooltip';
+import { satsToBtc } from '../../common/utils';
 
 export const SwapSummary: React.FC = () => {
   const txFeePercent = useAtomValue(txFeePercentState);

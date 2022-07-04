@@ -1,15 +1,16 @@
 import { useCallback, useState, useMemo } from 'react';
-import { ContractCalls } from '@clarigen/core';
+import type { ContractCalls } from '@clarigen/core';
 import { tx as submitTx } from '@clarigen/web';
 import { sponsorTransaction } from '../api';
 import { getTxId } from '../utils';
 import { useStxTx, useStxTxResult } from '../store/api';
 import { bytesToHex } from 'micro-stacks/common';
-import { ContractCallTxOptions } from 'micro-stacks/connect';
+import type { ContractCallTxOptions } from 'micro-stacks/connect';
 import { network } from '../constants';
 import { stacksSessionAtom } from '@micro-stacks/react';
 import { useAtomValue } from 'jotai/utils';
-import { getContracts, Contracts } from '../contracts';
+import type { Contracts } from '../contracts';
+import { getContracts } from '../contracts';
 import { privateKeyState } from '../store';
 
 type Receipt<Ok, Err> = Awaited<ReturnType<typeof submitTx>>;
@@ -19,7 +20,7 @@ type TxOptions = Omit<
   'contractName' | 'contractAddress' | 'functionName' | 'functionArgs' | 'privateKey'
 >;
 
-type Submitter<Ok, Err> = (
+export type Submitter<Ok, Err> = (
   contractCall: ContractCalls.Public<Ok, Err>,
   options?: TxOptions
 ) => Promise<Receipt<Ok, Err>>;

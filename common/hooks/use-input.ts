@@ -13,6 +13,5 @@ export function useInput<T>(input: Input<T>) {
   return {
     value,
     onChange,
-    setter,
   };
 }

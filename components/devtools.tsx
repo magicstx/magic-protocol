@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import React, { useEffect } from 'react';
 import { useAtomValue } from 'jotai/utils';
 import { QueryClientProvider } from 'react-query';
@@ -7,14 +8,28 @@ import { APP_VERSION, coreUrl, LOCAL_URL, NETWORK_CONFIG } from '../common/const
 import { bridgeContract } from '../common/contracts';
 import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
 import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
+import { useAtomsDebugValue, useAtomsDevtools } from 'jotai/devtools';
 
 export const DevtoolsPanel = () => {
+  // useAtomsDebugValue();
   const queryClient = useAtomValue(queryClientAtom);
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools />
     </QueryClientProvider>
   );
+};
+
+export const DebugAtoms: React.FC = () => {
+  useAtomsDebugValue();
+  return null;
+};
+
+export const AtomDevTools: React.FC<{ children: ReactElement }> = ({ children }) => {
+  return children;
+  // todo: doesnt work with bigint
+  // useAtomsDevtools('bridge');
+  // return children;
 };
 
 export const Devtools: React.FC = () => {
@@ -42,5 +57,10 @@ export const Devtools: React.FC = () => {
     console.debug('NETWORK_CONFIG', NETWORK_CONFIG);
     console.debug('CONTRACT_ADDRESS', bridgeContract().identifier);
   }, []);
-  return process.env.NODE_ENV === 'production' ? null : <DevtoolsPanel />;
+  return process.env.NODE_ENV === 'production' ? null : (
+    <>
+      <DebugAtoms />
+      <DevtoolsPanel />
+    </>
+  );
 };

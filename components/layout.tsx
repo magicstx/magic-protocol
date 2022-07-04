@@ -1,6 +1,6 @@
 import { Stack, Flex } from '@nelson-ui/react';
 import React from 'react';
-import { Devtools } from './devtools';
+import { AtomDevTools, Devtools } from './devtools';
 import { Footer } from './footer';
 import { Header } from './header';
 import { SafeSuspense, Loading } from './safe-suspense';
@@ -26,6 +26,9 @@ export const Layout: React.FC = ({ children }) => {
           alignItems="center"
         >
           <SafeSuspense fallback={<Loading />}>{children}</SafeSuspense>
+          {/* <AtomDevTools>
+            <SafeSuspense fallback={<Loading />}>{children}</SafeSuspense>
+          </AtomDevTools> */}
         </Stack>
       </Stack>
       <Footer />

@@ -45,6 +45,7 @@
     "@stitches/react": "1.2.8",
     "@tabler/icons": "^1.44.0",
     "@tippyjs/react": "^4.2.6",
+    "@welldone-software/why-did-you-render": "^7.0.1",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",
     "bitcoinjs-lib": "^5.2.0",
@@ -56,7 +57,7 @@
     "fastify-redis": "^4.3.3",
     "fastify-schedule": "^1.0.0",
     "ioredis": "^4.28.0",
-    "jotai": "1.4.7",
+    "jotai": "1.7.3",
     "jotai-query-toolkit": "0.1.23",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
@@ -114,7 +115,7 @@
     "typescript": "4.5.1-rc"
   },
   "resolutions": {
-    "jotai": "1.4.7",
+    "jotai": "1.7.3",
     "jotai-query-toolkit": "0.1.23",
     "react-query": "3.32.1",
     "@stitches/react": "1.2.6",

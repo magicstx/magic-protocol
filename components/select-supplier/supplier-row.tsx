@@ -7,7 +7,7 @@ import { bpsToPercent, satsToBtc, truncateMiddle } from '../../common/utils';
 import { CheckSelected } from '../icons/check-selected';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import { currentSupplierState, showOverrideSupplierState } from '../../common/store/swap-form';
-import type { Token } from '../swap-input';
+import type { Token } from '../swap-container/swap-input';
 import type { SupplierWithCapacity } from '../../common/store/api';
 import { useBtcBalance } from '../../common/store/api';
 import { Spinner } from '../spinner';

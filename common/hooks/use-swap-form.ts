@@ -9,43 +9,19 @@ import { pendingInitOutboundState, useInitiateOutbound } from './tx/use-initiate
 import nProgress from 'nprogress';
 import { useGenerateOutboundSwap } from './use-generate-outbound-swap';
 import {
-  inputTokenState,
-  outputTokenState,
   pendingRegisterSwapperState,
   amountState,
   currentSupplierState,
-  feeRateState,
-  feePercentState,
-  outputAmountBtcState,
-  txFeeBtcState,
-  txFeePercentState,
-  btcAddressValidState,
-  hasCapacityState,
-  swapFormErrorState,
   swapFormValidState,
   amountSatsBNState,
   isOutboundState,
 } from '../store/swap-form';
 
 export function useSwapForm() {
-  const inputToken = useAtomValue(inputTokenState);
   const amount = useInput(useAtom(amountState));
-  const outputToken = useAtomValue(outputTokenState);
   const router = useRouter();
   const btcAddress = useInput(useAtom(btcAddressState));
   const supplier = useAtomValue(currentSupplierState);
-  const [pendingInitOutbound, setPendingOutbound] = useAtom(pendingInitOutboundState);
-  const fee = useAtomValue(feeRateState);
-  const supplierBaseFee = useAtomValue(feeRateState);
-  const feePercent = useAtomValue(feePercentState);
-  const outputAmount = useAtomValue(outputAmountBtcState);
-  const txFeeBtc = useAtomValue(txFeeBtcState);
-  const txFeePercent = useAtomValue(txFeePercentState);
-  const supplierCapacity = supplier.capacity.toString();
-  const validBtc = useAtomValue(btcAddressValidState);
-  const hasCapacity = useAtomValue(hasCapacityState);
-  const errorMessage = useAtomValue(swapFormErrorState);
-  const isValid = useAtomValue(swapFormValidState);
 
   const { generate: generateOutbound } = useGenerateOutboundSwap();
   const { generate } = useGenerateInboundSwap();
@@ -126,24 +102,6 @@ export function useSwapForm() {
   }, [outboundTx.txId]);
 
   return {
-    inputToken,
-    outputToken,
-    outputAmount,
-    amount,
-    supplier,
-    feePercent,
     submit,
-    btcAddress,
-    pendingInitOutbound,
-    error: outboundTx.error,
-    isValid,
-    validBtc,
-    txFeeBtc,
-    txFeePercent,
-    supplierCapacity,
-    hasCapacity,
-    errorMessage,
-    supplierBaseFee,
-    supplierFeeRate: fee,
   };
 }

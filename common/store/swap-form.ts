@@ -5,7 +5,7 @@ import sortBy from 'lodash-es/sortBy';
 import type { Supplier } from '.';
 import { suppliersState } from '.';
 import { btcAddressState } from '.';
-import type { Token } from '../../components/swap-input';
+import type { Token } from '../../components/swap-container/swap-input';
 import {
   btcToSatsBN,
   getSwapAmount,
