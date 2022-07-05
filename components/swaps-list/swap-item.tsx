@@ -15,10 +15,12 @@ import { useStxTxResult } from '../../common/store/api';
 import { useFinalizedOutboundSwap } from '../../common/store';
 import { useClipboard } from '../../common/hooks/use-clipboard';
 import { TooltipTippy } from '../tooltip';
+import { formatDistance } from 'date-fns';
 
 const SwapRowComp = styled(Box, {
   borderBottom: '1px solid $border-subdued',
-  padding: '20px 0',
+  // padding: '20px 0',
+  height: '88px',
   width: '100%',
   '&:first-child': {
     borderTop: '1px solid $border-subdued',
@@ -68,7 +70,7 @@ export const SwapRow: React.FC<RowProps> = ({
   }, [dir]);
   return (
     <SwapRowComp cursor="pointer" onClick={route}>
-      <Flex flexDirection="row" alignItems="center">
+      <Flex flexDirection="row" alignItems="center" height="100%">
         <Box width={`${ROW_WIDTHS[0]}px`}>
           <Stack isInline spacing="4px">
             <Text variant="Label02">
@@ -81,20 +83,7 @@ export const SwapRow: React.FC<RowProps> = ({
           </Stack>
         </Box>
         <Box width={`${ROW_WIDTHS[1]}px`}>
-          <Stack isInline spacing="1px">
-            <Text variant="Label02">{date.split('-')[0]}</Text>
-            <Text variant="Label02" color="$icon-subdued">
-              {'-'}
-            </Text>
-            <Text variant="Label02">{date.split('-')[1]}</Text>
-            <Text variant="Label02" color="$icon-subdued">
-              {'-'}
-            </Text>
-            <Text variant="Label02">{date.split('-')[2]}</Text>
-          </Stack>
-          {/* <Text variant="Label02">
-            {date}
-            </Text> */}
+          <SwapDate time={id} />
         </Box>
         <Box width={`${ROW_WIDTHS[2]}px`}>
           <SwapId swapId={swapId} />
@@ -104,6 +93,47 @@ export const SwapRow: React.FC<RowProps> = ({
         </Box>
       </Flex>
     </SwapRowComp>
+  );
+};
+
+export const SwapDate: React.FC<{ time: string }> = ({ time }) => {
+  const date = useMemo(() => {
+    const unix = Number(time);
+    const d = new Date(unix);
+    return format(d, 'yyyy-MM-dd');
+  }, [time]);
+  const [year, month, day] = useMemo(() => {
+    return date.split('-');
+  }, [date]);
+  const relative = useMemo(() => {
+    const d = new Date(Number(time));
+    return formatDistance(d, new Date(), { addSuffix: true });
+  }, [time]);
+  return (
+    <TooltipTippy
+      tippyProps={{
+        trigger: 'mouseenter focus click',
+        followCursor: true,
+        placement: 'bottom',
+      }}
+      render={
+        <Text variant="Caption01" color="$text">
+          {relative}
+        </Text>
+      }
+    >
+      <Stack isInline spacing="1px">
+        <Text variant="Label02">{year}</Text>
+        <Text variant="Label02" color="$icon-subdued">
+          {'-'}
+        </Text>
+        <Text variant="Label02">{month}</Text>
+        <Text variant="Label02" color="$icon-subdued">
+          {'-'}
+        </Text>
+        <Text variant="Label02">{day}</Text>
+      </Stack>
+    </TooltipTippy>
   );
 };
 
@@ -135,6 +165,7 @@ export const SwapId: React.FC<{ swapId?: string }> = ({ swapId }) => {
       tippyProps={{
         trigger: 'mouseenter focus click',
         followCursor: true,
+        placement: 'bottom',
       }}
       render={
         <Text variant="Caption01" color="$text">
@@ -248,15 +279,15 @@ export const LoadingRow: React.FC<{ item: SwapListItem }> = ({ item }) => {
   }, [item.id]);
   return (
     <SwapRowComp>
-      <Flex flexDirection="row" alignItems="center">
-        <Box width="225px">
-          <Stack isInline spacing="16px">
+      <Flex flexDirection="row" alignItems="center" height="100%">
+        <Box width={`${ROW_WIDTHS[0]}px`}>
+          <Stack isInline spacing="16px" alignItems="center">
             <Spinner />
-            <Text variant="Caption02">{tokens.join(' -> ')}</Text>
+            <Text variant="Label02">{tokens.join(' -> ')}</Text>
           </Stack>
         </Box>
-        <Box width="125px">
-          <Text variant="Caption02">{date}</Text>
+        <Box width={`${ROW_WIDTHS[1]}px`}>
+          <Text variant="Label02">{date}</Text>
         </Box>
       </Flex>
     </SwapRowComp>
@@ -266,7 +297,9 @@ export const LoadingRow: React.FC<{ item: SwapListItem }> = ({ item }) => {
 export const EmptyRow: React.FC = () => {
   return (
     <SwapRowComp>
-      <Text variant="Caption02">No swaps found.</Text>
+      <Flex alignItems="center">
+        <Text variant="Label02">No swaps found.</Text>
+      </Flex>
     </SwapRowComp>
   );
 };
