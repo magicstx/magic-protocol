@@ -4,7 +4,7 @@ type WrapArgs = Parameters<ReturnType<typeof wrapWithMicroStacks>>;
 
 export function withMicroStacks(...args: WrapArgs) {
   const appName = getAppName();
-  const appIcon = getAppIcon() || `${LOCAL_URL}/star.svg`;
+  const appIcon = getAppIcon() || `${LOCAL_URL}/star-black.svg`;
   return wrapWithMicroStacks({
     authOptions: {
       appDetails: {

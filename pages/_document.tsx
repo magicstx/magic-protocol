@@ -42,6 +42,11 @@ export default class Document extends NextDocument {
             as="font"
             crossOrigin=""
           />
+          <meta property="og:image" content="/og-image.png" />
+          <meta
+            property="og:description"
+            content="Magic is a protocol for atomic swaps between BTC and xBTC on the Stacks blockchain."
+          />
         </Head>
         <body>
           <Main />

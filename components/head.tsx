@@ -1,26 +1,30 @@
 import React, { useEffect, useMemo } from 'react';
 import NextHead from 'next/head';
 import { atom, useAtom } from 'jotai';
-import { useAtomValue } from 'jotai/utils';
-
-export const docTitleState = atom('');
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { getAppIcon, getAppName } from '../common/constants';
+import { pageTitleState, docTitleState } from '../common/store';
 
 export const useSetTitle = (title: string) => {
-  const [_, setTitle] = useAtom(docTitleState);
+  const setTitle = useUpdateAtom(docTitleState);
   useEffect(() => {
     setTitle(title);
   }, [title, setTitle]);
 };
 
 export const Head: React.FC = ({ children }) => {
-  const title = useAtomValue(docTitleState);
-  const titleText = useMemo(() => {
-    return title ? `- ${title}` : 'Bridge';
-  }, [title]);
+  const titleText = useAtomValue(pageTitleState);
+  const appName = useMemo(() => {
+    return getAppName();
+  }, []);
+  const icon = useMemo(() => {
+    return getAppIcon() || '/star-white.svg';
+  }, []);
   return (
     <NextHead>
-      <title>✨ Magic {titleText} ✨ </title>
-      <link rel="icon" href="/burst.svg" type="image/svg+xml"></link>
+      <title>{titleText}</title>
+      <link rel="icon" href={icon} type="image/svg+xml"></link>
+      <meta property="og:title" content={appName} />
       {children}
     </NextHead>
   );

@@ -5,7 +5,7 @@ import type { Query } from 'jotai-query-toolkit/nextjs';
 import { atomWithStorage, waitForAll } from 'jotai/utils';
 import { getPublicKey } from 'noble-secp256k1';
 import type { SuppliersApi } from '../../pages/api/suppliers';
-import { LOCAL_URL, webProvider, NETWORK_CONFIG } from '../constants';
+import { LOCAL_URL, webProvider, NETWORK_CONFIG, getAppName, isAppNameDefault } from '../constants';
 import { generateGaiaHubConfig } from 'micro-stacks/storage';
 import type { IntegerType } from 'micro-stacks/common';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
@@ -194,6 +194,19 @@ export const gaiaConfigState = atomWithQuery(QueryKeys.GAIA_CONFIG, async get =>
     privateKey,
   });
   return config;
+});
+
+export const docTitleState = atom('');
+
+export const pageTitleState = atom(get => {
+  const title = get(docTitleState);
+  const appName = getAppName();
+  if (isAppNameDefault()) {
+    const suffix = title ? `- ${title}` : 'Bridge';
+    return `✨ Magic ${suffix} ✨`;
+  }
+  const suffix = title ? ` - ${title}` : '';
+  return `${appName}${suffix}`;
 });
 
 // ---

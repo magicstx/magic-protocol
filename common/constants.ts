@@ -48,12 +48,18 @@ export const LOCAL_URL = getLocalUrl();
 
 export const webProvider = WebProvider({ network });
 
+export const DEFAULT_APP_NAME = 'Magic Bridge' as const;
+
 export function getAppName() {
   const envTitle = process.env.NEXT_PUBLIC_APP_NAME;
   if (typeof envTitle === 'string') {
     return envTitle;
   }
-  return 'Magic Bridge';
+  return DEFAULT_APP_NAME;
+}
+
+export function isAppNameDefault() {
+  return process.env.NEXT_PUBLIC_APP_NAME === DEFAULT_APP_NAME;
 }
 
 export function getAppIcon() {
