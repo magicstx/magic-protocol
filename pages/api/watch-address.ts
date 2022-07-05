@@ -54,6 +54,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (unspent.height === 0) {
     return res.status(200).send({ status: 'unconfirmed', txid, amount, outputIndex: index });
   }
-  const txData = await getTxData(txid, address);
-  return res.status(200).send({ status: 'confirmed', txid, txData, amount, outputIndex: index });
+  try {
+    const txData = await getTxData(txid, address);
+    return res.status(200).send({ status: 'confirmed', txid, txData, amount, outputIndex: index });
+  } catch (error) {
+    console.error(error);
+    return res.status(200).send({ status: 'unconfirmed', txid, amount, outputIndex: index });
+  }
 }
