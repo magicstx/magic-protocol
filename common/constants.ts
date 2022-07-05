@@ -59,7 +59,7 @@ export function getAppName() {
 }
 
 export function isAppNameDefault() {
-  return process.env.NEXT_PUBLIC_APP_NAME === DEFAULT_APP_NAME;
+  return getAppName() === DEFAULT_APP_NAME;
 }
 
 export function getAppIcon() {
