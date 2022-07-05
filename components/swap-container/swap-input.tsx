@@ -17,6 +17,7 @@ import {
 } from '../../common/store/swap-form';
 import { balancesState } from '../../common/store/api';
 import { useInput } from '../../common/hooks/use-input';
+import { InputBorder } from '../form';
 
 export type Token = 'btc' | 'xbtc';
 
@@ -100,15 +101,6 @@ const SwapStack = styled(Stack, {
   },
 });
 
-const SwapFieldBorder = styled(Box, {
-  padding: '1px',
-  background: '$onSurface-border-subdued',
-  borderRadius: '$medium',
-  '&:focus-within': {
-    background: '$foil',
-  },
-});
-
 export interface SwapFieldProps {
   dir: 'from' | 'to';
 }
@@ -142,13 +134,13 @@ export const SwapField: React.FC<SwapFieldProps> = ({ dir }) => {
       <Text variant="Label02" className="swap-title" color="$onSurface-text-dim">
         {capitalize(dir)} {token === 'btc' ? 'Bitcoin chain' : 'Stacks chain'}
       </Text>
-      <SwapFieldBorder>
+      <InputBorder>
         <SwapFieldComp borderRadius="$medium" borderWidth="1px" borderStyle="solid" width="100%">
           <SwapLabel token={token} />
           {dir === 'from' && inputToken === 'xbtc' && isSignedIn ? <SwapBalance /> : null}
           <SwapInput placeholder="0.0" {...inputProps} />
         </SwapFieldComp>
-      </SwapFieldBorder>
+      </InputBorder>
     </SwapStack>
   );
 };

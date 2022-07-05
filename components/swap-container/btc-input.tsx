@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack } from '@nelson-ui/react';
-import { Input } from '../form';
+import { MagicInput } from '../form';
 import { Text } from '../text';
 import type { CSSTypes } from '@nelson-ui/core';
 import { useInput } from '../../common/hooks/use-input';
@@ -30,7 +30,7 @@ export const BtcInput: React.FC = () => {
       <Text variant="Label02" color="$onSurface-text-dim" className="btc-label">
         Your BTC Address
       </Text>
-      <Input {...btcAddress} placeholder="Enter a non-Segwit Bitcoin address" />
+      <MagicInput {...btcAddress} placeholder="Enter a non-Segwit Bitcoin address" />
     </Stack>
   );
 };

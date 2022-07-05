@@ -9,7 +9,7 @@ import { useInput } from '../../common/hooks/use-input';
 import { useAtom } from 'jotai';
 import { btcAddressState } from '../../common/store';
 import { useRecoverSwap } from '../../common/hooks/use-recover-swap';
-import { Input } from '../form';
+import { MagicInput } from '../form';
 import { useWaitTime } from '../../common/hooks/use-wait-time';
 
 export const SwapRedeem: React.FC = () => {
@@ -49,7 +49,7 @@ export const SwapRedeem: React.FC = () => {
               <Text variant="Body02">{txid}</Text>
             ) : (
               <Stack spacing="20px">
-                <Input {...btcAddress} placeholder="Enter a non-segwit address" />
+                <MagicInput {...btcAddress} placeholder="Enter a non-segwit address" />
                 <Box>
                   <StatusButton onClick={submitRedeem} status="error" showIcon={false}>
                     Continue

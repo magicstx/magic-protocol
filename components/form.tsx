@@ -1,6 +1,7 @@
 import { styled } from '@stitches/react';
+import type { ComponentProps } from '@stitches/core';
 import { Box } from '@nelson-ui/react';
-// import { styled } from '../common/theme';
+import { keyframes } from '@nelson-ui/core';
 
 export const Input = styled('input', {
   all: 'unset',
@@ -19,3 +20,29 @@ export const Input = styled('input', {
   boxSizing: 'border-box',
   backgroundColor: '$dark-surface-very-subdued',
 });
+
+export const magicBg = keyframes({
+  '0%': { backgroundPosition: '0% 0%' },
+  '50%': { backgroundPosition: '100% 100%' },
+  '100%': { backgroundPosition: '0% 0%' },
+});
+
+export const InputBorder = styled(Box, {
+  padding: '1px',
+  background: '$onSurface-border-subdued',
+  backgroundSize: '200%',
+  borderRadius: '$medium',
+  animation: `${magicBg()} 4s ease infinite`,
+  '&:focus-within': {
+    background: '$foil',
+    backgroundSize: '150%',
+  },
+});
+
+export const MagicInput: React.FC<ComponentProps<typeof Input>> = props => {
+  return (
+    <InputBorder>
+      <Input {...props} />
+    </InputBorder>
+  );
+};
