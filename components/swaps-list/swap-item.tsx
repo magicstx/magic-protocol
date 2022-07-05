@@ -297,7 +297,7 @@ export const LoadingRow: React.FC<{ item: SwapListItem }> = ({ item }) => {
 export const EmptyRow: React.FC = () => {
   return (
     <SwapRowComp>
-      <Flex alignItems="center">
+      <Flex alignItems="center" height="100%">
         <Text variant="Label02">No swaps found.</Text>
       </Flex>
     </SwapRowComp>
