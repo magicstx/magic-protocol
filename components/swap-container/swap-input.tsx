@@ -85,10 +85,7 @@ const SwapBalance: React.FC = () => {
 
 const SwapFieldComp = styled(SpaceBetween, {
   background: '$dark-surface-very-subdued',
-  borderColor: '$onSurface-border-subdued',
   borderRadius: '$medium',
-  borderWidth: '0px',
-  borderStyle: 'solid',
   width: '100%',
   padding: '8px',
   '.swap-label': {
@@ -122,7 +119,7 @@ export const SwapFieldInput: React.FC = () => {
         From {isOutbound ? 'Stacks chain' : 'Bitcoin chain'}
       </Text>
       <InputBorder>
-        <SwapFieldComp borderRadius="$medium" borderWidth="1px" borderStyle="solid" width="100%">
+        <SwapFieldComp width="100%">
           <SwapLabel token={inputToken} />
           <SwapBalance />
           <SwapInput placeholder="0.0" ref={inputRef} {...amount} autoFocus />

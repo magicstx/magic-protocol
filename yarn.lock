@@ -1040,40 +1040,40 @@
     axios "^0.21.1"
     ws "^7.4.3"
 
-"@micro-stacks/nextjs@0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@micro-stacks/nextjs/-/nextjs-0.0.15.tgz#5ac6f88712001710ee91c5c55c5caef4821f136a"
-  integrity sha512-i3ib85ncjhVLxIBZameE5D/Ha/9eOlUOFUJJvObW4S6Uft1ttrsBdhLgcEvA2xeBBDX+rbvrwApXHmo7wOLGog==
+"@micro-stacks/nextjs@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@micro-stacks/nextjs/-/nextjs-0.1.1.tgz#3b658094127f7d4056bbcb202f202af754434d25"
+  integrity sha512-Ug7hdBwKjGQIEGHmDwyVgIC4lJpCrFS9xR4o5vp/t6dRYXw13BG0KWVCHXv98FpWx2t6tnSYPQdraeCWWNSrEg==
   dependencies:
-    "@micro-stacks/query" "0.0.11"
-    "@micro-stacks/react" "0.1.2"
+    "@micro-stacks/query" "0.1.1"
+    "@micro-stacks/react" "0.2.1"
     jotai ">=1.4.7"
     jotai-query-toolkit ">=0.1.22"
-    micro-stacks ">=0.1.15"
+    micro-stacks ">=0.5.0"
     next ">=12.0.0"
     nookies ">=2.5.2"
 
-"@micro-stacks/query@0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@micro-stacks/query/-/query-0.0.11.tgz#a1e4243a02c85c0011b9a23a2eafc1652277b0ae"
-  integrity sha512-2uZAXvEivu0+H+hbPgcNHxy//H521C3u3QJl0XteRNIpD1313pEAAqDLhOH5xjM6h5iaFDZDKQZS6GQV6uL0YA==
+"@micro-stacks/query@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@micro-stacks/query/-/query-0.1.1.tgz#36f78f43b53c572777e77fbfe3632c82eaff0879"
+  integrity sha512-ElS/eruELbOaJ8GlKLtHuGbjlMp1ZKTqj0wNYd0G6zBHG49O/ATltjF2fYbN6h3IAZtQbC1/1zrF7FVOlN0OeA==
   dependencies:
-    "@micro-stacks/react" "0.1.2"
+    "@micro-stacks/react" "0.2.1"
     jotai ">=1.4.7"
     jotai-query-toolkit ">=0.1.22"
-    micro-stacks ">=0.1.15"
+    micro-stacks ">=0.5.0"
     next ">=12.0.0"
     nookies ">=2.5.2"
     react-query ">=3.34.2"
 
-"@micro-stacks/react@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@micro-stacks/react/-/react-0.1.2.tgz#1323f976f065e7f220c851fe2a9f65944666e144"
-  integrity sha512-oYVUoZVarMQjyuHa9ouOxtVRmeWfVuZfKWtjG8gPdi0cGZnjyHuPsMtj/suws4FvjZqxGJkmMJNdYGdmlxbCDw==
+"@micro-stacks/react@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@micro-stacks/react/-/react-0.2.1.tgz#819fb0ab0a1ba5e379d933fe0d3c7693b9d3ed7c"
+  integrity sha512-RG1XHwWWsJ9qUbsE+SBD2atvUqpPlhpyg166K16bNA1DSHB5wKxIEa2L4zSKCCf+b0TG4gK1frqaN8w2CICWHQ==
   dependencies:
     broadcast-channel ">=4.7.1"
     jotai ">=1.4.7"
-    micro-stacks ">=0.1.15"
+    micro-stacks ">=0.5.0"
     stable-hash "0.0.2"
 
 "@modulz/design-system@^0.6.1":
@@ -6671,10 +6671,26 @@ merkle-lib@^2.0.10:
   resolved "https://registry.yarnpkg.com/merkle-lib/-/merkle-lib-2.0.10.tgz#82b8dbae75e27a7785388b73f9d7725d0f6f3326"
   integrity sha1-grjbrnXieneFOItz+ddyXQ9vMyY=
 
-micro-stacks@0.2.4, micro-stacks@>=0.1.15, micro-stacks@^0.5.2:
+micro-stacks@0.2.4:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/micro-stacks/-/micro-stacks-0.2.4.tgz#15d44e864a05ddc511e583e8ccbe27b77a8fd4c5"
   integrity sha512-XynB/orJKF2RaunmFO7prN/7zByW8L/IdsCZKCYc0nLFCw6vnoDyVgq/Nx4FNS6G5Z4+SB2JWcVxx4Duz7A9ew==
+  dependencies:
+    "@noble/hashes" "1.0.0"
+    "@noble/secp256k1" "1.5.5"
+
+micro-stacks@>=0.5.0:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/micro-stacks/-/micro-stacks-0.6.1.tgz#c3ee9733ffa442f4337af5c8a5b0241eb5c2659e"
+  integrity sha512-5VzDJOQRrgdHrc0CwFew6k1tQMZ4c7nn7yxiyK3BVX2Hqw9alulwANTt6tzS7U/WBFR0qz6ta9E0Ti+z9T4zpg==
+  dependencies:
+    "@noble/hashes" "1.0.0"
+    "@noble/secp256k1" "1.5.5"
+
+micro-stacks@^0.5.2:
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/micro-stacks/-/micro-stacks-0.5.4.tgz#a6e9eb73a7856323c3edde25e26d2b92824cc39b"
+  integrity sha512-fJQPmsQShprbq+LMcvB0+sdkpNewuluS0escNbc/12npZ3uGhWQW+Yxn48NIkg0KBVwcAndT1UE5Y6Z4YaTrVQ==
   dependencies:
     "@noble/hashes" "1.0.0"
     "@noble/secp256k1" "1.5.5"
