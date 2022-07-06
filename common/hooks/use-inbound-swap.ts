@@ -1,13 +1,8 @@
 import { useGaia } from '@micro-stacks/react';
 import { useRouter } from 'next/router';
 import { useCallback, useMemo, useEffect } from 'react';
-import {
-  getSwapStep,
-  InboundSwap,
-  inboundSwapKey,
-  useInboundSwapStorage,
-  useSwapId,
-} from '../store/swaps';
+import type { InboundSwap } from '../store/swaps';
+import { getSwapStep, inboundSwapKey, useInboundSwapStorage, useSwapId } from '../store/swaps';
 import NProgress from 'nprogress';
 
 type SwapStep = ReturnType<typeof getSwapStep>;
