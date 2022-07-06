@@ -207,15 +207,15 @@ export const swapsListState = atomWithQuery<SwapListItem[]>(QueryKeys.SWAPS_LIST
   const session = get(stacksSessionAtom);
   const hubConfig = get(primaryGaiaHubConfigAtom);
   if (!session || !hubConfig) return [];
-  const pageRequest = JSON.stringify({ page: 0 });
+  const pageRequest = JSON.stringify({});
   const fetchOptions: RequestInit = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Content-Length': `${pageRequest.length}`,
+      // 'Content-Length': `${pageRequest.length}`,
       Authorization: `bearer ${hubConfig.token}`,
     },
-    body: pageRequest,
+    // body: pageRequest,
   };
   const response = await fetchPrivate(
     `${hubConfig.server}/list-files/${hubConfig.address}`,
@@ -226,6 +226,7 @@ export const swapsListState = atomWithQuery<SwapListItem[]>(QueryKeys.SWAPS_LIST
     throw new Error('Error in response');
   }
   const responseData = (await response.json()) as ListFilesResponse;
+  console.log('responseData', responseData);
   console.log(`Gaia entries: (${responseData.entries.length})`, responseData.entries);
   const entries = responseData.entries
     .filter(path => path.startsWith(SWAP_STORAGE_PREFIX))
