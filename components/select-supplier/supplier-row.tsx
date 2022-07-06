@@ -1,12 +1,15 @@
 import React, { Suspense, useCallback, useMemo } from 'react';
 import { Text } from '../text';
 import { Box, Flex, Stack } from '@nelson-ui/react';
-import { selectedSupplierState } from '../../common/store';
 import { styled } from '@stitches/react';
 import { bpsToPercent, satsToBtc, truncateMiddle } from '../../common/utils';
 import { CheckSelected } from '../icons/check-selected';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
-import { currentSupplierState, showOverrideSupplierState } from '../../common/store/swap-form';
+import {
+  currentSupplierState,
+  showOverrideSupplierState,
+  selectedSupplierState,
+} from '../../common/store/swap-form';
 import type { Token } from '../swap-container/swap-input';
 import type { SupplierWithCapacity } from '../../common/store/api';
 import { useBtcBalance } from '../../common/store/api';
@@ -70,6 +73,7 @@ export const SupplierBaseRow: React.FC<{
   const select = useAtomCallback(
     useCallback(
       (get, set) => {
+        console.log('supplier.id', supplier.id);
         set(selectedSupplierState, supplier);
         set(showOverrideSupplierState, false);
       },

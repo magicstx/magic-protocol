@@ -168,8 +168,6 @@ export const finalizedOutboundSwapState = atomFamilyWithQuery<string, string | n
 export const btcAddressState = atomWithStorage('btcAddress', '');
 export const secretState = atomWithStorage('secret', '');
 
-export const selectedSupplierState = atom<SupplierWithCapacity | null>(null);
-
 export const privateKeyState = atom(get => {
   const session = get(stacksSessionAtom);
   if (!session) return null;

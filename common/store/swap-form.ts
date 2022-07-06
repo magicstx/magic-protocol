@@ -3,7 +3,6 @@ import { atom } from 'jotai';
 import { atomFamily, selectAtom } from 'jotai/utils';
 import sortBy from 'lodash-es/sortBy';
 import type { Supplier } from '.';
-import { suppliersState } from '.';
 import { btcAddressState } from '.';
 import type { Token } from '../../components/swap-container/swap-input';
 import {
@@ -14,6 +13,7 @@ import {
   intToBigInt,
   parseBtcAddress,
 } from '../utils';
+import type { SupplierWithCapacity } from './api';
 import { suppliersWithCapacityState } from './api';
 
 export function oppositeToken(token: Token): Token {
@@ -55,6 +55,21 @@ export function feesForSwapDirection(supplier: Supplier, isOutbound: boolean) {
   };
 }
 
+export function makeSupplierForDirection(
+  supplier: SupplierWithCapacity,
+  isOutbound: boolean
+): SupplierForDirection {
+  const { baseFee, feeRate } = feesForSwapDirection(supplier, isOutbound);
+  const capacity = isOutbound ? supplier.btc : supplier.funds;
+  return {
+    baseFee,
+    feeRate,
+    capacity: BigInt(capacity),
+    id: supplier.id,
+    controller: supplier.controller,
+  };
+}
+
 export interface SupplierForDirection {
   capacity: bigint;
   baseFee: number;
@@ -63,10 +78,16 @@ export interface SupplierForDirection {
   id: number;
 }
 
-export const selectedSupplierState = atom<SupplierForDirection | null>(null);
+export const selectedSupplierState = atom<SupplierWithCapacity | null>(null);
+
+export const selectedSupplierForDirectionState = atom(get => {
+  const selected = get(selectedSupplierState);
+  const isOutbound = get(isOutboundState);
+  return selected ? makeSupplierForDirection(selected, isOutbound) : null;
+});
 
 export const currentSupplierState = atom<SupplierForDirection>(get => {
-  const selected = get(selectedSupplierState);
+  const selected = get(selectedSupplierForDirectionState);
   const bestSupplier = get(bestSupplierForAmount);
   return selected || bestSupplier;
 });
@@ -74,17 +95,7 @@ export const currentSupplierState = atom<SupplierForDirection>(get => {
 export const suppliersForDirectionState = atom<SupplierForDirection[]>(get => {
   const suppliers = get(suppliersWithCapacityState);
   const isOutbound = get(isOutboundState);
-  const mapped = suppliers.map(supplier => {
-    const { baseFee, feeRate } = feesForSwapDirection(supplier, isOutbound);
-    const capacity = isOutbound ? supplier.btc : supplier.funds;
-    return {
-      baseFee,
-      feeRate,
-      capacity: BigInt(capacity),
-      id: supplier.id,
-      controller: supplier.controller,
-    };
-  });
+  const mapped = suppliers.map(supplier => makeSupplierForDirection(supplier, isOutbound));
   const sorted = sortBy(mapped, supplier => {
     return -supplier.feeRate;
   });
@@ -164,7 +175,7 @@ export const capacityErrorState = atom<string | undefined>(get => {
   const outputAmount = get(outputAmountSatsState);
   const outputToken = get(outputTokenState);
   const maxCapacity = get(maxCapacityState);
-  const selected = get(selectedSupplierState);
+  const selected = get(selectedSupplierForDirectionState);
   if (outputAmount > supplier.capacity) {
     const cap = satsToBtc(selected ? selected.capacity : maxCapacity);
     return `Supplier has insufficient capacity. Max capacity is ${cap} ${outputToken}.`;
