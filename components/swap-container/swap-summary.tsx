@@ -81,6 +81,7 @@ export const SwapSummary: React.FC = () => {
         backgroundColor="$dark-surface-very-subdued"
         onClick={showOverride}
         cursor="pointer"
+        borderRadius="10px"
       >
         <Text variant="Label02" color="$onSurface-text">
           Fees
