@@ -50,7 +50,7 @@ const FinalSummaryComp: React.FC<{ satsAmount: string; fee: number; baseFee: num
             {btcAmount}
           </Text>
           <Text variant="Label02" color="$text-subdued">
-            xBTC
+            BTC
           </Text>
         </Stack>
       </Stack>
