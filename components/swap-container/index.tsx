@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack } from '@nelson-ui/react';
 import { Text } from '../text';
-import { SwapField } from './swap-input';
+import { SwapFieldInput, SwapFieldTo } from './swap-input';
 import { SwapSummary } from './swap-summary';
 import { CenterBox } from '../center-box';
 import {
@@ -38,11 +38,11 @@ export const SwapContainer: React.FC = () => {
       <PendingSwapContainer />
       <CenterBox noPadding>
         <Stack spacing="$6" px="$row-x">
-          <SwapField dir="from" />
+          <SwapFieldInput />
         </Stack>
         <SwapFlip />
         <Stack spacing="$6" px="$row-x">
-          <SwapField dir="to" />
+          <SwapFieldTo />
           <BtcInput />
           {typeof errorMessage === 'string' ? (
             <Text variant="Caption02" color="#ED5653">

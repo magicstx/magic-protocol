@@ -1,8 +1,7 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useRef, useEffect } from 'react';
 import { Box, Stack, Flex, SpaceBetween } from '@nelson-ui/react';
 import { styled } from '@stitches/react';
 import { BtcIcon } from '../icons/btc';
-import capitalize from 'lodash-es/capitalize';
 import { XBtcIcon } from '../icons/xbtc';
 import BigNumber from 'bignumber.js';
 import { useAuth } from '@micro-stacks/react';
@@ -12,6 +11,7 @@ import { useAtom } from 'jotai';
 import {
   amountState,
   inputTokenState,
+  isOutboundState,
   outputAmountBtcState,
   outputTokenState,
 } from '../../common/store/swap-form';
@@ -58,6 +58,8 @@ export const SwapLabel: React.FC<{ token: Token }> = ({ token }) => {
 };
 
 const SwapBalance: React.FC = () => {
+  const { isSignedIn } = useAuth();
+  const isOutbound = useAtomValue(isOutboundState);
   const setMaxAmount = useAtomCallback(
     useCallback((get, set) => {
       const balances = get(balancesState);
@@ -66,6 +68,7 @@ const SwapBalance: React.FC = () => {
       set(amountState, maxBalance.toString());
     }, [])
   );
+  if (!isSignedIn || !isOutbound) return null;
 
   return (
     <Text
@@ -101,44 +104,50 @@ const SwapStack = styled(Stack, {
   },
 });
 
-export interface SwapFieldProps {
-  dir: 'from' | 'to';
-}
-
-export const SwapField: React.FC<SwapFieldProps> = ({ dir }) => {
+export const SwapFieldInput: React.FC = () => {
   const inputToken = useAtomValue(inputTokenState);
-  const outputToken = useAtomValue(outputTokenState);
-  const outputAmount = useAtomValue(outputAmountBtcState);
   const amount = useInput(useAtom(amountState));
-  const { isSignedIn } = useAuth();
-  const token = dir === 'from' ? inputToken : outputToken;
-  const inputProps = useMemo(() => {
-    if (dir === 'from') {
-      return {
-        onChange: amount.onChange,
-        value: amount.value,
-        autoFocus: true,
-      };
-    }
-    return {
-      disabled: true,
-      value: outputAmount,
-      style: {
-        color: 'var(--colors-text-subdued)',
-      },
-    };
-  }, [amount, dir, outputAmount]);
+  const isOutbound = useAtomValue(isOutboundState);
+  const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+
+  useEffect(() => {
+    setTimeout(() => {
+      inputRef.current.focus();
+    }, 100);
+  });
 
   return (
     <SwapStack spacing="$2">
       <Text variant="Label02" className="swap-title" color="$onSurface-text-dim">
-        {capitalize(dir)} {token === 'btc' ? 'Bitcoin chain' : 'Stacks chain'}
+        From {isOutbound ? 'Stacks chain' : 'Bitcoin chain'}
       </Text>
       <InputBorder>
         <SwapFieldComp borderRadius="$medium" borderWidth="1px" borderStyle="solid" width="100%">
-          <SwapLabel token={token} />
-          {dir === 'from' && inputToken === 'xbtc' && isSignedIn ? <SwapBalance /> : null}
-          <SwapInput placeholder="0.0" {...inputProps} />
+          <SwapLabel token={inputToken} />
+          <SwapBalance />
+          <SwapInput placeholder="0.0" ref={inputRef} {...amount} autoFocus />
+        </SwapFieldComp>
+      </InputBorder>
+    </SwapStack>
+  );
+};
+
+// SwapFieldInput.whyDidYouRender = true;
+
+export const SwapFieldTo: React.FC = () => {
+  const outputToken = useAtomValue(outputTokenState);
+  const outputAmount = useAtomValue(outputAmountBtcState);
+  const isOutbound = useAtomValue(isOutboundState);
+
+  return (
+    <SwapStack spacing="$2">
+      <Text variant="Label02" className="swap-title" color="$onSurface-text-dim">
+        To {isOutbound ? 'Bitcoin chain' : 'Stacks chain'}
+      </Text>
+      <InputBorder>
+        <SwapFieldComp borderRadius="$medium" borderWidth="1px" borderStyle="solid" width="100%">
+          <SwapLabel token={outputToken} />
+          <SwapInput placeholder="0.0" disabled color="$text-subdued" value={outputAmount} />
         </SwapFieldComp>
       </InputBorder>
     </SwapStack>
