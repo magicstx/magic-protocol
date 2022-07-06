@@ -31,10 +31,10 @@ const FinalSummaryComp: React.FC<{ xbtcAmountSats: bigint; satsAmount: bigint }>
       <Stack justifyContent="center" spacing="10px" flexShrink="1" flexBasis="75px">
         <XBtcIcon size={50} mx="auto" display="block" />
         <Stack spacing="$0">
-          <Text variant="Label01" color="$color-slate-95">
+          <Text variant="Label01" color="$text">
             {xbtcAmount}
           </Text>
-          <Text variant="Label02" color="$color-slate-85">
+          <Text variant="Label02" color="$text-subdued">
             xBTC
           </Text>
         </Stack>
@@ -42,10 +42,10 @@ const FinalSummaryComp: React.FC<{ xbtcAmountSats: bigint; satsAmount: bigint }>
       <Stack flexGrow="1" spacing="10px" pt="5px">
         <MagicArrow mx="auto" display="block" width="100px" />
         <Stack spacing="$0">
-          <Text variant="Label01" color="$color-slate-95">
+          <Text variant="Label01" color="$text">
             {fee}
           </Text>
-          <Text variant="Label02" color="$color-slate-85">
+          <Text variant="Label02" color="$text-subdued">
             xBTC fees
           </Text>
         </Stack>
@@ -53,10 +53,10 @@ const FinalSummaryComp: React.FC<{ xbtcAmountSats: bigint; satsAmount: bigint }>
       <Stack justifyContent="center" spacing="10px" flexShrink="1" flexBasis="75px">
         <BtcIcon size={50} mx="auto" />
         <Stack spacing="$0">
-          <Text variant="Label01" color="$color-slate-95">
+          <Text variant="Label01" color="$text">
             {btcAmount}
           </Text>
-          <Text variant="Label02" color="$color-slate-85">
+          <Text variant="Label02" color="$text-subdued">
             BTC
           </Text>
         </Stack>
