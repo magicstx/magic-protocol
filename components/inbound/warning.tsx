@@ -31,21 +31,19 @@ export const SwapWarning: React.FC = () => {
             </Text>
           </Flex>
           <Text color="$color-alert-red" variant="Body02">
-            ✨ The Zelda bridge is experimental, unaudited software. Bugs can result in complete
-            loss of funds.
+            ✦ The Magic bridge is experimental software and bugs can result in complete loss of
+            funds.
           </Text>
           <Text color="$color-alert-red" variant="Body02">
-            ✨ The website you’re on is providing the bridge and maybe the liquidity for your swap;
-            please ask them for support. The wizards that designed the bridge are not hosting a
-            front end.
+            ✦ Blockchains are slow and swaps take several transactions. Please be patient.
           </Text>
           <Text color="$color-alert-red" variant="Body02">
-            ✨ You’re swapping with a specific liquidity supplier. If the supplier fails you may
-            need to manually recover your funds. This is possible but tedious and slow.
+            ✦ The app you’re using now is providing the bridge; please ask the app for support. The
+            wizards that created Magic are not hosting a front end app.
           </Text>
           <Text color="$color-alert-red" variant="Body02">
-            ✨ Swaps take several transactions. Plan for your swap to take ~20min. If Stacks or
-            Bitcoin are congested it could take longer.
+            ✦ If anything goes wrong with your swap you can recover your escrowed funds but this can
+            be tedious and slow.
           </Text>
         </Stack>
       </Alert>
