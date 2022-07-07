@@ -3,6 +3,8 @@ import type { StackProps } from '@nelson-ui/react';
 import { Box, Stack, Flex, BoxProps } from '@nelson-ui/react';
 import { Text } from '../text';
 import { useSwapId } from '../../common/store/swaps';
+import { CopyTooltip } from '../copy-tooltip';
+import { truncateMiddle } from '../../common/utils';
 export * from './rows';
 
 interface CenterBoxProps {
@@ -42,11 +44,15 @@ export const CenterBox: React.FC<CenterBoxProps> = ({
       flexWrap="wrap"
     >
       {typeof swapId === 'string' ? (
-        <Box width="100%" textAlign="center" mb="$4">
-          <Text variant="Caption02" color="$text-onsurface-very-dim">
-            {swapId}
+        <CopyTooltip copyText={swapId} width="100%" mb="$4" textAlign="center">
+          <Text
+            variant="Caption02"
+            color="$text-onsurface-very-dim"
+            _hover={{ color: '$onSurface-text-dim' }}
+          >
+            {truncateMiddle(swapId.replace('0x', ''), 15)}
           </Text>
-        </Box>
+        </CopyTooltip>
       ) : null}
       {topExtra === undefined ? null : topExtra}
       <Stack

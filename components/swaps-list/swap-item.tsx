@@ -16,6 +16,7 @@ import { useFinalizedOutboundSwap } from '../../common/store';
 import { useClipboard } from '../../common/hooks/use-clipboard';
 import { TooltipTippy } from '../tooltip';
 import { formatDistance } from 'date-fns';
+import { CopyTooltip } from '../copy-tooltip';
 
 const SwapRowComp = styled(Box, {
   borderBottom: '1px solid $border-subdued',
@@ -138,48 +139,12 @@ export const SwapDate: React.FC<{ time: string }> = ({ time }) => {
 };
 
 export const SwapId: React.FC<{ swapId?: string }> = ({ swapId }) => {
-  const { copy } = useClipboard();
-  const [showCopied, setShowCopied] = useState(false);
-  const closeTooltip = useCallback(() => {
-    setShowCopied(false);
-  }, [setShowCopied]);
-  const onClick = useCallback(
-    (event: React.MouseEvent) => {
-      if (swapId) {
-        event.stopPropagation();
-        void copy(swapId);
-        setShowCopied(true);
-        const timer = setTimeout(closeTooltip, 3000);
-        return () => {
-          clearInterval(timer);
-        };
-      }
-    },
-    [copy, swapId, closeTooltip]
-  );
-
   if (typeof swapId === 'undefined') return null;
 
   return (
-    <TooltipTippy
-      tippyProps={{
-        trigger: 'mouseenter focus click',
-        followCursor: true,
-        placement: 'bottom',
-      }}
-      render={
-        <Text variant="Caption01" color="$text">
-          {showCopied ? 'Copied' : 'Copy'}
-        </Text>
-      }
-      containerProps={{
-        padding: '12px 16px',
-      }}
-    >
-      <Text variant="Label02" onClick={onClick}>
-        {truncateMiddle(swapId.replace('0x', ''), 15)}
-      </Text>
-    </TooltipTippy>
+    <CopyTooltip copyText={swapId}>
+      <Text variant="Label02">{truncateMiddle(swapId.replace('0x', ''), 15)}</Text>
+    </CopyTooltip>
   );
 };
 
