@@ -44,7 +44,7 @@ export const SwapReady: React.FC = () => {
         <Divider />
         <PendingRow btcTxId={footerSwapId}>
           {txWatch.status === 'unsent' ? 'Waiting for you to send Bitcoin' : null}
-          {txWatch.status === 'unconfirmed' ? 'Waiting for your Bitcoin transaction' : null}
+          {txWatch.status === 'unconfirmed' ? 'Waiting for confirmations' : null}
         </PendingRow>
       </CenterBox>
     </Stack>
