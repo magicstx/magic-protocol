@@ -36,7 +36,10 @@ export const amountSatsBNState = selectAtom(
   (a, b) => a.isEqualTo(b)
 );
 
-export const amountInvalidState = selectAtom(amountSatsBNState, a => a.isNaN());
+export const amountInvalidState = selectAtom(
+  amountSatsBNState,
+  a => a.isNaN() || a.isLessThanOrEqualTo(0)
+);
 
 export const showOverrideSupplierState = atom(false);
 
@@ -165,7 +168,7 @@ export const outputAmountSatsState = atom(get => {
 });
 
 export const outputAmountBtcState = selectAtom(outputAmountSatsState, a => {
-  return a < 0 ? '0' : satsToBtc(a);
+  return a <= 0n ? '' : satsToBtc(a);
 });
 
 // Validation
