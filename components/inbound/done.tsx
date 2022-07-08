@@ -54,8 +54,8 @@ const FinalSummaryComp: React.FC<{ satsAmount: string; fee: number; baseFee: num
           </Text>
         </Stack>
       </Stack>
-      <Stack flexGrow="1" spacing="10px" pt="5px">
-        <MagicArrow mx="auto" display="block" width="100px" />
+      <Stack flexGrow="1" spacing="10px" pt="13px">
+        <MagicArrow mx="auto" display="block" width="100px" position="relative" top="-3px" />
         <Stack spacing="$0">
           <Text variant="Label01" color="$text">
             {feeAmt}

@@ -27,7 +27,7 @@ const FinalSummaryComp: React.FC<{ xbtcAmountSats: bigint; satsAmount: bigint }>
   const btcAmount = satsToBtc(satsAmount);
   const fee = new BigNumber(btcAmount).minus(xbtcAmount).decimalPlaces(8).toString();
   return (
-    <Flex flexDirection="row" px="$row-x" textAlign="center">
+    <Flex flexDirection="row" px="$row-x" textAlign="center" alignItems="center">
       <Stack justifyContent="center" spacing="10px" flexShrink="1" flexBasis="75px">
         <XBtcIcon size={50} mx="auto" display="block" />
         <Stack spacing="$0">
@@ -39,9 +39,9 @@ const FinalSummaryComp: React.FC<{ xbtcAmountSats: bigint; satsAmount: bigint }>
           </Text>
         </Stack>
       </Stack>
-      <Stack flexGrow="1" spacing="10px" pt="5px">
-        <MagicArrow mx="auto" display="block" width="100px" />
-        <Stack spacing="$0">
+      <Stack flexGrow="1" spacing="10px" pt="13px">
+        <MagicArrow mx="auto" display="block" width="100px" position="relative" top="-3px" />
+        <Stack spacing="$0" mt="3px">
           <Text variant="Label01" color="$text">
             {fee}
           </Text>
