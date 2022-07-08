@@ -201,7 +201,7 @@ export const pageTitleState = atom(get => {
   const appName = getAppName();
   if (isAppNameDefault()) {
     const suffix = title ? `- ${title}` : 'Bridge';
-    return `✦ Magic ${suffix}`;
+    return `Magic ${suffix}`;
   }
   const suffix = title ? ` - ${title}` : '';
   return `${appName}${suffix}`;
