@@ -30,6 +30,7 @@ export const SwapInput = styled('input', {
   textAlign: 'right',
   borderRadius: 4,
   padding: '0 10px',
+  paddingRight: '11px',
   height: 35,
   fontSize: 15,
   lineHeight: 1,
@@ -40,20 +41,22 @@ export const SwapInput = styled('input', {
 
 export const SwapLabel: React.FC<{ token: Token }> = ({ token }) => {
   return (
-    <SpaceBetween
+    <Stack
+      isInline
       py="$2"
       px="14px"
       borderRadius="7px"
-      spacing="$2"
-      minWidth="104px"
+      spacing="10px"
+      // minWidth="104px"
       border="1px solid $onSurface-border-subdued"
       className="swap-label"
+      alignItems="center"
     >
       {token === 'btc' ? <BtcIcon /> : <XBtcIcon />}
       <Text variant="Label02" color="$text">
         {token === 'btc' ? 'BTC' : 'xBTC'}
       </Text>
-    </SpaceBetween>
+    </Stack>
   );
 };
 
@@ -71,13 +74,7 @@ const SwapBalance: React.FC = () => {
   if (!isSignedIn || !isOutbound) return null;
 
   return (
-    <Text
-      variant="Label02"
-      color="$light-onSurface-text-dim"
-      ml="15px"
-      onClick={setMaxAmount}
-      cursor="pointer"
-    >
+    <Text variant="Label02" color="$text-dim" ml="15px" onClick={setMaxAmount} cursor="pointer">
       Max
     </Text>
   );
@@ -107,14 +104,8 @@ export const SwapFieldInput: React.FC = () => {
   const isOutbound = useAtomValue(isOutboundState);
   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     inputRef.current.focus();
-  //   }, 100);
-  // });
-
   return (
-    <SwapStack spacing="$2">
+    <SwapStack spacing="13px">
       <Text variant="Label02" className="swap-title" color="$onSurface-text-dim">
         From {isOutbound ? 'Stacks chain' : 'Bitcoin chain'}
       </Text>
@@ -137,7 +128,7 @@ export const SwapFieldTo: React.FC = () => {
   const isOutbound = useAtomValue(isOutboundState);
 
   return (
-    <SwapStack spacing="$2">
+    <SwapStack spacing="13px">
       <Text variant="Label02" className="swap-title" color="$onSurface-text-dim">
         To {isOutbound ? 'Bitcoin chain' : 'Stacks chain'}
       </Text>

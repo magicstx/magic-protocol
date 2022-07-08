@@ -64,12 +64,12 @@ export const SwapContainer: React.FC = () => {
   return (
     <Stack spacing="$row-y">
       <PendingSwapContainer />
-      <CenterBox noPadding>
+      <CenterBox noPadding boxProps={{ pt: '23px' }}>
         <Stack spacing="$6" px="$row-x">
           <SwapFieldInput />
         </Stack>
         <SwapFlip />
-        <Stack spacing="$6" px="$row-x">
+        <Stack spacing="13px" px="$row-x" position="relative" top="-7px">
           <SwapFieldTo />
           <BtcInput />
           {typeof errorMessage === 'string' ? (

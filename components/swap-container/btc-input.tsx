@@ -16,7 +16,7 @@ export const BtcInput: React.FC = () => {
 
   return (
     <Stack
-      spacing="$2"
+      spacing="13px"
       css={
         {
           '&:focus-within': {

@@ -16,7 +16,7 @@ export const SwapFlip: React.FC = () => {
   const hoverRef = useRef(null);
   const isHoverFlip = useHover(hoverRef);
   return (
-    <Box position="relative" width="100%">
+    <Box position="relative" width="100%" height="0px" top="-13px">
       <Box ref={hoverRef} size={36} mx="auto">
         {isHoverFlip ? (
           <ReverseIcon onClick={switchDirection} mx="auto" cursor="pointer" zIndex="2" />

@@ -9,11 +9,13 @@ import {
   lineHeights,
   sizes,
 } from '@nelson-ui/theme';
-import { makeColors, createTheme, getCssText as nelsonCss, CSSTypes } from '@nelson-ui/core';
+import type { CSSTypes } from '@nelson-ui/core';
+import { makeColors, createTheme, getCssText as nelsonCss } from '@nelson-ui/core';
 import figma from './theme/figma';
 import { tokens } from './theme/figma-2';
 import { colors as colors3 } from './theme/figma-3';
-import { PropertyValue, createStitches } from '@stitches/react';
+import type { PropertyValue } from '@stitches/react';
+import { createStitches } from '@stitches/react';
 import fsTokens from './theme/fs-tokens2.json';
 
 function transformProps(props: Record<string, { value: any }>, suffix = '') {
