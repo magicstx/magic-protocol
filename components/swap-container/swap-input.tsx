@@ -142,7 +142,7 @@ export const SwapFieldTo: React.FC = () => {
         To {isOutbound ? 'Bitcoin chain' : 'Stacks chain'}
       </Text>
       <InputBorder>
-        <SwapFieldComp borderRadius="$medium" borderWidth="1px" borderStyle="solid" width="100%">
+        <SwapFieldComp width="100%">
           <SwapLabel token={outputToken} />
           <SwapInput placeholder="0.0" disabled color="$text-subdued" value={outputAmount} />
         </SwapFieldComp>
