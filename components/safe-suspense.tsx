@@ -17,14 +17,14 @@ const circleSpin = keyframes({
 });
 
 const CircleBorder = styled(Box, {
-  width: '150px',
-  height: '150px',
+  width: '100px',
+  height: '100px',
   padding: '3px',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   borderRadius: '50%',
-  background: 'linear-gradient(0deg, rgba(245, 245, 245, 0.1) 33%, rgba(245, 245, 245, 1) 100%)',
+  background: 'linear-gradient(180deg, #121212 0%, #3D3D3D 100%);',
 });
 
 const CircleCore = styled(Box, {
