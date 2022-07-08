@@ -8,11 +8,13 @@ import { bytesToHex } from 'micro-stacks/common';
 import type { ContractCallTxOptions } from 'micro-stacks/connect';
 import { network } from '../constants';
 import { stacksSessionAtom } from '@micro-stacks/react';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import type { Contracts } from '../contracts';
 import { getContracts } from '../contracts';
 import { privateKeyState } from '../store';
 import { useQueryAtomValue } from './use-query-value';
+import type { PrimitiveAtom } from 'jotai';
+import { Atom, WritableAtom } from 'jotai';
 
 type Receipt<Ok, Err> = Awaited<ReturnType<typeof submitTx>>;
 
@@ -33,6 +35,7 @@ type TxBuilder<Ok, Err> = (
 
 interface UseTxOptions {
   sponsored?: boolean;
+  txidAtom?: PrimitiveAtom<string | undefined>;
 }
 
 export const useTx = <Ok, Err>(builder: TxBuilder<Ok, Err>, opts: UseTxOptions = {}) => {
@@ -61,35 +64,44 @@ export const useTx = <Ok, Err>(builder: TxBuilder<Ok, Err>, opts: UseTxOptions =
     [privateKey]
   );
 
-  const submit = useCallback(async () => {
-    setError(undefined);
-    const contracts = getContracts();
-    try {
-      const receipt = await builder(contracts, submitter);
-      if (opts.sponsored) {
-        const hex = bytesToHex(receipt.stacksTransaction.serialize());
-        const txId = await sponsorTransaction(hex);
-        setTxId(getTxId(txId));
-      } else {
-        console.log('receipt', receipt);
-        let txId: string;
-        if (typeof receipt.txId === 'string') {
-          txId = receipt.txId;
-        } else {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          txId = (receipt.txId as unknown as any).txid as string;
+  const submit = useAtomCallback(
+    useCallback(
+      async (get, set) => {
+        setError(undefined);
+        const contracts = getContracts();
+        try {
+          const receipt = await builder(contracts, submitter);
+          if (opts.sponsored) {
+            const hex = bytesToHex(receipt.stacksTransaction.serialize());
+            const txId = await sponsorTransaction(hex);
+            setTxId(getTxId(txId));
+            if (opts.txidAtom) set(opts.txidAtom, getTxId(txId));
+            return getTxId(txId);
+          } else {
+            console.log('receipt', receipt);
+            let txId: string;
+            if (typeof receipt.txId === 'string') {
+              txId = receipt.txId;
+            } else {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+              txId = (receipt.txId as unknown as any).txid as string;
+            }
+            setTxId(getTxId(txId));
+            if (opts.txidAtom) set(opts.txidAtom, getTxId(txId));
+            return getTxId(txId);
+          }
+        } catch (error) {
+          console.error(error);
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError(`${error as string}`);
+          }
         }
-        setTxId(getTxId(txId));
-      }
-    } catch (error) {
-      console.error(error);
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError(`${error as string}`);
-      }
-    }
-  }, [builder, opts.sponsored, submitter]);
+      },
+      [builder, opts.sponsored, submitter, opts.txidAtom]
+    )
+  );
 
   const txUrl = useMemo(() => {
     if (!txId) return '';

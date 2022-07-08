@@ -16,6 +16,8 @@ import {
 import type { SupplierWithCapacity } from './api';
 import { suppliersWithCapacityState } from './api';
 
+export const outboundTxidState = atom<string | undefined>(undefined);
+
 export function oppositeToken(token: Token): Token {
   return token === 'btc' ? 'xbtc' : 'btc';
 }

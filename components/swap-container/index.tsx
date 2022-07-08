@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { SwapFieldInput, SwapFieldTo } from './swap-input';
 import { SwapSummary } from './swap-summary';
 import { CenterBox } from '../center-box';
 import {
+  amountSatsBNState,
   pendingRegisterSwapperState,
   showOverrideSupplierState,
   swapFormErrorState,
+  outboundTxidState,
 } from '../../common/store/swap-form';
 import { PendingInit } from '../outbound/pending';
-import { useAtomValue } from 'jotai/utils';
+import { useCallback } from 'react';
+import { useAtomValue, useAtomCallback } from 'jotai/utils';
 import { SelectSupplier } from '../select-supplier';
 import { RegisterSwap } from '../inbound/register';
 import { PendingSwapContainer } from '../pending-swap';
@@ -18,12 +21,37 @@ import { pendingInitOutboundState } from '../../common/hooks/tx/use-initiate-out
 import { SwapBottom } from './swap-button';
 import { SwapFlip } from './swap-flip';
 import { BtcInput } from './btc-input';
+import { useGenerateOutboundSwap } from '../../common/hooks/use-generate-outbound-swap';
+import { useRouter } from 'next/router';
 
 export const SwapContainer: React.FC = () => {
+  const { generate: generateOutbound } = useGenerateOutboundSwap();
+  const router = useRouter();
+  const routeToOutbound = useAtomCallback(
+    useCallback(
+      async (get, set, txId: string) => {
+        const amount = get(amountSatsBNState);
+        await generateOutbound({ txId, amount: amount.toString() });
+        await router.push({
+          pathname: '/outbound/[txId]',
+          query: { txId },
+        });
+      },
+      [generateOutbound, router]
+    )
+  );
+  const outboundTxid = useAtomValue(outboundTxidState);
   const errorMessage = useAtomValue(swapFormErrorState);
   const pendingInitOutbound = useAtomValue(pendingInitOutboundState);
   const showOverrideSupplier = useAtomValue(showOverrideSupplierState);
   const pendingRegisterSwapper = useAtomValue(pendingRegisterSwapperState);
+
+  useEffect(() => {
+    console.log('outboundTxid', outboundTxid);
+    if (outboundTxid) {
+      void routeToOutbound(outboundTxid);
+    }
+  }, [outboundTxid, routeToOutbound]);
   if (pendingInitOutbound) {
     return <PendingInit />;
   }

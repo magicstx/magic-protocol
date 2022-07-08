@@ -107,11 +107,11 @@ export const SwapFieldInput: React.FC = () => {
   const isOutbound = useAtomValue(isOutboundState);
   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
 
-  useEffect(() => {
-    setTimeout(() => {
-      inputRef.current.focus();
-    }, 100);
-  });
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     inputRef.current.focus();
+  //   }, 100);
+  // });
 
   return (
     <SwapStack spacing="$2">

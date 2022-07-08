@@ -22,8 +22,6 @@ export function useSwapForm() {
   const router = useRouter();
   const btcAddress = useInput(useAtom(btcAddressState));
   const supplier = useAtomValue(currentSupplierState);
-
-  const { generate: generateOutbound } = useGenerateOutboundSwap();
   const { generate } = useGenerateInboundSwap();
 
   const submitInbound = useAtomCallback(
@@ -69,8 +67,8 @@ export function useSwapForm() {
         const isValid = get(swapFormValidState);
         if (isOutbound) {
           if (!isValid) return;
+          await outboundTx.submit();
           set(pendingInitOutboundState, true);
-          void outboundTx.submit();
         } else {
           await submitInbound();
         }
@@ -79,27 +77,6 @@ export function useSwapForm() {
       [submitInbound, outboundTx]
     )
   );
-
-  const routeToOutbound = useAtomCallback(
-    useCallback(
-      async (get, set, txId: string) => {
-        const amount = get(amountSatsBNState);
-        await generateOutbound({ txId, amount: amount.toString() });
-        await router.push({
-          pathname: '/outbound/[txId]',
-          query: { txId },
-        });
-      },
-      [generateOutbound, router]
-    )
-  );
-
-  useEffect(() => {
-    if (outboundTx.txId) {
-      void routeToOutbound(outboundTx.txId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [outboundTx.txId]);
 
   return {
     submit,

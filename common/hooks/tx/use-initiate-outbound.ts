@@ -9,6 +9,7 @@ import { xbtcAssetInfo } from '../../contracts';
 import { btcToSats, parseBtcAddress } from '../../utils';
 import { useStxAddress } from '../use-stx-address';
 import { useTx } from '../use-tx';
+import { outboundTxidState } from '../../store/swap-form';
 
 interface OutboundTx {
   supplierId?: number;
@@ -24,33 +25,35 @@ export const useInitiateOutbound = ({ supplierId, address, amount }: OutboundTx)
   const sender = useStxAddress();
   const [pendingInitOutbound, setPendingOutbound] = useAtom(pendingInitOutboundState);
   const [error, setError] = useAtom(outboundErrorState);
-  const { submit, ...tx } = useTx((contracts, submit) => {
-    if (!address || supplierId === undefined || !amount || !sender) {
-      throw new Error('Invalid tx payload');
-    }
-    setPendingOutbound(true);
-    const b58 = parseBtcAddress(address);
-    const version = Buffer.from(numberToHex(b58.version), 'hex');
-    const amountBN = btcToSats(amount);
-    const tx = contracts.bridge.initiateOutboundSwap(
-      BigInt(amountBN),
-      version,
-      b58.hash,
-      supplierId
-    );
-    const postCondition = makeStandardFungiblePostCondition(
-      sender,
-      FungibleConditionCode.Equal,
-      amountBN,
-      xbtcAssetInfo()
-    );
-    try {
-      return submit(tx, { postConditions: [postCondition] });
-    } catch (error) {
-      setPendingOutbound(false);
-      throw error;
-    }
-  });
+  const { submit, ...tx } = useTx(
+    (contracts, submit) => {
+      if (!address || supplierId === undefined || !amount || !sender) {
+        throw new Error('Invalid tx payload');
+      }
+      const b58 = parseBtcAddress(address);
+      const version = Buffer.from(numberToHex(b58.version), 'hex');
+      const amountBN = btcToSats(amount);
+      const tx = contracts.bridge.initiateOutboundSwap(
+        BigInt(amountBN),
+        version,
+        b58.hash,
+        supplierId
+      );
+      const postCondition = makeStandardFungiblePostCondition(
+        sender,
+        FungibleConditionCode.Equal,
+        amountBN,
+        xbtcAssetInfo()
+      );
+      try {
+        return submit(tx, { postConditions: [postCondition] });
+      } catch (error) {
+        setPendingOutbound(false);
+        throw error;
+      }
+    },
+    { txidAtom: outboundTxidState }
+  );
   const _submit = useCallback(() => {
     try {
       parseBtcAddress(address);
