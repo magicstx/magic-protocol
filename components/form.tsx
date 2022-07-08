@@ -37,6 +37,9 @@ export const InputBorder = styled(Box, {
     background: '$foil',
     backgroundSize: '150%',
   },
+  input: {
+    border: 'none',
+  },
 });
 
 export const MagicInput: React.FC<ComponentProps<typeof Input>> = props => {
