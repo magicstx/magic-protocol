@@ -25,8 +25,7 @@ export const Layout: React.FC = ({ children }) => {
           pb="50px"
           alignItems="center"
         >
-          <Loading />
-          {/* <SafeSuspense fallback={<Loading />}>{children}</SafeSuspense> */}
+          <SafeSuspense fallback={<Loading />}>{children}</SafeSuspense>
           {/* <AtomDevTools>
             <SafeSuspense fallback={<Loading />}>{children}</SafeSuspense>
           </AtomDevTools> */}
