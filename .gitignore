@@ -38,4 +38,5 @@ yarn-error.log*
 .yalc
 
 settings/Testnet.toml
+settings/Mainnet.toml
 history.txt

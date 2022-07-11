@@ -144,6 +144,1639 @@ export type OkType<R> = R extends ResponseOk<infer V, unknown> ? V : never;
 export type ErrType<R> = R extends ResponseErr<unknown, infer V> ? V : never;
 
 export const contracts = {
+  clarityBitcoin: {
+    functions: {
+      buffToU8: {
+        name: 'buff-to-u8',
+        access: 'read_only',
+        args: [{ name: 'byte', type: { buffer: { length: 1 } } }],
+        outputs: { type: 'uint128' },
+      } as TypedAbiFunction<[byte: Uint8Array], bigint>,
+      getReversedTxid: {
+        name: 'get-reversed-txid',
+        access: 'read_only',
+        args: [{ name: 'tx', type: { buffer: { length: 1024 } } }],
+        outputs: { type: { buffer: { length: 32 } } },
+      } as TypedAbiFunction<[tx: Uint8Array], Uint8Array>,
+      getTxid: {
+        name: 'get-txid',
+        access: 'read_only',
+        args: [{ name: 'tx', type: { buffer: { length: 1024 } } }],
+        outputs: { type: { buffer: { length: 32 } } },
+      } as TypedAbiFunction<[tx: Uint8Array], Uint8Array>,
+      innerBuff32Permutation: {
+        name: 'inner-buff32-permutation',
+        access: 'read_only',
+        args: [
+          { name: 'target-index', type: 'uint128' },
+          {
+            name: 'state',
+            type: {
+              tuple: [
+                { name: 'hash-input', type: { buffer: { length: 32 } } },
+                { name: 'hash-output', type: { buffer: { length: 32 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            tuple: [
+              { name: 'hash-input', type: { buffer: { length: 32 } } },
+              { name: 'hash-output', type: { buffer: { length: 32 } } },
+            ],
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          targetIndex: number | bigint,
+          state: {
+            'hash-input': Uint8Array;
+            'hash-output': Uint8Array;
+          }
+        ],
+        {
+          'hash-input': Uint8Array;
+          'hash-output': Uint8Array;
+        }
+      >,
+      innerMerkleProofVerify: {
+        name: 'inner-merkle-proof-verify',
+        access: 'read_only',
+        args: [
+          { name: 'ctr', type: 'uint128' },
+          {
+            name: 'state',
+            type: {
+              tuple: [
+                { name: 'cur-hash', type: { buffer: { length: 32 } } },
+                { name: 'path', type: 'uint128' },
+                {
+                  name: 'proof-hashes',
+                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
+                },
+                { name: 'root-hash', type: { buffer: { length: 32 } } },
+                { name: 'tree-depth', type: 'uint128' },
+                { name: 'verified', type: 'bool' },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            tuple: [
+              { name: 'cur-hash', type: { buffer: { length: 32 } } },
+              { name: 'path', type: 'uint128' },
+              {
+                name: 'proof-hashes',
+                type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
+              },
+              { name: 'root-hash', type: { buffer: { length: 32 } } },
+              { name: 'tree-depth', type: 'uint128' },
+              { name: 'verified', type: 'bool' },
+            ],
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ctr: number | bigint,
+          state: {
+            'cur-hash': Uint8Array;
+            path: bigint;
+            'proof-hashes': Uint8Array[];
+            'root-hash': Uint8Array;
+            'tree-depth': bigint;
+            verified: boolean;
+          }
+        ],
+        {
+          'cur-hash': Uint8Array;
+          path: bigint;
+          'proof-hashes': Uint8Array[];
+          'root-hash': Uint8Array;
+          'tree-depth': bigint;
+          verified: boolean;
+        }
+      >,
+      innerReadSlice: {
+        name: 'inner-read-slice',
+        access: 'read_only',
+        args: [
+          { name: 'chunk_size', type: 'uint128' },
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'acc', type: { buffer: { length: 1024 } } },
+                { name: 'buffer', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+                { name: 'remaining', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            tuple: [
+              { name: 'acc', type: { buffer: { length: 1024 } } },
+              { name: 'buffer', type: { buffer: { length: 1024 } } },
+              { name: 'index', type: 'uint128' },
+              { name: 'remaining', type: 'uint128' },
+            ],
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          chunk_size: number | bigint,
+          input: {
+            acc: Uint8Array;
+            buffer: Uint8Array;
+            index: bigint;
+            remaining: bigint;
+          }
+        ],
+        {
+          acc: Uint8Array;
+          buffer: Uint8Array;
+          index: bigint;
+          remaining: bigint;
+        }
+      >,
+      innerReadSlice1024: {
+        name: 'inner-read-slice-1024',
+        access: 'read_only',
+        args: [
+          { name: 'ignored', type: 'bool' },
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'acc', type: { buffer: { length: 1024 } } },
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            tuple: [
+              { name: 'acc', type: { buffer: { length: 1024 } } },
+              { name: 'data', type: { buffer: { length: 1024 } } },
+              { name: 'index', type: 'uint128' },
+            ],
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ignored: boolean,
+          input: {
+            acc: Uint8Array;
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        {
+          acc: Uint8Array;
+          data: Uint8Array;
+          index: bigint;
+        }
+      >,
+      isBitSet: {
+        name: 'is-bit-set',
+        access: 'read_only',
+        args: [
+          { name: 'val', type: 'uint128' },
+          { name: 'bit', type: 'uint128' },
+        ],
+        outputs: { type: 'bool' },
+      } as TypedAbiFunction<[val: number | bigint, bit: number | bigint], boolean>,
+      parseBlockHeader: {
+        name: 'parse-block-header',
+        access: 'read_only',
+        args: [{ name: 'headerbuff', type: { buffer: { length: 80 } } }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  { name: 'merkle-root', type: { buffer: { length: 32 } } },
+                  { name: 'nbits', type: 'uint128' },
+                  { name: 'nonce', type: 'uint128' },
+                  { name: 'parent', type: { buffer: { length: 32 } } },
+                  { name: 'timestamp', type: 'uint128' },
+                  { name: 'version', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [headerbuff: Uint8Array],
+        Response<
+          {
+            'merkle-root': Uint8Array;
+            nbits: bigint;
+            nonce: bigint;
+            parent: Uint8Array;
+            timestamp: bigint;
+            version: bigint;
+          },
+          bigint
+        >
+      >,
+      parseTx: {
+        name: 'parse-tx',
+        access: 'read_only',
+        args: [{ name: 'tx', type: { buffer: { length: 1024 } } }],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ins',
+                    type: {
+                      list: {
+                        type: {
+                          tuple: [
+                            {
+                              name: 'outpoint',
+                              type: {
+                                tuple: [
+                                  { name: 'hash', type: { buffer: { length: 32 } } },
+                                  { name: 'index', type: 'uint128' },
+                                ],
+                              },
+                            },
+                            { name: 'scriptSig', type: { buffer: { length: 256 } } },
+                            { name: 'sequence', type: 'uint128' },
+                          ],
+                        },
+                        length: 8,
+                      },
+                    },
+                  },
+                  { name: 'locktime', type: 'uint128' },
+                  {
+                    name: 'outs',
+                    type: {
+                      list: {
+                        type: {
+                          tuple: [
+                            { name: 'scriptPubKey', type: { buffer: { length: 128 } } },
+                            { name: 'value', type: 'uint128' },
+                          ],
+                        },
+                        length: 8,
+                      },
+                    },
+                  },
+                  { name: 'version', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [tx: Uint8Array],
+        Response<
+          {
+            ins: {
+              outpoint: {
+                hash: Uint8Array;
+                index: bigint;
+              };
+              scriptSig: Uint8Array;
+              sequence: bigint;
+            }[];
+            locktime: bigint;
+            outs: {
+              scriptPubKey: Uint8Array;
+              value: bigint;
+            }[];
+            version: bigint;
+          },
+          bigint
+        >
+      >,
+      readHashslice: {
+        name: 'read-hashslice',
+        access: 'read_only',
+        args: [
+          {
+            name: 'old-ctx',
+            type: {
+              tuple: [
+                { name: 'index', type: 'uint128' },
+                { name: 'txbuff', type: { buffer: { length: 1024 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'hashslice', type: { buffer: { length: 32 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          oldCtx: {
+            index: bigint;
+            txbuff: Uint8Array;
+          }
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            hashslice: Uint8Array;
+          },
+          bigint
+        >
+      >,
+      readNextTxin: {
+        name: 'read-next-txin',
+        access: 'read_only',
+        args: [
+          { name: 'ignored', type: 'bool' },
+          {
+            name: 'state-res',
+            type: {
+              response: {
+                ok: {
+                  tuple: [
+                    {
+                      name: 'ctx',
+                      type: {
+                        tuple: [
+                          { name: 'index', type: 'uint128' },
+                          { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                        ],
+                      },
+                    },
+                    { name: 'remaining', type: 'uint128' },
+                    {
+                      name: 'txins',
+                      type: {
+                        list: {
+                          type: {
+                            tuple: [
+                              {
+                                name: 'outpoint',
+                                type: {
+                                  tuple: [
+                                    { name: 'hash', type: { buffer: { length: 32 } } },
+                                    { name: 'index', type: 'uint128' },
+                                  ],
+                                },
+                              },
+                              { name: 'scriptSig', type: { buffer: { length: 256 } } },
+                              { name: 'sequence', type: 'uint128' },
+                            ],
+                          },
+                          length: 8,
+                        },
+                      },
+                    },
+                  ],
+                },
+                error: 'uint128',
+              },
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'remaining', type: 'uint128' },
+                  {
+                    name: 'txins',
+                    type: {
+                      list: {
+                        type: {
+                          tuple: [
+                            {
+                              name: 'outpoint',
+                              type: {
+                                tuple: [
+                                  { name: 'hash', type: { buffer: { length: 32 } } },
+                                  { name: 'index', type: 'uint128' },
+                                ],
+                              },
+                            },
+                            { name: 'scriptSig', type: { buffer: { length: 256 } } },
+                            { name: 'sequence', type: 'uint128' },
+                          ],
+                        },
+                        length: 8,
+                      },
+                    },
+                  },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ignored: boolean,
+          stateRes: Response<
+            {
+              ctx: {
+                index: bigint;
+                txbuff: Uint8Array;
+              };
+              remaining: bigint;
+              txins: {
+                outpoint: {
+                  hash: Uint8Array;
+                  index: bigint;
+                };
+                scriptSig: Uint8Array;
+                sequence: bigint;
+              }[];
+            },
+            bigint
+          >
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            remaining: bigint;
+            txins: {
+              outpoint: {
+                hash: Uint8Array;
+                index: bigint;
+              };
+              scriptSig: Uint8Array;
+              sequence: bigint;
+            }[];
+          },
+          bigint
+        >
+      >,
+      readNextTxout: {
+        name: 'read-next-txout',
+        access: 'read_only',
+        args: [
+          { name: 'ignored', type: 'bool' },
+          {
+            name: 'state-res',
+            type: {
+              response: {
+                ok: {
+                  tuple: [
+                    {
+                      name: 'ctx',
+                      type: {
+                        tuple: [
+                          { name: 'index', type: 'uint128' },
+                          { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                        ],
+                      },
+                    },
+                    { name: 'remaining', type: 'uint128' },
+                    {
+                      name: 'txouts',
+                      type: {
+                        list: {
+                          type: {
+                            tuple: [
+                              { name: 'scriptPubKey', type: { buffer: { length: 128 } } },
+                              { name: 'value', type: 'uint128' },
+                            ],
+                          },
+                          length: 8,
+                        },
+                      },
+                    },
+                  ],
+                },
+                error: 'uint128',
+              },
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'remaining', type: 'uint128' },
+                  {
+                    name: 'txouts',
+                    type: {
+                      list: {
+                        type: {
+                          tuple: [
+                            { name: 'scriptPubKey', type: { buffer: { length: 128 } } },
+                            { name: 'value', type: 'uint128' },
+                          ],
+                        },
+                        length: 8,
+                      },
+                    },
+                  },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ignored: boolean,
+          stateRes: Response<
+            {
+              ctx: {
+                index: bigint;
+                txbuff: Uint8Array;
+              };
+              remaining: bigint;
+              txouts: {
+                scriptPubKey: Uint8Array;
+                value: bigint;
+              }[];
+            },
+            bigint
+          >
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            remaining: bigint;
+            txouts: {
+              scriptPubKey: Uint8Array;
+              value: bigint;
+            }[];
+          },
+          bigint
+        >
+      >,
+      readSlice: {
+        name: 'read-slice',
+        access: 'read_only',
+        args: [
+          { name: 'data', type: { buffer: { length: 1024 } } },
+          { name: 'offset', type: 'uint128' },
+          { name: 'size', type: 'uint128' },
+        ],
+        outputs: { type: { response: { ok: { buffer: { length: 1024 } }, error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [data: Uint8Array, offset: number | bigint, size: number | bigint],
+        Response<Uint8Array, bigint>
+      >,
+      readSlice1: {
+        name: 'read-slice-1',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice128: {
+        name: 'read-slice-128',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice16: {
+        name: 'read-slice-16',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice2: {
+        name: 'read-slice-2',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice256: {
+        name: 'read-slice-256',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice32: {
+        name: 'read-slice-32',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice4: {
+        name: 'read-slice-4',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice512: {
+        name: 'read-slice-512',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice64: {
+        name: 'read-slice-64',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readSlice8: {
+        name: 'read-slice-8',
+        access: 'read_only',
+        args: [
+          {
+            name: 'input',
+            type: {
+              tuple: [
+                { name: 'data', type: { buffer: { length: 1024 } } },
+                { name: 'index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { buffer: { length: 1024 } } },
+      } as TypedAbiFunction<
+        [
+          input: {
+            data: Uint8Array;
+            index: bigint;
+          }
+        ],
+        Uint8Array
+      >,
+      readTxins: {
+        name: 'read-txins',
+        access: 'read_only',
+        args: [
+          {
+            name: 'ctx',
+            type: {
+              tuple: [
+                { name: 'index', type: 'uint128' },
+                { name: 'txbuff', type: { buffer: { length: 1024 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'remaining', type: 'uint128' },
+                  {
+                    name: 'txins',
+                    type: {
+                      list: {
+                        type: {
+                          tuple: [
+                            {
+                              name: 'outpoint',
+                              type: {
+                                tuple: [
+                                  { name: 'hash', type: { buffer: { length: 32 } } },
+                                  { name: 'index', type: 'uint128' },
+                                ],
+                              },
+                            },
+                            { name: 'scriptSig', type: { buffer: { length: 256 } } },
+                            { name: 'sequence', type: 'uint128' },
+                          ],
+                        },
+                        length: 8,
+                      },
+                    },
+                  },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ctx: {
+            index: bigint;
+            txbuff: Uint8Array;
+          }
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            remaining: bigint;
+            txins: {
+              outpoint: {
+                hash: Uint8Array;
+                index: bigint;
+              };
+              scriptSig: Uint8Array;
+              sequence: bigint;
+            }[];
+          },
+          bigint
+        >
+      >,
+      readTxouts: {
+        name: 'read-txouts',
+        access: 'read_only',
+        args: [
+          {
+            name: 'ctx',
+            type: {
+              tuple: [
+                { name: 'index', type: 'uint128' },
+                { name: 'txbuff', type: { buffer: { length: 1024 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'remaining', type: 'uint128' },
+                  {
+                    name: 'txouts',
+                    type: {
+                      list: {
+                        type: {
+                          tuple: [
+                            { name: 'scriptPubKey', type: { buffer: { length: 128 } } },
+                            { name: 'value', type: 'uint128' },
+                          ],
+                        },
+                        length: 8,
+                      },
+                    },
+                  },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ctx: {
+            index: bigint;
+            txbuff: Uint8Array;
+          }
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            remaining: bigint;
+            txouts: {
+              scriptPubKey: Uint8Array;
+              value: bigint;
+            }[];
+          },
+          bigint
+        >
+      >,
+      readUint16: {
+        name: 'read-uint16',
+        access: 'read_only',
+        args: [
+          {
+            name: 'ctx',
+            type: {
+              tuple: [
+                { name: 'index', type: 'uint128' },
+                { name: 'txbuff', type: { buffer: { length: 1024 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'uint16', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ctx: {
+            index: bigint;
+            txbuff: Uint8Array;
+          }
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            uint16: bigint;
+          },
+          bigint
+        >
+      >,
+      readUint32: {
+        name: 'read-uint32',
+        access: 'read_only',
+        args: [
+          {
+            name: 'ctx',
+            type: {
+              tuple: [
+                { name: 'index', type: 'uint128' },
+                { name: 'txbuff', type: { buffer: { length: 1024 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'uint32', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ctx: {
+            index: bigint;
+            txbuff: Uint8Array;
+          }
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            uint32: bigint;
+          },
+          bigint
+        >
+      >,
+      readUint64: {
+        name: 'read-uint64',
+        access: 'read_only',
+        args: [
+          {
+            name: 'ctx',
+            type: {
+              tuple: [
+                { name: 'index', type: 'uint128' },
+                { name: 'txbuff', type: { buffer: { length: 1024 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'uint64', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ctx: {
+            index: bigint;
+            txbuff: Uint8Array;
+          }
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            uint64: bigint;
+          },
+          bigint
+        >
+      >,
+      readVarint: {
+        name: 'read-varint',
+        access: 'read_only',
+        args: [
+          {
+            name: 'ctx',
+            type: {
+              tuple: [
+                { name: 'index', type: 'uint128' },
+                { name: 'txbuff', type: { buffer: { length: 1024 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'varint', type: 'uint128' },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          ctx: {
+            index: bigint;
+            txbuff: Uint8Array;
+          }
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            varint: bigint;
+          },
+          bigint
+        >
+      >,
+      readVarslice: {
+        name: 'read-varslice',
+        access: 'read_only',
+        args: [
+          {
+            name: 'old-ctx',
+            type: {
+              tuple: [
+                { name: 'index', type: 'uint128' },
+                { name: 'txbuff', type: { buffer: { length: 1024 } } },
+              ],
+            },
+          },
+        ],
+        outputs: {
+          type: {
+            response: {
+              ok: {
+                tuple: [
+                  {
+                    name: 'ctx',
+                    type: {
+                      tuple: [
+                        { name: 'index', type: 'uint128' },
+                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
+                      ],
+                    },
+                  },
+                  { name: 'varslice', type: { buffer: { length: 1024 } } },
+                ],
+              },
+              error: 'uint128',
+            },
+          },
+        },
+      } as TypedAbiFunction<
+        [
+          oldCtx: {
+            index: bigint;
+            txbuff: Uint8Array;
+          }
+        ],
+        Response<
+          {
+            ctx: {
+              index: bigint;
+              txbuff: Uint8Array;
+            };
+            varslice: Uint8Array;
+          },
+          bigint
+        >
+      >,
+      reverseBuff32: {
+        name: 'reverse-buff32',
+        access: 'read_only',
+        args: [{ name: 'input', type: { buffer: { length: 32 } } }],
+        outputs: { type: { buffer: { length: 32 } } },
+      } as TypedAbiFunction<[input: Uint8Array], Uint8Array>,
+      verifyBlockHeader: {
+        name: 'verify-block-header',
+        access: 'read_only',
+        args: [
+          { name: 'headerbuff', type: { buffer: { length: 80 } } },
+          { name: 'expected-block-height', type: 'uint128' },
+        ],
+        outputs: { type: 'bool' },
+      } as TypedAbiFunction<
+        [headerbuff: Uint8Array, expectedBlockHeight: number | bigint],
+        boolean
+      >,
+      verifyMerkleProof: {
+        name: 'verify-merkle-proof',
+        access: 'read_only',
+        args: [
+          { name: 'reversed-txid', type: { buffer: { length: 32 } } },
+          { name: 'merkle-root', type: { buffer: { length: 32 } } },
+          {
+            name: 'proof',
+            type: {
+              tuple: [
+                {
+                  name: 'hashes',
+                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
+                },
+                { name: 'tree-depth', type: 'uint128' },
+                { name: 'tx-index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          reversedTxid: Uint8Array,
+          merkleRoot: Uint8Array,
+          proof: {
+            hashes: Uint8Array[];
+            'tree-depth': bigint;
+            'tx-index': bigint;
+          }
+        ],
+        Response<boolean, bigint>
+      >,
+      verifyPrevBlock: {
+        name: 'verify-prev-block',
+        access: 'read_only',
+        args: [
+          { name: 'block', type: { buffer: { length: 80 } } },
+          { name: 'parent', type: { buffer: { length: 80 } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<[block: Uint8Array, parent: Uint8Array], Response<boolean, bigint>>,
+      verifyPrevBlocks: {
+        name: 'verify-prev-blocks',
+        access: 'read_only',
+        args: [
+          { name: 'block', type: { buffer: { length: 80 } } },
+          { name: 'prev-blocks', type: { list: { type: { buffer: { length: 80 } }, length: 10 } } },
+        ],
+        outputs: { type: { response: { ok: { buffer: { length: 80 } }, error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [block: Uint8Array, prevBlocks: Uint8Array[]],
+        Response<Uint8Array, bigint>
+      >,
+      verifyPrevBlocksFold: {
+        name: 'verify-prev-blocks-fold',
+        access: 'read_only',
+        args: [
+          { name: 'parent', type: { buffer: { length: 80 } } },
+          {
+            name: 'next-resp',
+            type: { response: { ok: { buffer: { length: 80 } }, error: 'uint128' } },
+          },
+        ],
+        outputs: { type: { response: { ok: { buffer: { length: 80 } }, error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [parent: Uint8Array, nextResp: Response<Uint8Array, bigint>],
+        Response<Uint8Array, bigint>
+      >,
+      wasTxMinedPrev: {
+        name: 'was-tx-mined-prev?',
+        access: 'read_only',
+        args: [
+          {
+            name: 'block',
+            type: {
+              tuple: [
+                { name: 'header', type: { buffer: { length: 80 } } },
+                { name: 'height', type: 'uint128' },
+              ],
+            },
+          },
+          { name: 'prev-blocks', type: { list: { type: { buffer: { length: 80 } }, length: 10 } } },
+          { name: 'tx', type: { buffer: { length: 1024 } } },
+          {
+            name: 'proof',
+            type: {
+              tuple: [
+                {
+                  name: 'hashes',
+                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
+                },
+                { name: 'tree-depth', type: 'uint128' },
+                { name: 'tx-index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          block: {
+            header: Uint8Array;
+            height: bigint;
+          },
+          prevBlocks: Uint8Array[],
+          tx: Uint8Array,
+          proof: {
+            hashes: Uint8Array[];
+            'tree-depth': bigint;
+            'tx-index': bigint;
+          }
+        ],
+        Response<boolean, bigint>
+      >,
+      wasTxMined: {
+        name: 'was-tx-mined?',
+        access: 'read_only',
+        args: [
+          {
+            name: 'block',
+            type: {
+              tuple: [
+                { name: 'header', type: { buffer: { length: 80 } } },
+                { name: 'height', type: 'uint128' },
+              ],
+            },
+          },
+          { name: 'tx', type: { buffer: { length: 1024 } } },
+          {
+            name: 'proof',
+            type: {
+              tuple: [
+                {
+                  name: 'hashes',
+                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
+                },
+                { name: 'tree-depth', type: 'uint128' },
+                { name: 'tx-index', type: 'uint128' },
+              ],
+            },
+          },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
+      } as TypedAbiFunction<
+        [
+          block: {
+            header: Uint8Array;
+            height: bigint;
+          },
+          tx: Uint8Array,
+          proof: {
+            hashes: Uint8Array[];
+            'tree-depth': bigint;
+            'tx-index': bigint;
+          }
+        ],
+        Response<boolean, bigint>
+      >,
+    },
+    maps: {},
+    variables: {
+      bUFF_TO_BYTE: {
+        name: 'BUFF_TO_BYTE',
+        type: {
+          list: {
+            type: {
+              buffer: {
+                length: 1,
+              },
+            },
+            length: 256,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<Uint8Array[]>,
+      eRRBADHEADER: {
+        name: 'ERR-BAD-HEADER',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      eRRINVALIDPARENT: {
+        name: 'ERR-INVALID-PARENT',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      eRROUTOFBOUNDS: {
+        name: 'ERR-OUT-OF-BOUNDS',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      eRRPROOFTOOSHORT: {
+        name: 'ERR-PROOF-TOO-SHORT',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      eRRTOOMANYTXINS: {
+        name: 'ERR-TOO-MANY-TXINS',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      eRRTOOMANYTXOUTS: {
+        name: 'ERR-TOO-MANY-TXOUTS',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      eRRVARSLICETOOLONG: {
+        name: 'ERR-VARSLICE-TOO-LONG',
+        type: 'uint128',
+        access: 'constant',
+      } as TypedAbiVariable<bigint>,
+      lIST_128: {
+        name: 'LIST_128',
+        type: {
+          list: {
+            type: 'bool',
+            length: 128,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<boolean[]>,
+      lIST_16: {
+        name: 'LIST_16',
+        type: {
+          list: {
+            type: 'bool',
+            length: 16,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<boolean[]>,
+      lIST_256: {
+        name: 'LIST_256',
+        type: {
+          list: {
+            type: 'bool',
+            length: 256,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<boolean[]>,
+      lIST_32: {
+        name: 'LIST_32',
+        type: {
+          list: {
+            type: 'bool',
+            length: 32,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<boolean[]>,
+      lIST_512: {
+        name: 'LIST_512',
+        type: {
+          list: {
+            type: 'bool',
+            length: 512,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<boolean[]>,
+      lIST_64: {
+        name: 'LIST_64',
+        type: {
+          list: {
+            type: 'bool',
+            length: 64,
+          },
+        },
+        access: 'constant',
+      } as TypedAbiVariable<boolean[]>,
+    },
+    constants: {},
+    fungible_tokens: [],
+    non_fungible_tokens: [],
+    contractName: 'clarity-bitcoin',
+  },
+  testUtils: {
+    functions: {
+      setBurnHeader: {
+        name: 'set-burn-header',
+        access: 'public',
+        args: [
+          { name: 'height', type: 'uint128' },
+          { name: 'header', type: { buffer: { length: 80 } } },
+        ],
+        outputs: { type: { response: { ok: 'bool', error: 'none' } } },
+      } as TypedAbiFunction<[height: number | bigint, header: Uint8Array], Response<boolean, null>>,
+      setMined: {
+        name: 'set-mined',
+        access: 'public',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        outputs: { type: { response: { ok: 'bool', error: 'none' } } },
+      } as TypedAbiFunction<[txid: Uint8Array], Response<boolean, null>>,
+      burnBlockHeader: {
+        name: 'burn-block-header',
+        access: 'read_only',
+        args: [{ name: 'height', type: 'uint128' }],
+        outputs: { type: { optional: { buffer: { length: 80 } } } },
+      } as TypedAbiFunction<[height: number | bigint], Uint8Array | null>,
+      wasMined: {
+        name: 'was-mined',
+        access: 'read_only',
+        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
+        outputs: { type: { optional: 'bool' } },
+      } as TypedAbiFunction<[txid: Uint8Array], boolean | null>,
+    },
+    maps: {
+      burnBlockHeaders: {
+        name: 'burn-block-headers',
+        key: 'uint128',
+        value: { buffer: { length: 80 } },
+      } as TypedAbiMap<bigint, Uint8Array>,
+      minedTxs: {
+        name: 'mined-txs',
+        key: { buffer: { length: 32 } },
+        value: 'bool',
+      } as TypedAbiMap<Uint8Array, boolean>,
+    },
+    variables: {},
+    constants: {},
+    fungible_tokens: [],
+    non_fungible_tokens: [],
+    contractName: 'test-utils',
+  },
   bridge: {
     functions: {
       concatBuffsFold: {
@@ -1920,1639 +3553,6 @@ export const contracts = {
     fungible_tokens: [{ name: 'wrapped-bitcoin' }],
     non_fungible_tokens: [],
     contractName: 'Wrapped-Bitcoin',
-  },
-  clarityBitcoin: {
-    functions: {
-      buffToU8: {
-        name: 'buff-to-u8',
-        access: 'read_only',
-        args: [{ name: 'byte', type: { buffer: { length: 1 } } }],
-        outputs: { type: 'uint128' },
-      } as TypedAbiFunction<[byte: Uint8Array], bigint>,
-      getReversedTxid: {
-        name: 'get-reversed-txid',
-        access: 'read_only',
-        args: [{ name: 'tx', type: { buffer: { length: 1024 } } }],
-        outputs: { type: { buffer: { length: 32 } } },
-      } as TypedAbiFunction<[tx: Uint8Array], Uint8Array>,
-      getTxid: {
-        name: 'get-txid',
-        access: 'read_only',
-        args: [{ name: 'tx', type: { buffer: { length: 1024 } } }],
-        outputs: { type: { buffer: { length: 32 } } },
-      } as TypedAbiFunction<[tx: Uint8Array], Uint8Array>,
-      innerBuff32Permutation: {
-        name: 'inner-buff32-permutation',
-        access: 'read_only',
-        args: [
-          { name: 'target-index', type: 'uint128' },
-          {
-            name: 'state',
-            type: {
-              tuple: [
-                { name: 'hash-input', type: { buffer: { length: 32 } } },
-                { name: 'hash-output', type: { buffer: { length: 32 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            tuple: [
-              { name: 'hash-input', type: { buffer: { length: 32 } } },
-              { name: 'hash-output', type: { buffer: { length: 32 } } },
-            ],
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          targetIndex: number | bigint,
-          state: {
-            'hash-input': Uint8Array;
-            'hash-output': Uint8Array;
-          }
-        ],
-        {
-          'hash-input': Uint8Array;
-          'hash-output': Uint8Array;
-        }
-      >,
-      innerMerkleProofVerify: {
-        name: 'inner-merkle-proof-verify',
-        access: 'read_only',
-        args: [
-          { name: 'ctr', type: 'uint128' },
-          {
-            name: 'state',
-            type: {
-              tuple: [
-                { name: 'cur-hash', type: { buffer: { length: 32 } } },
-                { name: 'path', type: 'uint128' },
-                {
-                  name: 'proof-hashes',
-                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
-                },
-                { name: 'root-hash', type: { buffer: { length: 32 } } },
-                { name: 'tree-depth', type: 'uint128' },
-                { name: 'verified', type: 'bool' },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            tuple: [
-              { name: 'cur-hash', type: { buffer: { length: 32 } } },
-              { name: 'path', type: 'uint128' },
-              {
-                name: 'proof-hashes',
-                type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
-              },
-              { name: 'root-hash', type: { buffer: { length: 32 } } },
-              { name: 'tree-depth', type: 'uint128' },
-              { name: 'verified', type: 'bool' },
-            ],
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ctr: number | bigint,
-          state: {
-            'cur-hash': Uint8Array;
-            path: bigint;
-            'proof-hashes': Uint8Array[];
-            'root-hash': Uint8Array;
-            'tree-depth': bigint;
-            verified: boolean;
-          }
-        ],
-        {
-          'cur-hash': Uint8Array;
-          path: bigint;
-          'proof-hashes': Uint8Array[];
-          'root-hash': Uint8Array;
-          'tree-depth': bigint;
-          verified: boolean;
-        }
-      >,
-      innerReadSlice: {
-        name: 'inner-read-slice',
-        access: 'read_only',
-        args: [
-          { name: 'chunk_size', type: 'uint128' },
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'acc', type: { buffer: { length: 1024 } } },
-                { name: 'buffer', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-                { name: 'remaining', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            tuple: [
-              { name: 'acc', type: { buffer: { length: 1024 } } },
-              { name: 'buffer', type: { buffer: { length: 1024 } } },
-              { name: 'index', type: 'uint128' },
-              { name: 'remaining', type: 'uint128' },
-            ],
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          chunk_size: number | bigint,
-          input: {
-            acc: Uint8Array;
-            buffer: Uint8Array;
-            index: bigint;
-            remaining: bigint;
-          }
-        ],
-        {
-          acc: Uint8Array;
-          buffer: Uint8Array;
-          index: bigint;
-          remaining: bigint;
-        }
-      >,
-      innerReadSlice1024: {
-        name: 'inner-read-slice-1024',
-        access: 'read_only',
-        args: [
-          { name: 'ignored', type: 'bool' },
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'acc', type: { buffer: { length: 1024 } } },
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            tuple: [
-              { name: 'acc', type: { buffer: { length: 1024 } } },
-              { name: 'data', type: { buffer: { length: 1024 } } },
-              { name: 'index', type: 'uint128' },
-            ],
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ignored: boolean,
-          input: {
-            acc: Uint8Array;
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        {
-          acc: Uint8Array;
-          data: Uint8Array;
-          index: bigint;
-        }
-      >,
-      isBitSet: {
-        name: 'is-bit-set',
-        access: 'read_only',
-        args: [
-          { name: 'val', type: 'uint128' },
-          { name: 'bit', type: 'uint128' },
-        ],
-        outputs: { type: 'bool' },
-      } as TypedAbiFunction<[val: number | bigint, bit: number | bigint], boolean>,
-      parseBlockHeader: {
-        name: 'parse-block-header',
-        access: 'read_only',
-        args: [{ name: 'headerbuff', type: { buffer: { length: 80 } } }],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  { name: 'merkle-root', type: { buffer: { length: 32 } } },
-                  { name: 'nbits', type: 'uint128' },
-                  { name: 'nonce', type: 'uint128' },
-                  { name: 'parent', type: { buffer: { length: 32 } } },
-                  { name: 'timestamp', type: 'uint128' },
-                  { name: 'version', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [headerbuff: Uint8Array],
-        Response<
-          {
-            'merkle-root': Uint8Array;
-            nbits: bigint;
-            nonce: bigint;
-            parent: Uint8Array;
-            timestamp: bigint;
-            version: bigint;
-          },
-          bigint
-        >
-      >,
-      parseTx: {
-        name: 'parse-tx',
-        access: 'read_only',
-        args: [{ name: 'tx', type: { buffer: { length: 1024 } } }],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ins',
-                    type: {
-                      list: {
-                        type: {
-                          tuple: [
-                            {
-                              name: 'outpoint',
-                              type: {
-                                tuple: [
-                                  { name: 'hash', type: { buffer: { length: 32 } } },
-                                  { name: 'index', type: 'uint128' },
-                                ],
-                              },
-                            },
-                            { name: 'scriptSig', type: { buffer: { length: 256 } } },
-                            { name: 'sequence', type: 'uint128' },
-                          ],
-                        },
-                        length: 8,
-                      },
-                    },
-                  },
-                  { name: 'locktime', type: 'uint128' },
-                  {
-                    name: 'outs',
-                    type: {
-                      list: {
-                        type: {
-                          tuple: [
-                            { name: 'scriptPubKey', type: { buffer: { length: 128 } } },
-                            { name: 'value', type: 'uint128' },
-                          ],
-                        },
-                        length: 8,
-                      },
-                    },
-                  },
-                  { name: 'version', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [tx: Uint8Array],
-        Response<
-          {
-            ins: {
-              outpoint: {
-                hash: Uint8Array;
-                index: bigint;
-              };
-              scriptSig: Uint8Array;
-              sequence: bigint;
-            }[];
-            locktime: bigint;
-            outs: {
-              scriptPubKey: Uint8Array;
-              value: bigint;
-            }[];
-            version: bigint;
-          },
-          bigint
-        >
-      >,
-      readHashslice: {
-        name: 'read-hashslice',
-        access: 'read_only',
-        args: [
-          {
-            name: 'old-ctx',
-            type: {
-              tuple: [
-                { name: 'index', type: 'uint128' },
-                { name: 'txbuff', type: { buffer: { length: 1024 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'hashslice', type: { buffer: { length: 32 } } },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          oldCtx: {
-            index: bigint;
-            txbuff: Uint8Array;
-          }
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            hashslice: Uint8Array;
-          },
-          bigint
-        >
-      >,
-      readNextTxin: {
-        name: 'read-next-txin',
-        access: 'read_only',
-        args: [
-          { name: 'ignored', type: 'bool' },
-          {
-            name: 'state-res',
-            type: {
-              response: {
-                ok: {
-                  tuple: [
-                    {
-                      name: 'ctx',
-                      type: {
-                        tuple: [
-                          { name: 'index', type: 'uint128' },
-                          { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                        ],
-                      },
-                    },
-                    { name: 'remaining', type: 'uint128' },
-                    {
-                      name: 'txins',
-                      type: {
-                        list: {
-                          type: {
-                            tuple: [
-                              {
-                                name: 'outpoint',
-                                type: {
-                                  tuple: [
-                                    { name: 'hash', type: { buffer: { length: 32 } } },
-                                    { name: 'index', type: 'uint128' },
-                                  ],
-                                },
-                              },
-                              { name: 'scriptSig', type: { buffer: { length: 256 } } },
-                              { name: 'sequence', type: 'uint128' },
-                            ],
-                          },
-                          length: 8,
-                        },
-                      },
-                    },
-                  ],
-                },
-                error: 'uint128',
-              },
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'remaining', type: 'uint128' },
-                  {
-                    name: 'txins',
-                    type: {
-                      list: {
-                        type: {
-                          tuple: [
-                            {
-                              name: 'outpoint',
-                              type: {
-                                tuple: [
-                                  { name: 'hash', type: { buffer: { length: 32 } } },
-                                  { name: 'index', type: 'uint128' },
-                                ],
-                              },
-                            },
-                            { name: 'scriptSig', type: { buffer: { length: 256 } } },
-                            { name: 'sequence', type: 'uint128' },
-                          ],
-                        },
-                        length: 8,
-                      },
-                    },
-                  },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ignored: boolean,
-          stateRes: Response<
-            {
-              ctx: {
-                index: bigint;
-                txbuff: Uint8Array;
-              };
-              remaining: bigint;
-              txins: {
-                outpoint: {
-                  hash: Uint8Array;
-                  index: bigint;
-                };
-                scriptSig: Uint8Array;
-                sequence: bigint;
-              }[];
-            },
-            bigint
-          >
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            remaining: bigint;
-            txins: {
-              outpoint: {
-                hash: Uint8Array;
-                index: bigint;
-              };
-              scriptSig: Uint8Array;
-              sequence: bigint;
-            }[];
-          },
-          bigint
-        >
-      >,
-      readNextTxout: {
-        name: 'read-next-txout',
-        access: 'read_only',
-        args: [
-          { name: 'ignored', type: 'bool' },
-          {
-            name: 'state-res',
-            type: {
-              response: {
-                ok: {
-                  tuple: [
-                    {
-                      name: 'ctx',
-                      type: {
-                        tuple: [
-                          { name: 'index', type: 'uint128' },
-                          { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                        ],
-                      },
-                    },
-                    { name: 'remaining', type: 'uint128' },
-                    {
-                      name: 'txouts',
-                      type: {
-                        list: {
-                          type: {
-                            tuple: [
-                              { name: 'scriptPubKey', type: { buffer: { length: 128 } } },
-                              { name: 'value', type: 'uint128' },
-                            ],
-                          },
-                          length: 8,
-                        },
-                      },
-                    },
-                  ],
-                },
-                error: 'uint128',
-              },
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'remaining', type: 'uint128' },
-                  {
-                    name: 'txouts',
-                    type: {
-                      list: {
-                        type: {
-                          tuple: [
-                            { name: 'scriptPubKey', type: { buffer: { length: 128 } } },
-                            { name: 'value', type: 'uint128' },
-                          ],
-                        },
-                        length: 8,
-                      },
-                    },
-                  },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ignored: boolean,
-          stateRes: Response<
-            {
-              ctx: {
-                index: bigint;
-                txbuff: Uint8Array;
-              };
-              remaining: bigint;
-              txouts: {
-                scriptPubKey: Uint8Array;
-                value: bigint;
-              }[];
-            },
-            bigint
-          >
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            remaining: bigint;
-            txouts: {
-              scriptPubKey: Uint8Array;
-              value: bigint;
-            }[];
-          },
-          bigint
-        >
-      >,
-      readSlice: {
-        name: 'read-slice',
-        access: 'read_only',
-        args: [
-          { name: 'data', type: { buffer: { length: 1024 } } },
-          { name: 'offset', type: 'uint128' },
-          { name: 'size', type: 'uint128' },
-        ],
-        outputs: { type: { response: { ok: { buffer: { length: 1024 } }, error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [data: Uint8Array, offset: number | bigint, size: number | bigint],
-        Response<Uint8Array, bigint>
-      >,
-      readSlice1: {
-        name: 'read-slice-1',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice128: {
-        name: 'read-slice-128',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice16: {
-        name: 'read-slice-16',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice2: {
-        name: 'read-slice-2',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice256: {
-        name: 'read-slice-256',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice32: {
-        name: 'read-slice-32',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice4: {
-        name: 'read-slice-4',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice512: {
-        name: 'read-slice-512',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice64: {
-        name: 'read-slice-64',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readSlice8: {
-        name: 'read-slice-8',
-        access: 'read_only',
-        args: [
-          {
-            name: 'input',
-            type: {
-              tuple: [
-                { name: 'data', type: { buffer: { length: 1024 } } },
-                { name: 'index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { buffer: { length: 1024 } } },
-      } as TypedAbiFunction<
-        [
-          input: {
-            data: Uint8Array;
-            index: bigint;
-          }
-        ],
-        Uint8Array
-      >,
-      readTxins: {
-        name: 'read-txins',
-        access: 'read_only',
-        args: [
-          {
-            name: 'ctx',
-            type: {
-              tuple: [
-                { name: 'index', type: 'uint128' },
-                { name: 'txbuff', type: { buffer: { length: 1024 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'remaining', type: 'uint128' },
-                  {
-                    name: 'txins',
-                    type: {
-                      list: {
-                        type: {
-                          tuple: [
-                            {
-                              name: 'outpoint',
-                              type: {
-                                tuple: [
-                                  { name: 'hash', type: { buffer: { length: 32 } } },
-                                  { name: 'index', type: 'uint128' },
-                                ],
-                              },
-                            },
-                            { name: 'scriptSig', type: { buffer: { length: 256 } } },
-                            { name: 'sequence', type: 'uint128' },
-                          ],
-                        },
-                        length: 8,
-                      },
-                    },
-                  },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ctx: {
-            index: bigint;
-            txbuff: Uint8Array;
-          }
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            remaining: bigint;
-            txins: {
-              outpoint: {
-                hash: Uint8Array;
-                index: bigint;
-              };
-              scriptSig: Uint8Array;
-              sequence: bigint;
-            }[];
-          },
-          bigint
-        >
-      >,
-      readTxouts: {
-        name: 'read-txouts',
-        access: 'read_only',
-        args: [
-          {
-            name: 'ctx',
-            type: {
-              tuple: [
-                { name: 'index', type: 'uint128' },
-                { name: 'txbuff', type: { buffer: { length: 1024 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'remaining', type: 'uint128' },
-                  {
-                    name: 'txouts',
-                    type: {
-                      list: {
-                        type: {
-                          tuple: [
-                            { name: 'scriptPubKey', type: { buffer: { length: 128 } } },
-                            { name: 'value', type: 'uint128' },
-                          ],
-                        },
-                        length: 8,
-                      },
-                    },
-                  },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ctx: {
-            index: bigint;
-            txbuff: Uint8Array;
-          }
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            remaining: bigint;
-            txouts: {
-              scriptPubKey: Uint8Array;
-              value: bigint;
-            }[];
-          },
-          bigint
-        >
-      >,
-      readUint16: {
-        name: 'read-uint16',
-        access: 'read_only',
-        args: [
-          {
-            name: 'ctx',
-            type: {
-              tuple: [
-                { name: 'index', type: 'uint128' },
-                { name: 'txbuff', type: { buffer: { length: 1024 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'uint16', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ctx: {
-            index: bigint;
-            txbuff: Uint8Array;
-          }
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            uint16: bigint;
-          },
-          bigint
-        >
-      >,
-      readUint32: {
-        name: 'read-uint32',
-        access: 'read_only',
-        args: [
-          {
-            name: 'ctx',
-            type: {
-              tuple: [
-                { name: 'index', type: 'uint128' },
-                { name: 'txbuff', type: { buffer: { length: 1024 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'uint32', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ctx: {
-            index: bigint;
-            txbuff: Uint8Array;
-          }
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            uint32: bigint;
-          },
-          bigint
-        >
-      >,
-      readUint64: {
-        name: 'read-uint64',
-        access: 'read_only',
-        args: [
-          {
-            name: 'ctx',
-            type: {
-              tuple: [
-                { name: 'index', type: 'uint128' },
-                { name: 'txbuff', type: { buffer: { length: 1024 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'uint64', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ctx: {
-            index: bigint;
-            txbuff: Uint8Array;
-          }
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            uint64: bigint;
-          },
-          bigint
-        >
-      >,
-      readVarint: {
-        name: 'read-varint',
-        access: 'read_only',
-        args: [
-          {
-            name: 'ctx',
-            type: {
-              tuple: [
-                { name: 'index', type: 'uint128' },
-                { name: 'txbuff', type: { buffer: { length: 1024 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'varint', type: 'uint128' },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          ctx: {
-            index: bigint;
-            txbuff: Uint8Array;
-          }
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            varint: bigint;
-          },
-          bigint
-        >
-      >,
-      readVarslice: {
-        name: 'read-varslice',
-        access: 'read_only',
-        args: [
-          {
-            name: 'old-ctx',
-            type: {
-              tuple: [
-                { name: 'index', type: 'uint128' },
-                { name: 'txbuff', type: { buffer: { length: 1024 } } },
-              ],
-            },
-          },
-        ],
-        outputs: {
-          type: {
-            response: {
-              ok: {
-                tuple: [
-                  {
-                    name: 'ctx',
-                    type: {
-                      tuple: [
-                        { name: 'index', type: 'uint128' },
-                        { name: 'txbuff', type: { buffer: { length: 1024 } } },
-                      ],
-                    },
-                  },
-                  { name: 'varslice', type: { buffer: { length: 1024 } } },
-                ],
-              },
-              error: 'uint128',
-            },
-          },
-        },
-      } as TypedAbiFunction<
-        [
-          oldCtx: {
-            index: bigint;
-            txbuff: Uint8Array;
-          }
-        ],
-        Response<
-          {
-            ctx: {
-              index: bigint;
-              txbuff: Uint8Array;
-            };
-            varslice: Uint8Array;
-          },
-          bigint
-        >
-      >,
-      reverseBuff32: {
-        name: 'reverse-buff32',
-        access: 'read_only',
-        args: [{ name: 'input', type: { buffer: { length: 32 } } }],
-        outputs: { type: { buffer: { length: 32 } } },
-      } as TypedAbiFunction<[input: Uint8Array], Uint8Array>,
-      verifyBlockHeader: {
-        name: 'verify-block-header',
-        access: 'read_only',
-        args: [
-          { name: 'headerbuff', type: { buffer: { length: 80 } } },
-          { name: 'expected-block-height', type: 'uint128' },
-        ],
-        outputs: { type: 'bool' },
-      } as TypedAbiFunction<
-        [headerbuff: Uint8Array, expectedBlockHeight: number | bigint],
-        boolean
-      >,
-      verifyMerkleProof: {
-        name: 'verify-merkle-proof',
-        access: 'read_only',
-        args: [
-          { name: 'reversed-txid', type: { buffer: { length: 32 } } },
-          { name: 'merkle-root', type: { buffer: { length: 32 } } },
-          {
-            name: 'proof',
-            type: {
-              tuple: [
-                {
-                  name: 'hashes',
-                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
-                },
-                { name: 'tree-depth', type: 'uint128' },
-                { name: 'tx-index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [
-          reversedTxid: Uint8Array,
-          merkleRoot: Uint8Array,
-          proof: {
-            hashes: Uint8Array[];
-            'tree-depth': bigint;
-            'tx-index': bigint;
-          }
-        ],
-        Response<boolean, bigint>
-      >,
-      verifyPrevBlock: {
-        name: 'verify-prev-block',
-        access: 'read_only',
-        args: [
-          { name: 'block', type: { buffer: { length: 80 } } },
-          { name: 'parent', type: { buffer: { length: 80 } } },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<[block: Uint8Array, parent: Uint8Array], Response<boolean, bigint>>,
-      verifyPrevBlocks: {
-        name: 'verify-prev-blocks',
-        access: 'read_only',
-        args: [
-          { name: 'block', type: { buffer: { length: 80 } } },
-          { name: 'prev-blocks', type: { list: { type: { buffer: { length: 80 } }, length: 10 } } },
-        ],
-        outputs: { type: { response: { ok: { buffer: { length: 80 } }, error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [block: Uint8Array, prevBlocks: Uint8Array[]],
-        Response<Uint8Array, bigint>
-      >,
-      verifyPrevBlocksFold: {
-        name: 'verify-prev-blocks-fold',
-        access: 'read_only',
-        args: [
-          { name: 'parent', type: { buffer: { length: 80 } } },
-          {
-            name: 'next-resp',
-            type: { response: { ok: { buffer: { length: 80 } }, error: 'uint128' } },
-          },
-        ],
-        outputs: { type: { response: { ok: { buffer: { length: 80 } }, error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [parent: Uint8Array, nextResp: Response<Uint8Array, bigint>],
-        Response<Uint8Array, bigint>
-      >,
-      wasTxMinedPrev: {
-        name: 'was-tx-mined-prev?',
-        access: 'read_only',
-        args: [
-          {
-            name: 'block',
-            type: {
-              tuple: [
-                { name: 'header', type: { buffer: { length: 80 } } },
-                { name: 'height', type: 'uint128' },
-              ],
-            },
-          },
-          { name: 'prev-blocks', type: { list: { type: { buffer: { length: 80 } }, length: 10 } } },
-          { name: 'tx', type: { buffer: { length: 1024 } } },
-          {
-            name: 'proof',
-            type: {
-              tuple: [
-                {
-                  name: 'hashes',
-                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
-                },
-                { name: 'tree-depth', type: 'uint128' },
-                { name: 'tx-index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [
-          block: {
-            header: Uint8Array;
-            height: bigint;
-          },
-          prevBlocks: Uint8Array[],
-          tx: Uint8Array,
-          proof: {
-            hashes: Uint8Array[];
-            'tree-depth': bigint;
-            'tx-index': bigint;
-          }
-        ],
-        Response<boolean, bigint>
-      >,
-      wasTxMined: {
-        name: 'was-tx-mined?',
-        access: 'read_only',
-        args: [
-          {
-            name: 'block',
-            type: {
-              tuple: [
-                { name: 'header', type: { buffer: { length: 80 } } },
-                { name: 'height', type: 'uint128' },
-              ],
-            },
-          },
-          { name: 'tx', type: { buffer: { length: 1024 } } },
-          {
-            name: 'proof',
-            type: {
-              tuple: [
-                {
-                  name: 'hashes',
-                  type: { list: { type: { buffer: { length: 32 } }, length: 12 } },
-                },
-                { name: 'tree-depth', type: 'uint128' },
-                { name: 'tx-index', type: 'uint128' },
-              ],
-            },
-          },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'uint128' } } },
-      } as TypedAbiFunction<
-        [
-          block: {
-            header: Uint8Array;
-            height: bigint;
-          },
-          tx: Uint8Array,
-          proof: {
-            hashes: Uint8Array[];
-            'tree-depth': bigint;
-            'tx-index': bigint;
-          }
-        ],
-        Response<boolean, bigint>
-      >,
-    },
-    maps: {},
-    variables: {
-      bUFF_TO_BYTE: {
-        name: 'BUFF_TO_BYTE',
-        type: {
-          list: {
-            type: {
-              buffer: {
-                length: 1,
-              },
-            },
-            length: 256,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<Uint8Array[]>,
-      eRRBADHEADER: {
-        name: 'ERR-BAD-HEADER',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      eRRINVALIDPARENT: {
-        name: 'ERR-INVALID-PARENT',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      eRROUTOFBOUNDS: {
-        name: 'ERR-OUT-OF-BOUNDS',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      eRRPROOFTOOSHORT: {
-        name: 'ERR-PROOF-TOO-SHORT',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      eRRTOOMANYTXINS: {
-        name: 'ERR-TOO-MANY-TXINS',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      eRRTOOMANYTXOUTS: {
-        name: 'ERR-TOO-MANY-TXOUTS',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      eRRVARSLICETOOLONG: {
-        name: 'ERR-VARSLICE-TOO-LONG',
-        type: 'uint128',
-        access: 'constant',
-      } as TypedAbiVariable<bigint>,
-      lIST_128: {
-        name: 'LIST_128',
-        type: {
-          list: {
-            type: 'bool',
-            length: 128,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<boolean[]>,
-      lIST_16: {
-        name: 'LIST_16',
-        type: {
-          list: {
-            type: 'bool',
-            length: 16,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<boolean[]>,
-      lIST_256: {
-        name: 'LIST_256',
-        type: {
-          list: {
-            type: 'bool',
-            length: 256,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<boolean[]>,
-      lIST_32: {
-        name: 'LIST_32',
-        type: {
-          list: {
-            type: 'bool',
-            length: 32,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<boolean[]>,
-      lIST_512: {
-        name: 'LIST_512',
-        type: {
-          list: {
-            type: 'bool',
-            length: 512,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<boolean[]>,
-      lIST_64: {
-        name: 'LIST_64',
-        type: {
-          list: {
-            type: 'bool',
-            length: 64,
-          },
-        },
-        access: 'constant',
-      } as TypedAbiVariable<boolean[]>,
-    },
-    constants: {},
-    fungible_tokens: [],
-    non_fungible_tokens: [],
-    contractName: 'clarity-bitcoin',
-  },
-  testUtils: {
-    functions: {
-      setBurnHeader: {
-        name: 'set-burn-header',
-        access: 'public',
-        args: [
-          { name: 'height', type: 'uint128' },
-          { name: 'header', type: { buffer: { length: 80 } } },
-        ],
-        outputs: { type: { response: { ok: 'bool', error: 'none' } } },
-      } as TypedAbiFunction<[height: number | bigint, header: Uint8Array], Response<boolean, null>>,
-      setMined: {
-        name: 'set-mined',
-        access: 'public',
-        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
-        outputs: { type: { response: { ok: 'bool', error: 'none' } } },
-      } as TypedAbiFunction<[txid: Uint8Array], Response<boolean, null>>,
-      burnBlockHeader: {
-        name: 'burn-block-header',
-        access: 'read_only',
-        args: [{ name: 'height', type: 'uint128' }],
-        outputs: { type: { optional: { buffer: { length: 80 } } } },
-      } as TypedAbiFunction<[height: number | bigint], Uint8Array | null>,
-      wasMined: {
-        name: 'was-mined',
-        access: 'read_only',
-        args: [{ name: 'txid', type: { buffer: { length: 32 } } }],
-        outputs: { type: { optional: 'bool' } },
-      } as TypedAbiFunction<[txid: Uint8Array], boolean | null>,
-    },
-    maps: {
-      burnBlockHeaders: {
-        name: 'burn-block-headers',
-        key: 'uint128',
-        value: { buffer: { length: 80 } },
-      } as TypedAbiMap<bigint, Uint8Array>,
-      minedTxs: {
-        name: 'mined-txs',
-        key: { buffer: { length: 32 } },
-        value: 'bool',
-      } as TypedAbiMap<Uint8Array, boolean>,
-    },
-    variables: {},
-    constants: {},
-    fungible_tokens: [],
-    non_fungible_tokens: [],
-    contractName: 'test-utils',
   },
   supplierWrapper: {
     functions: {

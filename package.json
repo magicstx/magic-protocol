@@ -26,7 +26,7 @@
   "prettier": "@stacks/prettier-config",
   "dependencies": {
     "@clarigen/cli": "1.0.0-next.26",
-    "@clarigen/core": "1.0.0-next.27",
+    "@clarigen/core": "1.0.0-next.28",
     "@clarigen/native-bin": "1.0.0-next.25",
     "@clarigen/node": "1.0.0-next.25",
     "@clarigen/test": "1.0.0-next.25",

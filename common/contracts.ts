@@ -4,13 +4,17 @@ import { devnetDeployment } from './clarigen/deployments/devnet';
 import { testnetDeployment } from './clarigen/deployments/testnet';
 import { contracts as contractDef } from './clarigen';
 import type { ContractFactory, DeploymentPlan } from '@clarigen/core';
+import { contractFactory } from '@clarigen/core';
 import { deploymentFactory } from '@clarigen/core';
 import { createAssetInfo } from 'micro-stacks/transactions';
 import { splitContractId } from './utils';
+import { mainnetDeployment } from './clarigen/deployments/mainnet';
 
 export const webProvider = () => {
   return WebProvider({ network });
 };
+
+export const WRAPPED_BTC_MAINNET = 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin';
 
 export function getDeployment(): DeploymentPlan {
   switch (NETWORK_CONFIG) {
@@ -19,12 +23,24 @@ export function getDeployment(): DeploymentPlan {
     case 'testnet':
       return testnetDeployment;
     case 'mainnet':
-      throw new Error('No deployment plan for mainnet yet.');
+      return mainnetDeployment;
   }
   throw new Error(`No deployment found for network '${NETWORK_CONFIG}'`);
 }
 
+export function mainnetContracts() {
+  const base = deploymentFactory(contractDef, mainnetDeployment);
+  const wrappedBitcoin = contractFactory(contractDef.wrappedBitcoin, WRAPPED_BTC_MAINNET);
+  return {
+    ...base,
+    wrappedBitcoin,
+  };
+}
+
 export function getContracts() {
+  if (NETWORK_CONFIG === 'mainnet') {
+    return mainnetContracts();
+  }
   return deploymentFactory(contractDef, getDeployment());
 }
 
