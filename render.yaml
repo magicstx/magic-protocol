@@ -2,7 +2,7 @@ services:
   - name: bridge-app
     type: pserv
     env: node
-    buildCommand: yarn; yarn build
+    buildCommand: yarn && yarn build
     startCommand: yarn start
     envVars:
       - key: NODE_ENV
