@@ -1,0 +1,29 @@
+services:
+  - name: bridge-app
+    type: pserv
+    env: node
+    buildCommand: yarn; yarn build
+    startCommand: yarn start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_NETWORK
+        sync: false
+  
+  - name: nginx
+    dockerfilePath: ./nginx/nginx.Dockerfile
+    dockerContext: ./nginx
+    env: docker
+    type: web
+    envVars:
+      - key: FORWARD_HOST
+        fromService:
+          name: bridge-app
+          type: pserv
+          property: host
+      - key: FORWARD_PORT
+        value: 3000
+      - key: BASIC_USERNAME
+        sync: false
+      - key: BASIC_PASSWORD
+        sync: false
