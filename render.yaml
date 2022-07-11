@@ -22,7 +22,10 @@ services:
           type: pserv
           property: host
       - key: FORWARD_PORT
-        value: 3000
+        fromService:
+          name: bridge-app
+          type: pserv
+          property: port
       - key: BASIC_USERNAME
         sync: false
       - key: BASIC_PASSWORD
