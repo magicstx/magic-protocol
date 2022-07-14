@@ -2,46 +2,21 @@ import { WebProvider } from '@clarigen/web';
 import { network, NETWORK_CONFIG } from './constants';
 import { devnetDeployment } from './clarigen/deployments/devnet';
 import { testnetDeployment } from './clarigen/deployments/testnet';
-import { contracts as contractDef } from './clarigen';
-import type { ContractFactory, DeploymentPlan } from '@clarigen/core';
-import { contractFactory } from '@clarigen/core';
-import { deploymentFactory } from '@clarigen/core';
+import type { contracts as contractDef } from './clarigen';
+import type { ContractFactory, DeploymentPlan, DeploymentNetwork } from '@clarigen/core';
+import { projectFactory } from '@clarigen/core';
 import { createAssetInfo } from 'micro-stacks/transactions';
 import { splitContractId } from './utils';
 import { mainnetDeployment } from './clarigen/deployments/mainnet';
+import type { contracts } from './clarigen/next';
+import { project } from './clarigen/next';
 
 export const webProvider = () => {
   return WebProvider({ network });
 };
 
-export const WRAPPED_BTC_MAINNET = 'SP3DX3H4FEYZJZ586MFBS25ZW3HZDMEW92260R2PR.Wrapped-Bitcoin';
-
-export function getDeployment(): DeploymentPlan {
-  switch (NETWORK_CONFIG) {
-    case 'mocknet':
-      return devnetDeployment;
-    case 'testnet':
-      return testnetDeployment;
-    case 'mainnet':
-      return mainnetDeployment;
-  }
-  throw new Error(`No deployment found for network '${NETWORK_CONFIG}'`);
-}
-
-export function mainnetContracts() {
-  const base = deploymentFactory(contractDef, mainnetDeployment);
-  const wrappedBitcoin = contractFactory(contractDef.wrappedBitcoin, WRAPPED_BTC_MAINNET);
-  return {
-    ...base,
-    wrappedBitcoin,
-  };
-}
-
 export function getContracts() {
-  if (NETWORK_CONFIG === 'mainnet') {
-    return mainnetContracts();
-  }
-  return deploymentFactory(contractDef, getDeployment());
+  return projectFactory(project, NETWORK_CONFIG as DeploymentNetwork);
 }
 
 export function bridgeContract() {
@@ -52,7 +27,7 @@ export function bridgeAddress() {
   return splitContractId(bridgeContract().identifier)[0];
 }
 
-export type Contracts = ContractFactory<typeof contractDef>;
+export type Contracts = ReturnType<typeof getContracts>;
 export type BridgeContract = Contracts['bridge'];
 
 export function xbtcAssetInfo() {

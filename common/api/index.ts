@@ -4,11 +4,20 @@ import type { SponsorResult } from '../../pages/api/sponsor';
 import type { BridgeContract } from '../contracts';
 import { LOCAL_URL } from '../constants';
 import type { TxData as TxDataApi } from './electrum';
+import type { TypedAbiArg, TypedAbiFunction } from '@clarigen/core';
 
-type MintParams = Parameters<BridgeContract['escrowSwap']>;
-type BlockParam = MintParams[0];
-type PrevBlocksParam = MintParams[1];
-type ProofParam = MintParams[3];
+type EscrowFn = BridgeContract['functions']['escrowSwap'];
+type GetArgs<F> = F extends TypedAbiFunction<infer Args, unknown> ? Args : never;
+type EscrowArgs = GetArgs<EscrowFn>;
+type NativeArg<A> = A extends TypedAbiArg<infer T, string> ? T : never;
+type ArgTypes<A extends TypedAbiArg<unknown, string>[]> = {
+  [K in keyof A]: NativeArg<A[K]>;
+};
+type NativeEscrowArgs = ArgTypes<EscrowArgs>;
+
+type BlockParam = NativeEscrowArgs[0];
+type PrevBlocksParam = NativeEscrowArgs[1];
+type ProofParam = NativeEscrowArgs[3];
 
 export interface TxData {
   block: BlockParam;
@@ -35,8 +44,8 @@ export async function fetchTxData(txid: string, address: string): Promise<TxData
       txHex: hexToBytes(txHex),
       proof: {
         hashes: proof.hashes.map(hexToBytes),
-        'tree-depth': BigInt(proof['tree-depth']),
-        'tx-index': BigInt(proof['tx-index']),
+        treeDepth: BigInt(proof['treeDepth']),
+        txIndex: BigInt(proof['txIndex']),
       },
       outputIndex,
       amount: BigInt(amount),

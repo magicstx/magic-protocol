@@ -1,11 +1,14 @@
 import 'cross-fetch/polyfill';
-import { ContractCallTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
+import type { ContractCallTransaction } from '@stacks/stacks-blockchain-api-types';
+import { Transaction } from '@stacks/stacks-blockchain-api-types';
 import { fetchTransaction } from 'micro-stacks/api';
-import { hexToCV, UIntCV } from 'micro-stacks/clarity';
+import type { UIntCV } from 'micro-stacks/clarity';
+import { hexToCV } from 'micro-stacks/clarity';
 // import { network } from '../common/constants';
 import { StacksTestnet } from 'micro-stacks/network';
+import type { TypedAbiArg, TypedAbiFunction } from '@clarigen/core';
 import { cvToValue } from '@clarigen/core';
-import { BridgeContract } from '../common/contracts';
+import type { BridgeContract } from '../common/contracts';
 import { getOutboundAddress } from '../common/utils';
 import { OPERATOR_KEY, setupScript } from './helpers';
 import { bytesToHex } from 'micro-stacks/common';
@@ -17,7 +20,14 @@ const network = new StacksTestnet();
 
 const [txid] = process.argv.slice(2);
 
-type InitArgs = Parameters<BridgeContract['initiateOutboundSwap']>;
+type EscrowFn = BridgeContract['functions']['initiateOutboundSwap'];
+type GetArgs<F> = F extends TypedAbiFunction<infer Args, unknown> ? Args : never;
+type EscrowArgs = GetArgs<EscrowFn>;
+type NativeArg<A> = A extends TypedAbiArg<infer T, string> ? T : never;
+type ArgTypes<A extends TypedAbiArg<unknown, string>[]> = {
+  [K in keyof A]: NativeArg<A[K]>;
+};
+type InitArgs = ArgTypes<EscrowArgs>;
 
 async function run() {
   const tx = (await fetchTransaction({

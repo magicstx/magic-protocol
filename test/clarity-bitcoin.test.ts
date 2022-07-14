@@ -2,6 +2,7 @@ import { AllContracts, ContractFactory } from '@clarigen/core';
 import { TestProvider } from '@clarigen/test';
 import { hexToBytes } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
+import { simnet } from '../common/clarigen/next';
 import { factory, accounts } from './helpers';
 
 const contract = factory.clarityBitcoin;
@@ -10,7 +11,7 @@ let t: TestProvider;
 const alice = accounts.wallet_3.address;
 
 beforeAll(async () => {
-  t = await TestProvider.fromFactory(factory as ContractFactory<AllContracts>);
+  t = await TestProvider.fromProject(simnet);
 });
 
 // btc 728908
@@ -89,8 +90,8 @@ test('was-tx-mined-prev', async () => {
       hexToBytes(tbtcTx.txHex),
       {
         hashes: tbtcTx.proof.hashes.map(h => hexToBytes(h)),
-        'tree-depth': BigInt(tbtcTx.proof['tree-depth']),
-        'tx-index': BigInt(tbtcTx.proof['tx-index']),
+        treeDepth: BigInt(tbtcTx.proof['tree-depth']),
+        txIndex: BigInt(tbtcTx.proof['tx-index']),
       }
     ),
     alice

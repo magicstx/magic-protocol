@@ -15,7 +15,7 @@ export const SwapRevoke: React.FC = () => {
   const [coreInfo] = useCoreApiInfo();
   const blocksSinceStart = useMemo(() => {
     if (swap === null) return 0;
-    return coreInfo.burn_block_height - Number(swap['created-at']);
+    return coreInfo.burn_block_height - Number(swap['createdAt']);
   }, [swap, coreInfo.burn_block_height]);
   const waitBlocks = OUTBOUND_EXPIRATION - blocksSinceStart;
   const waitTime = useWaitTime(waitBlocks);

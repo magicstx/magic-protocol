@@ -1,32 +1,20 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { payments, Psbt, ECPair, networks } from 'bitcoinjs-lib';
-import { IntegerType, intToBigInt } from 'micro-stacks/common';
+import type { payments } from 'bitcoinjs-lib';
+import { Psbt, ECPair, networks } from 'bitcoinjs-lib';
+import type { IntegerType } from 'micro-stacks/common';
+import { intToBigInt } from 'micro-stacks/common';
 import { contracts as contractDef } from '../common/clarigen';
-import { deploymentFactory } from '@clarigen/core';
+import { deploymentFactory, projectFactory } from '@clarigen/core';
+import { testFactory } from '@clarigen/test';
 import { simnetDeployment } from '../common/clarigen/deployments/simnet';
+import { project, accounts } from '../common/clarigen/next';
 
-export const factory = deploymentFactory(contractDef, simnetDeployment);
+export { accounts };
 
-type Wallets = typeof simnetDeployment['genesis']['wallets'];
+export const factory = projectFactory(project, 'simnet');
 
-export type Accounts = {
-  [I in keyof Wallets as Wallets[number]['name']]: {
-    balance: bigint;
-    address: Wallets[number]['address'];
-  };
-};
-
-export const accounts = Object.fromEntries(
-  simnetDeployment.genesis.wallets.map(a => {
-    return [
-      a.name,
-      {
-        balance: BigInt(a.balance),
-        address: a.address,
-      },
-    ];
-  })
-) as Accounts;
+// export const factory = deploymentFactory(contractDef, simnetDeployment);
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 
 export function makeTxHex(payment: payments.Payment, value = 10000) {
   // input data from bitcoinjs-lib tests

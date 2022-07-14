@@ -1,20 +1,29 @@
+import type { TypedAbiArg, TypedAbiFunction } from '@clarigen/core';
 import { cvToValue } from '@clarigen/core';
-import { ContractCallTransaction, Transaction } from '@stacks/stacks-blockchain-api-types';
+import type { ContractCallTransaction } from '@stacks/stacks-blockchain-api-types';
+import { Transaction } from '@stacks/stacks-blockchain-api-types';
 import { address as bAddress } from 'bitcoinjs-lib';
 import 'cross-fetch/polyfill';
 import { fetchTransaction } from 'micro-stacks/api';
 import { hexToCV } from 'micro-stacks/clarity';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { getTxData } from '../common/api/electrum';
-import { BridgeContract } from '../common/contracts';
+import type { BridgeContract } from '../common/contracts';
 import { btcNetwork, network } from '../common/constants';
 import { getBtcTxUrl } from '../common/utils';
 import { OPERATOR_KEY, setupScript } from './helpers';
 // import { StacksTestnet } from 'micro-stacks/network';
 
-// const network = new StacksTestnet();
+type EscrowFn = BridgeContract['functions']['escrowSwap'];
+type GetArgs<F> = F extends TypedAbiFunction<infer Args, unknown> ? Args : never;
+type EscrowArgs = GetArgs<EscrowFn>;
+type NativeArg<A> = A extends TypedAbiArg<infer T, string> ? T : never;
+type ArgTypes<A extends TypedAbiArg<unknown, string>[]> = {
+  [K in keyof A]: NativeArg<A[K]>;
+};
+type NativeEscrowArgs = ArgTypes<EscrowArgs>;
 
-type EscrowArgs = Parameters<BridgeContract['escrowSwap']>;
+// type EscrowArgs = Parameters<BridgeContract['escrowSwap']>;
 
 const [txid] = process.argv.slice(2);
 
@@ -31,11 +40,11 @@ async function run() {
 
   const args = tx.contract_call.function_args!;
 
-  const nativeArgs: EscrowArgs = args.map(arg => {
+  const nativeArgs: NativeEscrowArgs = args.map(arg => {
     const cv = hexToCV(arg.hex);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return cvToValue(cv);
-  }) as EscrowArgs;
+  }) as NativeEscrowArgs;
 
   const [
     block,

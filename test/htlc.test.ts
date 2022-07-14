@@ -26,13 +26,14 @@ import { expectBuffers, makeTxHex } from './helpers';
 import { getTxHex } from '../common/api/electrum';
 import { factory, accounts } from './helpers';
 import { AllContracts, ContractFactory } from '@clarigen/core';
+import { simnet } from '../common/clarigen/next';
 
 const htlcContract = factory.bridge;
 const clarityBtc = factory.clarityBitcoin;
 let t: TestProvider;
 
 beforeAll(async () => {
-  t = await TestProvider.fromFactory(factory as ContractFactory<AllContracts>);
+  t = await TestProvider.fromProject(simnet);
 });
 
 const [sender, recipient] = publicKeys;

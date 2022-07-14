@@ -102,8 +102,8 @@ export async function getTxData(txid: string, address: string) {
 
     const proofArg = {
       hashes: hashes.map(h => bytesToHex(h)),
-      'tx-index': merkle.pos,
-      'tree-depth': hashes.length,
+      txIndex: merkle.pos,
+      treeDepth: hashes.length,
     };
 
     return {

@@ -1,9 +1,11 @@
-import type { contracts } from './clarigen';
-import type { TypedAbiFunction } from '@clarigen/core';
+import type { contracts } from './clarigen/next';
+import type { TypedAbiArg, TypedAbiFunction } from '@clarigen/core';
 import { getOutboundAddress, satsToBtc } from './utils';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 
-type ResponseType<T> = T extends TypedAbiFunction<unknown[], infer R> ? R : never;
+type ResponseType<T> = T extends TypedAbiFunction<TypedAbiArg<unknown, string>[], infer R>
+  ? R
+  : never;
 
 type BridgeFunctions = typeof contracts['bridge']['functions'];
 

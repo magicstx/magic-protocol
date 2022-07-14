@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import {
-  createClarityBin,
-  getBlockHeight,
-  TestProvider,
-  PublicResultOk,
-  mineBlocks,
-} from '@clarigen/test';
+import type { PublicResultOk } from '@clarigen/test';
+import { createClarityBin, getBlockHeight, TestProvider, mineBlocks } from '@clarigen/test';
 import { bytesToHex, hexToBytes, numberToHex } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import {
@@ -20,14 +15,13 @@ import { privateKey, publicKey, publicKeys } from './mocks';
 import { script as bScript, Transaction, payments, networks } from 'bitcoinjs-lib';
 import { base58checkDecode, getPublicKey } from 'micro-stacks/crypto';
 import { ClarinetAccounts, NativeClarityBinProvider } from '@clarigen/native-bin';
+import type { ContractFactory, AllContracts } from '@clarigen/core';
 import {
   deploymentFactory,
   ContractReturn,
   CoreNodeEventType,
   filterEvents,
   makeContracts,
-  ContractFactory,
-  AllContracts,
 } from '@clarigen/core';
 import { makeRandomPrivKey } from 'micro-stacks/transactions';
 import {
@@ -39,6 +33,7 @@ import {
   getRevokeOutboundPrint,
 } from '../common/events';
 import { factory, accounts } from './helpers';
+import { simnet } from '../common/clarigen/next';
 
 const {
   bridge: contract,
@@ -70,10 +65,7 @@ async function getInboundSwap(txid: Uint8Array) {
 // process.env.PRINT_CLARIGEN_STDERR = 'true';
 
 beforeAll(async () => {
-  const provider = await TestProvider.fromFactory(factory as ContractFactory<AllContracts>, {
-    accounts,
-  });
-  t = provider;
+  t = await TestProvider.fromProject(simnet);
 });
 
 test('initializing xbtc', async () => {
@@ -189,8 +181,8 @@ test('can calculate fees', async () => {
 });
 
 const proof = {
-  'tree-depth': 1n,
-  'tx-index': 1n,
+  treeDepth: 1n,
+  txIndex: 1n,
   hashes: [],
 };
 
@@ -268,6 +260,20 @@ describe('successful inbound swap', () => {
   });
 
   test('only swapper can escrow', async () => {
+    const call = contract.escrowSwap(
+      { header: Buffer.from([]), height: 1n },
+      [],
+      txHex,
+      proof,
+      0n,
+      htlc.senderPublicKey,
+      htlc.recipientPublicKey,
+      CSV_DELAY_BUFF,
+      hash,
+      swapperHex,
+      0n,
+      xbtcAmount
+    );
     const receipt = await t.txErr(
       contract.escrowSwap(
         { header: Buffer.from([]), height: 1n },
@@ -307,9 +313,8 @@ describe('successful inbound swap', () => {
       swapper
     );
     const printEvent = getEscrowPrint(receipt.prints);
-    const { 'swapper-principal': swapperPrincipal, ...swap } = await t.rovOk(
-      contract.getFullInbound(txid)
-    );
+    const inbound = await t.rovOk(contract.getFullInbound(txid));
+    const { swapperPrincipal, ...swap } = await t.rovOk(contract.getFullInbound(txid));
     expect(printEvent).toEqual({
       ...swap,
       topic: 'escrow',
@@ -331,9 +336,9 @@ describe('successful inbound swap', () => {
     if (meta === null) throw new Error('Expected swap');
     expect(meta.sats).toEqual(sats);
     expect(meta.csv).toEqual(BigInt(CSV_DELAY));
-    expect(meta['redeem-script']).toEqual(Uint8Array.from(payment.redeem!.output!));
-    expect(meta['output-index']).toEqual(0n);
-    expect(meta['sender-public-key']).toEqual(htlc.senderPublicKey);
+    expect(meta.redeemScript).toEqual(Uint8Array.from(payment.redeem!.output!));
+    expect(meta.outputIndex).toEqual(0n);
+    expect(meta.senderPublicKey).toEqual(htlc.senderPublicKey);
   });
 
   test('validates funds moved to escrow', async () => {
@@ -649,9 +654,9 @@ describe('validating inbound swaps', () => {
     await t.txOk(
       contract.updateSupplierFees(
         null,
-        supplierInfo['outbound-fee'],
-        supplierInfo['outbound-base-fee'],
-        supplierInfo['inbound-base-fee']
+        supplierInfo.outboundFee,
+        supplierInfo.outboundBaseFee,
+        supplierInfo.inboundBaseFee
       ),
       supplier
     );
@@ -678,10 +683,10 @@ describe('validating inbound swaps', () => {
 
     await t.txOk(
       contract.updateSupplierFees(
-        supplierInfo['inbound-fee'],
-        supplierInfo['outbound-fee'],
-        supplierInfo['outbound-base-fee'],
-        supplierInfo['inbound-base-fee']
+        supplierInfo.inboundFee,
+        supplierInfo.outboundFee,
+        supplierInfo.outboundBaseFee,
+        supplierInfo.inboundBaseFee
       ),
       supplier
     );
@@ -693,10 +698,10 @@ describe('validating inbound swaps', () => {
     // Test base fee
     await t.txOk(
       contract.updateSupplierFees(
-        supplierInfo['inbound-fee'],
-        supplierInfo['outbound-fee'],
-        supplierInfo['outbound-base-fee'],
-        supplierInfo['inbound-base-fee'] + 10n
+        supplierInfo.inboundFee,
+        supplierInfo.outboundFee,
+        supplierInfo.outboundBaseFee,
+        supplierInfo.inboundBaseFee + 10n
       ),
       supplier
     );
@@ -722,13 +727,13 @@ describe('validating inbound swaps', () => {
     expect(receipt.value).toEqual(27n);
 
     // Test inbound fee
-    const inFee = supplierInfo['inbound-fee'];
+    const inFee = supplierInfo.inboundFee;
     await t.txOk(
       contract.updateSupplierFees(
-        supplierInfo['inbound-fee']! + 10n,
-        supplierInfo['outbound-fee'],
-        supplierInfo['outbound-base-fee'],
-        supplierInfo['inbound-base-fee']
+        supplierInfo.inboundFee! + 10n,
+        supplierInfo.outboundFee,
+        supplierInfo.outboundBaseFee,
+        supplierInfo.inboundBaseFee
       ),
       supplier
     );
@@ -755,10 +760,10 @@ describe('validating inbound swaps', () => {
 
     await t.txOk(
       contract.updateSupplierFees(
-        supplierInfo['inbound-fee'],
-        supplierInfo['outbound-fee'],
-        supplierInfo['outbound-base-fee'],
-        supplierInfo['inbound-base-fee']
+        supplierInfo.inboundFee,
+        supplierInfo.outboundFee,
+        supplierInfo.outboundBaseFee,
+        supplierInfo.inboundBaseFee
       ),
       supplier
     );
@@ -874,7 +879,7 @@ describe('successful outbound swap', () => {
     const print = getInitiateOutboundPrint(receipt.prints);
     expect(print).toEqual({
       ...swap,
-      'swap-id': swapId,
+      swapId: swapId,
       topic: 'initiate-outbound',
     });
   });
@@ -894,7 +899,7 @@ describe('successful outbound swap', () => {
     expect(swap.sats).toEqual(sats);
     expect(swap.xbtc).toEqual(xbtcAmount);
     const blockHeight = await getBlockHeight(t);
-    expect(swap['created-at']).toEqual(blockHeight - 1n);
+    expect(swap.createdAt).toEqual(blockHeight - 1n);
     expect(swap.supplier).toEqual(0n);
     expect(swap.version).toEqual(version);
     expect(Buffer.from(swap.hash)).toEqual(hash);
@@ -902,8 +907,8 @@ describe('successful outbound swap', () => {
 
   test('can successfully finalize outbound swap', async () => {
     const proof = {
-      'tree-depth': 1n,
-      'tx-index': 1n,
+      treeDepth: 1n,
+      txIndex: 1n,
       hashes: [],
     };
     const receipt = await t.txOk(
@@ -924,7 +929,7 @@ describe('successful outbound swap', () => {
       ...swap,
       topic: 'finalize-outbound',
       txid,
-      'swap-id': swapId,
+      swapId: swapId,
     });
   });
 
@@ -953,8 +958,8 @@ describe('successful outbound swap', () => {
 
   test('cannot re-finalize outbound swap', async () => {
     const proof = {
-      'tree-depth': 1n,
-      'tx-index': 1n,
+      treeDepth: 1n,
+      txIndex: 1n,
       hashes: [],
     };
     const receipt = await t.txErr(
@@ -1030,14 +1035,14 @@ describe('revoking outbound swap', () => {
       expect(print).toEqual({
         ...swap,
         topic: 'revoke-outbound',
-        'swap-id': swapId,
+        swapId: swapId,
       });
     });
 
     test('cannot finalize an outbound swap after revoked', async () => {
       const proof = {
-        'tree-depth': 1n,
-        'tx-index': 1n,
+        treeDepth: 1n,
+        txIndex: 1n,
         hashes: [],
       };
       const receipt = await t.txErr(
@@ -1062,10 +1067,10 @@ test('can update supplier fees', async () => {
   const receipt = await t.txOk(contract.updateSupplierFees(null, null, 0n, 0n), supplier);
   expect(receipt.value).toEqual({
     ...supplierInfo,
-    'inbound-base-fee': 0n,
-    'outbound-base-fee': 0n,
-    'inbound-fee': null,
-    'outbound-fee': null,
+    inboundBaseFee: 0n,
+    outboundBaseFee: 0n,
+    inboundFee: null,
+    outboundFee: null,
   });
 });
 
@@ -1075,7 +1080,7 @@ test('can update supplier public key', async () => {
   const receipt = await t.txOk(contract.updateSupplierPublicKey(newPublicKey), supplier);
   expect(receipt.value).toEqual({
     ...supplierInfo,
-    'public-key': newPublicKey,
+    publicKey: newPublicKey,
   });
 });
 

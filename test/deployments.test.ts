@@ -1,8 +1,7 @@
-import { NETWORK_CONFIG } from '../common/constants';
-import { getContracts, mainnetContracts, WRAPPED_BTC_MAINNET } from '../common/contracts';
+import { projectFactory } from '@clarigen/core';
+import { project } from '../common/clarigen/next';
 
 test('mainnet is properly configured', () => {
-  const contracts = mainnetContracts();
-  expect(contracts.wrappedBitcoin.identifier).toEqual(WRAPPED_BTC_MAINNET);
+  const contracts = projectFactory(project, 'mainnet');
   expect(contracts.bridge.identifier).toEqual('SP3NHG9CBN9SPH68HD8HGPS7F7499KCAEC9K20NZZ.bridge');
 });

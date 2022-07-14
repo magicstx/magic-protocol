@@ -11,9 +11,7 @@ import { bytesToHex } from 'micro-stacks/common';
 async function run() {
   const [txid] = process.argv.slice(2);
   console.log('txid', txid);
-  const { clarityBitcoin, provider } = await setupScript(
-    process.env.SCRIPT_OPERATOR_KEY || OPERATOR_KEY
-  );
+  const { clarityBitcoin, provider } = setupScript(process.env.SCRIPT_OPERATOR_KEY || OPERATOR_KEY);
   const data = await fetchTxData(txid, '');
   const wasMined = await provider.roOk(
     clarityBitcoin.wasTxMined(data.block, data.txHex, data.proof)
@@ -36,7 +34,7 @@ async function run() {
     console.log('headerValid', headerValid);
     const parsedHeader = await provider.roOk(clarityBitcoin.parseBlockHeader(data.block.header));
     // console.log('parsedHeader', parsedHeader);
-    const reversedMerkle = reverseBuffer(parsedHeader['merkle-root']);
+    const reversedMerkle = reverseBuffer(parsedHeader['merkleRoot']);
     console.log('merkle', bytesToHex(reversedMerkle));
     const merkleValid = await provider.roOk(
       clarityBitcoin.verifyMerkleProof(

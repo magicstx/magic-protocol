@@ -4,7 +4,7 @@ import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { fetchTxData } from '../../api';
 import { numberToLE, CSV_DELAY_BUFF, encodeExpiration } from '../../htlc';
 import { publicKeyState, useSwapperId } from '../../store';
-import { InboundSwapSent } from '../../store/swaps';
+import type { InboundSwapSent } from '../../store/swaps';
 import { useTx } from '../use-tx';
 
 export const useEscrowSwap = (swap: InboundSwapSent) => {

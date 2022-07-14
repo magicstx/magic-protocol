@@ -43,11 +43,11 @@ export async function fetchSupplierWithContract(id: number) {
   if (supplier && funds !== null) {
     return {
       controller: supplier.controller,
-      inboundFee: Number(supplier['inbound-fee']),
-      outboundFee: Number(supplier['outbound-fee']),
-      outboundBaseFee: Number(supplier['outbound-base-fee']),
-      inboundBaseFee: Number(supplier['inbound-base-fee']),
-      publicKey: bytesToHex(supplier['public-key']),
+      inboundFee: Number(supplier.inboundFee),
+      outboundFee: Number(supplier.outboundFee),
+      outboundBaseFee: Number(supplier.outboundBaseFee),
+      inboundBaseFee: Number(supplier.inboundBaseFee),
+      publicKey: bytesToHex(supplier.publicKey),
       funds: Number(funds),
       id,
     };
