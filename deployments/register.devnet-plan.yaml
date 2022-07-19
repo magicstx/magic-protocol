@@ -2,8 +2,8 @@
 id: 0
 name: Devnet deployment
 network: devnet
-stacks-node: "http://localhost:20443"
-bitcoin-node: "http://devnet:devnet@0.0.0.0:18443"
+stacks-node: 'http://localhost:20443'
+bitcoin-node: 'http://devnet:devnet@0.0.0.0:18443'
 plan:
   batches:
     - id: 0

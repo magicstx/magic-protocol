@@ -9,7 +9,7 @@ services:
         value: production
       - key: NEXT_PUBLIC_NETWORK
         sync: false
-  
+
   - name: nginx
     dockerfilePath: ./nginx/nginx.Dockerfile
     dockerContext: ./nginx

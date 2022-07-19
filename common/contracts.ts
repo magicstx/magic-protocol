@@ -3,7 +3,12 @@ import { network, NETWORK_CONFIG } from './constants';
 import { devnetDeployment } from './clarigen/deployments/devnet';
 import { testnetDeployment } from './clarigen/deployments/testnet';
 import type { contracts as contractDef } from './clarigen';
-import type { ContractFactory, DeploymentPlan, DeploymentNetwork } from '@clarigen/core';
+import {
+  ContractFactory,
+  DeploymentPlan,
+  DeploymentNetwork,
+  DEPLOYMENT_NETWORKS,
+} from '@clarigen/core';
 import { projectFactory } from '@clarigen/core';
 import { createAssetInfo } from 'micro-stacks/transactions';
 import { splitContractId } from './utils';
@@ -15,8 +20,19 @@ export const webProvider = () => {
   return WebProvider({ network });
 };
 
+function getDeploymentNetwork() {
+  const key = NETWORK_CONFIG;
+  if (key === 'mocknet') return 'devnet';
+  for (const type of DEPLOYMENT_NETWORKS) {
+    if (type === key) return key;
+  }
+  throw new Error(
+    `Invalid SUPPLIER_NETWORK config. Valid values are ${DEPLOYMENT_NETWORKS.join(',')}`
+  );
+}
+
 export function getContracts() {
-  return projectFactory(project, NETWORK_CONFIG as DeploymentNetwork);
+  return projectFactory(project, getDeploymentNetwork());
 }
 
 export function bridgeContract() {

@@ -27,6 +27,12 @@ export function getElectrumConfig() {
         port: 50001,
         protocol: 'tcp',
       };
+    case 'mainnet':
+      return {
+        host: 'fortress.qtornado.com',
+        port: 443,
+        protocol: 'ssl',
+      };
     default:
       return {
         host: process.env.ELECTRUM_HOST || 'localhost',
