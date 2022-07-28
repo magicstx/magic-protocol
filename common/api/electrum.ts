@@ -149,9 +149,11 @@ export async function fetchBtcBalance(address: string) {
 export async function fetchSupplierWithCapacity(id: number): Promise<SupplierWithCapacity> {
   const supplier = await fetchSupplierWithContract(id);
   const publicKey = hexToBytes(supplier.publicKey);
+  const address = pubKeyToBtcAddress(publicKey);
   const btc = await fetchBtcBalanceForPublicKey(publicKey);
   return {
     ...supplier,
+    btcAddress: address,
     btc: btc.toString(),
   };
 }

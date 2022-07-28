@@ -112,7 +112,7 @@ export const coreApiInfoState = atomWithQuery(QueryKeys.CORE_INFO, async () => {
   return info;
 });
 
-export type SupplierWithCapacity = Supplier & { btc: string };
+export type SupplierWithCapacity = Supplier & { btc: string; btcAddress: string };
 
 export const suppliersWithCapacityState = atom<SupplierWithCapacity[]>(get => {
   const suppliers = get(suppliersState);
