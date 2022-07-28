@@ -65,6 +65,7 @@
 (define-constant MIN_EXPIRATION u250)
 (define-constant ESCROW_EXPIRATION u200)
 (define-constant OUTBOUND_EXPIRATION u200)
+(define-constant MAX_HTLC_EXPIRATION u550)
 
 (define-constant P2PKH_VERSION 0x00)
 (define-constant P2SH_VERSION 0x05)
@@ -739,9 +740,23 @@
 
 ;; validators
 
+;; Validate the expiration for an inbound swap.
+;; 
+;; There are two validations used here:
+;; 
+;; - Expiration isn't too soon. To ensure that the swapper and supplier have sufficient
+;; time to finalize, a swap must be escrowed with **at least** 250 blocks remaining.
+;; - Expiration isn't too far. The HTLC must have a `CHECKSEQUENCEVERIFY` of less
+;; than 550. This ensures that a supplier's xBTC isn't escrowed for unnecessarily long times.
+;; 
+;; @param expiration; the amount of blocks that need to pass before
+;; the sender can recover their HTLC. This is the value used with `CHECKSEQUENCEVERIFY`
+;; in the HTLC script.
+;; @param mined-height; the nearest stacks block after (or including) the Bitcoin
+;; block where the HTLC was confirmed.
 (define-read-only (validate-expiration (expiration uint) (mined-height uint))
   (if (> expiration (+ (- block-height mined-height) MIN_EXPIRATION))
-    (ok true)
+    (if (< expiration MAX_HTLC_EXPIRATION) (ok true) ERR_INVALID_EXPIRATION)
     ERR_INVALID_EXPIRATION
   )
 )
