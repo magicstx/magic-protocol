@@ -1,4 +1,5 @@
-import { NodeOptions, NodeProvider } from '@clarigen/node';
+import type { NodeOptions } from '@clarigen/node';
+import { NodeProvider } from '@clarigen/node';
 import { privateKeyToStxAddress, StacksNetworkVersion } from 'micro-stacks/crypto';
 import { network } from './constants';
 

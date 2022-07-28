@@ -1,19 +1,9 @@
 import { WebProvider } from '@clarigen/web';
 import { network, NETWORK_CONFIG } from './constants';
-import { devnetDeployment } from './clarigen/deployments/devnet';
-import { testnetDeployment } from './clarigen/deployments/testnet';
-import type { contracts as contractDef } from './clarigen';
-import {
-  ContractFactory,
-  DeploymentPlan,
-  DeploymentNetwork,
-  DEPLOYMENT_NETWORKS,
-} from '@clarigen/core';
+import { DEPLOYMENT_NETWORKS } from '@clarigen/core';
 import { projectFactory } from '@clarigen/core';
 import { createAssetInfo } from 'micro-stacks/transactions';
 import { splitContractId } from './utils';
-import { mainnetDeployment } from './clarigen/deployments/mainnet';
-import type { contracts } from './clarigen/next';
 import { project } from './clarigen/next';
 
 export const webProvider = () => {
