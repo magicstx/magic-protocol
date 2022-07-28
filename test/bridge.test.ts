@@ -648,6 +648,38 @@ describe('validating inbound swaps', () => {
     expect(receipt.value).toEqual(15n);
   });
 
+  test('validates HTLC expiration isnt too far', async () => {
+    const htlc = {
+      senderPublicKey: publicKeys[1],
+      recipientPublicKey: publicKeys[0],
+      hash,
+      swapper: 0n,
+      expiration: 551,
+    };
+    const payment = generateHTLCAddress(htlc);
+    const txHex = makeTxHex(payment, 1000);
+    const txid = hexToBytes(Transaction.fromBuffer(txHex).getId());
+    await t.txOk(testUtils.setMined(txid), deployer);
+    const receipt = await t.txErr(
+      contract.escrowSwap(
+        { header: Buffer.from([]), height: 1n },
+        [],
+        txHex,
+        proof,
+        0n,
+        htlc.senderPublicKey,
+        htlc.recipientPublicKey,
+        bScript.number.encode(htlc.expiration),
+        hash,
+        swapperHex,
+        0n,
+        xbtcAmount
+      ),
+      swapper
+    );
+    expect(receipt.value).toEqual(15n);
+  });
+
   test('validates that supplier allows inbound', async () => {
     const supplierInfo = (await t.rov(contract.getSupplier(0n)))!;
 
