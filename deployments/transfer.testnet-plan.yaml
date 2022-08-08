@@ -2,16 +2,16 @@
 id: 0
 name: Testnet xbtc transfer
 network: testnet
-stacks-node: "http://stacks-node-api.testnet.stacks.co"
-bitcoin-node: "http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332"
+stacks-node: 'http://stacks-node-api.testnet.stacks.co'
+bitcoin-node: 'http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332'
 plan:
   batches:
     - id: 0
       transactions:
         - contract-call:
-            contract-id: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1.Wrapped-Bitcoin
+            contract-id: ST19F1KWRKRF2BZMPW7MWV463K11WED2M39X1HR3A.Wrapped-Bitcoin
             method: mint-tokens
-            expected-sender: ST2ZTY9KK9H0FA0NVN3K8BGVN6R7GYVFG6BE7TAR1
+            expected-sender: ST19F1KWRKRF2BZMPW7MWV463K11WED2M39X1HR3A
             cost: 100000
             parameters:
               - u100000000000000
