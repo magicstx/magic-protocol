@@ -1,12 +1,8 @@
-import { script, Network, networks, payments } from 'bitcoinjs-lib';
-import {
-  bytesToHex,
-  IntegerType,
-  intToHexString,
-  hexToBytes,
-  utf8ToBytes,
-} from 'micro-stacks/common';
+import { script, payments } from 'bitcoinjs-lib';
+import type { IntegerType } from 'micro-stacks/common';
+import { bytesToHex, intToHexString, hexToBytes, utf8ToBytes } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
+import { btcNetwork } from './constants';
 
 export interface HTLC {
   hash: Uint8Array;
@@ -65,13 +61,9 @@ export function generateHTLCScript(htlc: HTLC) {
   return output;
 }
 
-export function generateHTLCAddress(htlc: HTLC, _network?: Network) {
-  const network = _network || networks.regtest;
+export function generateHTLCAddress(htlc: HTLC) {
+  const network = btcNetwork;
   const script = generateHTLCScript(htlc);
-  // const payment = payments.p2wsh({ redeem: { output: script, network }, network });
-  // const payment = payments.p2sh({ , network });
-  // const hash = ripemd160(Uint8Array.from(script));
-  // const payment = payments.p2sh({ output: Buffer.from(hash), network });
   const payment = payments.p2sh({ redeem: { output: script, network }, network });
   return payment;
 }
