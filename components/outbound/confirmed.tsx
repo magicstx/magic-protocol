@@ -67,8 +67,12 @@ const FinalSummaryComp: React.FC<{ xbtcAmountSats: bigint; satsAmount: bigint }>
 
 const FinalSummary = memo(FinalSummaryComp);
 
+const SwapBtcPending: React.FC<{ txid?: string }> = ({ txid }) => {
+  return <PendingRow btcTxId={txid}>BTC sent, waiting for confirmation</PendingRow>;
+};
+
 export const SwapConfirmed: React.FC = () => {
-  const { initTx, swap, btcTxId } = useOutboundSwap();
+  const { initTx, swap, btcTxId, unspent } = useOutboundSwap();
 
   if (!swap) return null;
 
@@ -77,9 +81,15 @@ export const SwapConfirmed: React.FC = () => {
       <CenterBox noPadding>
         <DoneRow txId={initTx?.tx_id}>xBTC escrowed</DoneRow>
         <Divider />
-        <DoneRow btcTxId={btcTxId}>BTC sent to your address</DoneRow>
-        <Divider />
-        <FinalSummary xbtcAmountSats={swap.xbtc} satsAmount={swap.sats} />
+        {unspent?.height === 0 ? (
+          <SwapBtcPending txid={btcTxId} />
+        ) : (
+          <>
+            <DoneRow btcTxId={btcTxId}>BTC sent to your address</DoneRow>
+            <Divider />
+            <FinalSummary xbtcAmountSats={swap.xbtc} satsAmount={swap.sats} />
+          </>
+        )}
       </CenterBox>
     </Stack>
   );
