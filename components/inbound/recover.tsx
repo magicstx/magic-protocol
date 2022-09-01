@@ -11,6 +11,7 @@ import { btcAddressState } from '../../common/store';
 import { useRecoverSwap } from '../../common/hooks/use-recover-swap';
 import { MagicInput } from '../form';
 import { useWaitTime } from '../../common/hooks/use-wait-time';
+import { useDeepMemo } from '../../common/hooks/use-deep-effect';
 
 export const SwapRedeem: React.FC = () => {
   const { swap, updateSwap } = useInboundSwap();
@@ -32,7 +33,14 @@ export const SwapRedeem: React.FC = () => {
 
   const waitTime = useWaitTime(waitBlocks);
 
-  if (escrowTx?.status !== 'abort_by_response') return null;
+  const isFailed = useDeepMemo(() => {
+    if (escrowTx === null) return false;
+    const { status } = escrowTx;
+    if (status === 'success' || status === 'pending') return false;
+    return true;
+  }, [escrowTx]);
+
+  if (!isFailed) return null;
   if ('recoveryTxid' in swap) return null;
 
   return (

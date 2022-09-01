@@ -4,6 +4,7 @@ import { useCallback, useMemo, useEffect } from 'react';
 import type { InboundSwap } from '../store/swaps';
 import { getSwapStep, inboundSwapKey, useInboundSwapStorage, useSwapId } from '../store/swaps';
 import NProgress from 'nprogress';
+import { useDeepEffect } from './use-deep-effect';
 
 type SwapStep = ReturnType<typeof getSwapStep>;
 
@@ -17,6 +18,10 @@ export function useInboundSwap() {
 
   const step = useMemo(() => {
     return getSwapStep(swap);
+  }, [swap]);
+
+  useDeepEffect(() => {
+    console.debug('Inbound swap:', swap);
   }, [swap]);
 
   const updateSwap = useCallback(
