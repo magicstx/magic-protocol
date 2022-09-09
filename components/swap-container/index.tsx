@@ -47,8 +47,8 @@ export const SwapContainer: React.FC = () => {
   const pendingRegisterSwapper = useAtomValue(pendingRegisterSwapperState);
 
   useEffect(() => {
-    console.log('outboundTxid', outboundTxid);
     if (outboundTxid) {
+      console.debug(`New outbound swap with Stacks txid: ${outboundTxid}`);
       void routeToOutbound(outboundTxid);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

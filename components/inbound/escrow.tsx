@@ -10,7 +10,6 @@ import { BtcAddress } from './btc-address';
 export const SwapEscrow: React.FC = () => {
   const { swap, updateSwap } = useInboundSwap();
   if (!('btcTxid' in swap)) throw new Error('Invalid swap state');
-  // console.log('swap', swap);
 
   const escrowSwap = useEscrowSwap(swap);
 

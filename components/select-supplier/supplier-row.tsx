@@ -73,7 +73,6 @@ export const SupplierBaseRow: React.FC<{
   const select = useAtomCallback(
     useCallback(
       (get, set) => {
-        console.log('supplier.id', supplier.id);
         set(selectedSupplierState, supplier);
         set(showOverrideSupplierState, false);
       },

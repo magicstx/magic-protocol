@@ -10,7 +10,7 @@ import { SwapCanceled } from './canceled';
 import { useSwapId } from '../../common/store/swaps';
 
 export const OutboundSwap: React.FC = () => {
-  const { initTx, initStatus, unspent, txId, isCanceled } = useOutboundSwap();
+  const { initTx, initStatus, unspent, txId, isCanceled, swapId } = useOutboundSwap();
   useSetTitle('Swap xBTC -> BTC');
   const [_, setSwapId] = useSwapId();
   useEffect(() => {
@@ -18,6 +18,15 @@ export const OutboundSwap: React.FC = () => {
       setSwapId(undefined);
     };
   }, [setSwapId]);
+
+  useEffect(() => {
+    console.groupCollapsed('Outbound swap data:');
+    console.log('Stacks txid:', txId);
+    console.log('Stacks tx status:', initStatus);
+    console.log('Swap ID:', swapId);
+    console.log('BTC Tx:', unspent?.tx_hash);
+    console.groupEnd();
+  }, [txId, unspent?.tx_hash, swapId, initStatus]);
 
   if (isCanceled) {
     return <SwapCanceled />;

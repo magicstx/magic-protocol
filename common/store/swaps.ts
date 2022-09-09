@@ -226,7 +226,7 @@ export const swapsListState = atomWithQuery<SwapListItem[]>(QueryKeys.SWAPS_LIST
     throw new Error('Error in response');
   }
   const responseData = (await response.json()) as ListFilesResponse;
-  console.log('responseData', responseData);
+  console.log('Gaia `response`:', responseData);
   console.log(`Gaia entries: (${responseData.entries.length})`, responseData.entries);
   const entries = responseData.entries
     .filter(path => path.startsWith(SWAP_STORAGE_PREFIX))

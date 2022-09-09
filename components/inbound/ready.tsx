@@ -15,7 +15,7 @@ export const SwapReady: React.FC = () => {
   const [txWatch] = useWatchAddress(swap.address);
 
   useDeepEffect(() => {
-    console.log(txWatch);
+    console.debug(`Watching BTC address ${swap.address}:`, txWatch);
     if ('txid' in txWatch) {
       if (txWatch.txid !== footerSwapId) {
         setSwapId(txWatch.txid);
@@ -27,7 +27,7 @@ export const SwapReady: React.FC = () => {
       }
     }
     if (step === 'warned' && txWatch.status === 'confirmed') {
-      console.log('updating', txWatch.txData);
+      console.debug('Updating swap with TX data:', txWatch.txData);
       void updateSwap({
         ...swap,
         btcTxid: txWatch.txid,

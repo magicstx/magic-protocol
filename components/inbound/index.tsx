@@ -10,6 +10,14 @@ import { SwapFinalize } from './finalize';
 import { SwapDone } from './done';
 import { SwapWarning } from './warning';
 import { useSetTitle } from '../head';
+import { useDeepEffect } from '../../common/hooks/use-deep-effect';
+
+// Debugging function to get preimage
+declare global {
+  interface Window {
+    __unsafeMagicShowPreimage: () => void;
+  }
+}
 
 export const InboundSwap: React.FC = () => {
   const { swap } = useInboundSwap();
@@ -21,6 +29,18 @@ export const InboundSwap: React.FC = () => {
       setSwapId(undefined);
     };
   }, [setSwapId]);
+
+  const { secret, supplier, ...swapSafe } = swap;
+
+  useEffect(() => {
+    window.__unsafeMagicShowPreimage = function () {
+      console.debug(secret);
+    };
+  }, [secret]);
+
+  useDeepEffect(() => {
+    console.debug('Inbound swap:', swapSafe);
+  }, [swapSafe]);
 
   if (step === 'start') {
     return <RegisterSwap />;
