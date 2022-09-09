@@ -1,7 +1,9 @@
 import type { contracts } from './clarigen/next';
 import type { TypedAbiArg, TypedAbiFunction } from '@clarigen/core';
+import { hexToCvValue } from '@clarigen/core';
 import { getOutboundAddress, satsToBtc } from './utils';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import type { ApiEvent } from './api/stacks';
 
 type ResponseType<T> = T extends TypedAbiFunction<TypedAbiArg<unknown, string>[], infer R>
   ? R
@@ -35,18 +37,18 @@ export type RevokeInboundPrint = InboundSwapResponse & {
 
 export type InitiateOutboundPrint = OutboundSwapResponse & {
   topic: 'initiate-outbound';
-  'swap-id': BigInt;
+  swapId: bigint;
 };
 
 export type FinalizeOutboundPrint = OutboundSwapResponse & {
   topic: 'finalize-outbound';
-  'swap-id': BigInt;
+  swapId: bigint;
   txid: Uint8Array;
 };
 
 export type RevokeOutboundPrint = OutboundSwapResponse & {
   topic: 'revoke-outbound';
-  'swap-id': BigInt;
+  swapId: bigint;
 };
 
 export type Print =
@@ -138,4 +140,27 @@ export function getPrintDescription(print: Print) {
     case 'revoke-outbound':
       return `${satsToBtc(print.xbtc)} xBTC recovered`;
   }
+}
+
+export interface Event<T = Print> {
+  txid: string;
+  print: T;
+  index: number;
+}
+
+export function getPrintFromRawEvent<T = Print>(event: ApiEvent): Event<T> | null {
+  if (event.event_type !== 'smart_contract_log') {
+    return null;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const v = hexToCvValue(event.contract_log.value.hex);
+  if ('topic' in v) {
+    const print = v as T;
+    return {
+      txid: event.tx_id,
+      index: event.event_index,
+      print,
+    };
+  }
+  return null;
 }

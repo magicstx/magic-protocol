@@ -138,6 +138,7 @@ export async function getBalances(address: string): Promise<AddressBalanceRespon
 }
 
 type ApiEvents = Awaited<ReturnType<typeof fetchContractEventsById>>;
+export type ApiEvent = ApiEvents[0];
 
 export async function getBridgeEvents(offset = 0): Promise<BridgeEvent[]> {
   const contractId = bridgeContract().identifier;

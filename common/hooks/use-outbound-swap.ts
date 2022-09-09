@@ -1,8 +1,8 @@
-import type { ResponseOkCV, UIntCV } from 'micro-stacks/clarity';
-import { deserializeCV } from 'micro-stacks/clarity';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo } from 'react';
-import { useOutboundSwap as useOutboundSwapState, useFinalizedOutboundSwap } from '../store';
+import type { InitiateOutboundPrint } from '../events';
+import { getPrintFromRawEvent } from '../events';
+import { useFinalizedOutboundSwap } from '../store';
 import { useStxTx, useListUnspent } from '../store/api';
 import { useSwapId } from '../store/swaps';
 import { getOutboundAddress } from '../utils';
@@ -19,18 +19,18 @@ export function useOutboundSwap(_txId?: string) {
     txId = routerTxId;
   }
   const [initTx] = useStxTx(txId);
-  // const [swap, setSwap] = useAtom(swapState);
   const initStatus = initTx?.status || 'pending';
 
-  const swapId = useMemo(() => {
+  const swap = useMemo(() => {
     if (!initTx || initTx.status !== 'success') return null;
     if (initTx.tx_type !== 'contract_call') return null;
-    const cvHex = initTx.tx_result.hex;
-    const cv: ResponseOkCV<UIntCV> = deserializeCV(cvHex);
-    return cv.value.value;
+
+    const event = getPrintFromRawEvent<InitiateOutboundPrint>(initTx.events[2]);
+    if (!event) return null;
+    return event.print;
   }, [initTx]);
 
-  const [swap] = useOutboundSwapState(swapId);
+  const swapId = swap?.swapId || null;
 
   const [footerSwapId, setSwapId] = useSwapId();
 
