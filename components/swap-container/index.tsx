@@ -51,7 +51,8 @@ export const SwapContainer: React.FC = () => {
     if (outboundTxid) {
       void routeToOutbound(outboundTxid);
     }
-  }, [outboundTxid, routeToOutbound]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [outboundTxid]);
   if (pendingInitOutbound) {
     return <PendingInit />;
   }

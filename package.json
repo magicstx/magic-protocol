@@ -23,7 +23,6 @@
     "fmt-types": "prettier -w \"artifacts/clarigen/**/*.ts\"",
     "gen": "yarn gen:deployments && yarn gen:types && yarn fmt-types && yarn move-types"
   },
-  "prettier": "@stacks/prettier-config",
   "dependencies": {
     "@clarigen/core": "1.0.0-next.30",
     "@clarigen/native-bin": "1.0.0-next.27",

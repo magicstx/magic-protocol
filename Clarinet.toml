@@ -24,8 +24,8 @@ depends_on = ["test-utils"]
 path = "contracts/supplier-wrapper.clar"
 depends_on = ["bridge"]
 
-[contracts.test-utils]
-path = "contracts/test/test-utils.clar"
+# [contracts.test-utils]
+# path = "contracts/test/test-utils.clar"
 
 # [contracts.xbtc]
 # path = "contracts/xbtc.clar"
