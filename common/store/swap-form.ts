@@ -13,7 +13,7 @@ import {
   intToBigInt,
   parseBtcAddress,
 } from '../utils';
-import type { SupplierWithCapacity } from './api';
+import { balancesState, SupplierWithCapacity } from './api';
 import { suppliersWithCapacityState } from './api';
 
 export const outboundTxidState = atom<string | undefined>(undefined);
@@ -210,6 +210,10 @@ export const swapFormErrorState = atom(get => {
   if (isOutbound && btcAddress && !btcValid) return 'Invalid BTC Address';
   if (typeof capacityError === 'string') return capacityError;
   if (amountBN.gt(0) && outputAmount <= 0) return 'Swap amount too low.';
+  if (isOutbound) {
+    const balance = get(balancesState);
+    if (amountBN.gt(balance.xbtc)) return 'Insufficient xBTC balance';
+  }
   return undefined;
 });
 
