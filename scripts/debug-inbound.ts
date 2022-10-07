@@ -1,12 +1,11 @@
 import type { TypedAbiArg, TypedAbiFunction } from '@clarigen/core';
 import { cvToValue } from '@clarigen/core';
 import type { ContractCallTransaction } from '@stacks/stacks-blockchain-api-types';
-import { Transaction } from '@stacks/stacks-blockchain-api-types';
 import { address as bAddress } from 'bitcoinjs-lib';
 import 'cross-fetch/polyfill';
 import { fetchTransaction } from 'micro-stacks/api';
 import { hexToCV } from 'micro-stacks/clarity';
-import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import { bytesToHex } from 'micro-stacks/common';
 import { getTxData } from '../common/api/electrum';
 import type { BridgeContract } from '../common/contracts';
 import { btcNetwork, network } from '../common/constants';

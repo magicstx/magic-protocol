@@ -1,4 +1,4 @@
-import { Box, Flex, SpaceBetween, Stack } from '@nelson-ui/react';
+import { Box, Flex, Stack } from '@nelson-ui/react';
 import React, { Suspense, useMemo } from 'react';
 import { useSwapKeys } from '../../common/store/swaps';
 import { useSetTitle } from '../head';

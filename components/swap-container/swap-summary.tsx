@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import { Stack, SpaceBetween, Flex } from '@nelson-ui/react';
+import { Stack, SpaceBetween } from '@nelson-ui/react';
 import { GearIcon } from '../icons/gear';
 import {
   amountInvalidState,

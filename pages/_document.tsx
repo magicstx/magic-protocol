@@ -1,8 +1,7 @@
 import React from 'react';
 import type { DocumentContext } from 'next/document';
 import NextDocument, { Html, Head, Main, NextScript } from 'next/document';
-import { darkMode, getCssText, allCss } from '../common/theme';
-import { getCssText as nelsonCss } from '@nelson-ui/core';
+import { darkMode, allCss } from '../common/theme';
 
 export default class Document extends NextDocument {
   static async getInitialProps(ctx: DocumentContext) {

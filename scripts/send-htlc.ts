@@ -1,5 +1,5 @@
 import 'cross-fetch/polyfill';
-import { ECPair, networks, opcodes, payments, Psbt, script as bScript } from 'bitcoinjs-lib';
+import { ECPair, networks, payments, Psbt } from 'bitcoinjs-lib';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { withElectrumClient } from '../common/api/electrum';

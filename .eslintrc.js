@@ -8,6 +8,7 @@ module.exports = {
   parserOptions: {
     project: './tsconfig.json',
   },
+  plugins: ['unused-imports'],
   rules: {
     '@typescript-eslint/no-unused-vars': [0],
     '@typescript-eslint/explicit-module-boundary-types': [0],
@@ -19,6 +20,11 @@ module.exports = {
         allowNullableString: true,
         allowNullableBoolean: true,
       },
+    ],
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': [
+      'warn',
+      { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' },
     ],
   },
 };

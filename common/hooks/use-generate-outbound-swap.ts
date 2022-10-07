@@ -1,5 +1,4 @@
 import { useGaia } from '@micro-stacks/react';
-import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
 import type { OutboundSwapStarted } from '../store/swaps';
 import { createId, outboundSwapKey } from '../store/swaps';

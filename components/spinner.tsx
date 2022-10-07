@@ -2,7 +2,6 @@ import { keyframes } from '@nelson-ui/core';
 import type { BoxProps } from '@nelson-ui/react';
 import { Box } from '@nelson-ui/react';
 import React from 'react';
-import { styled } from '../common/theme';
 
 const spin = keyframes({
   '0%': { transform: 'rotate(0deg)' },

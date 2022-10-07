@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
-import { Box, Flex, Grid, SpaceBetween, Stack } from '@nelson-ui/react';
+import { Flex, SpaceBetween, Stack } from '@nelson-ui/react';
 import { CenterBox, Divider, DoneRow, PendingRow } from '../center-box';
 import { useInboundSwap } from '../../common/hooks/use-inbound-swap';
 import { useStxTx } from '../../common/store/api';

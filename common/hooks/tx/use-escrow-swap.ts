@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai/utils';
 import { hexToBytes, intToBigInt } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { fetchTxData } from '../../api';
-import { numberToLE, CSV_DELAY_BUFF, encodeExpiration } from '../../htlc';
+import { numberToLE, encodeExpiration } from '../../htlc';
 import { publicKeyState, useSwapperId } from '../../store';
 import type { InboundSwapSent } from '../../store/swaps';
 import { useTx } from '../use-tx';

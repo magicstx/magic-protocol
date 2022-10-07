@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Box, Flex, Stack } from '@nelson-ui/react';
 import { Text } from '../text';
 import { styled } from '@stitches/react';
@@ -13,7 +13,6 @@ import { useQueryAtom } from 'jotai-query-toolkit';
 import { Spinner } from '../spinner';
 import { useStxTxResult } from '../../common/store/api';
 import { useFinalizedOutboundSwap } from '../../common/store';
-import { useClipboard } from '../../common/hooks/use-clipboard';
 import { TooltipTippy } from '../tooltip';
 import { formatDistance } from 'date-fns';
 import { CopyTooltip } from '../copy-tooltip';

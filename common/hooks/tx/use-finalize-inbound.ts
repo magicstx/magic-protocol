@@ -1,4 +1,5 @@
-import { hexToBytes, IntegerType } from 'micro-stacks/common';
+import type { IntegerType } from 'micro-stacks/common';
+import { hexToBytes } from 'micro-stacks/common';
 import {
   FungibleConditionCode,
   makeContractFungiblePostCondition,

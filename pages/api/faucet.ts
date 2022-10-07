@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AnchorMode, broadcastTransaction, makeSTXTokenTransfer } from 'micro-stacks/transactions';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ECPair, networks, Psbt, address as bAddress, payments } from 'bitcoinjs-lib';
-import ElectrumClient from 'electrum-client-sl';
-import { getScriptHash, reverseBuffer } from '../../common/htlc';
+import { ECPair, networks, Psbt, payments } from 'bitcoinjs-lib';
+import { getScriptHash } from '../../common/htlc';
 import { network } from '../../common/constants';
 import { withElectrumClient } from '../../common/api/electrum';
 import { bytesToHex } from 'micro-stacks/common';

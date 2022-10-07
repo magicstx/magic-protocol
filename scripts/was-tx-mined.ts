@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 config({
   path: '.env.local',
 });
-import { logTxid, OPERATOR_KEY, setupScript, SWAPPER_KEY } from './helpers';
+import { OPERATOR_KEY, setupScript } from './helpers';
 import { fetchTxData } from '../common/api';
 import { reverseBuffer } from '../common/htlc';
 import { bytesToHex } from 'micro-stacks/common';

@@ -1,14 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {
-  borderRadius,
-  boxShadow,
-  colors,
-  fonts,
-  fontSizes,
-  lineHeights,
-  sizes,
-} from '@nelson-ui/theme';
+import { borderRadius, boxShadow, colors, fonts, fontSizes, sizes } from '@nelson-ui/theme';
 import type { CSSTypes } from '@nelson-ui/core';
 import { makeColors, createTheme, getCssText as nelsonCss } from '@nelson-ui/core';
 import figma from './theme/figma';

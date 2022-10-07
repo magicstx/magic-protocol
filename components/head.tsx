@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
 import NextHead from 'next/head';
-import { atom, useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { getAppIcon, getAppName } from '../common/constants';
 import { pageTitleState, docTitleState } from '../common/store';

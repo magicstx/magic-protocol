@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import 'cross-fetch/polyfill';
 import { TestProvider } from '@clarigen/test';
-import { privateKeys, publicKeys } from './mocks';
+import { publicKeys } from './mocks';
 import {
   generateHTLCAddress,
   generateHTLCScript,
@@ -9,23 +9,13 @@ import {
   numberToLE,
   reverseBuffer,
 } from '../common/htlc';
-import {
-  script as bScript,
-  address as bAddress,
-  crypto as bcrypto,
-  Psbt,
-  ECPair,
-  networks,
-  payments,
-  Transaction,
-} from 'bitcoinjs-lib';
+import { script as bScript, networks, payments } from 'bitcoinjs-lib';
 import { base58checkDecode, ripemd160 } from 'micro-stacks/crypto';
 import { bytesToHex, hexToBytes, numberToHex } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { expectBuffers, makeTxHex } from './helpers';
 import { getTxHex } from '../common/api/electrum';
-import { factory, accounts } from './helpers';
-import { AllContracts, ContractFactory } from '@clarigen/core';
+import { factory } from './helpers';
 import { simnet } from '../common/clarigen/next';
 
 const htlcContract = factory.bridge;

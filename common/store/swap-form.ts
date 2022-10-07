@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { atom } from 'jotai';
-import { atomFamily, selectAtom } from 'jotai/utils';
+import { selectAtom } from 'jotai/utils';
 import sortBy from 'lodash-es/sortBy';
 import type { Supplier } from '.';
 import { btcAddressState } from '.';
@@ -13,7 +13,8 @@ import {
   intToBigInt,
   parseBtcAddress,
 } from '../utils';
-import { balancesState, SupplierWithCapacity } from './api';
+import type { SupplierWithCapacity } from './api';
+import { balancesState } from './api';
 import { suppliersWithCapacityState } from './api';
 
 export const outboundTxidState = atom<string | undefined>(undefined);

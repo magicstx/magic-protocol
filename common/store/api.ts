@@ -1,8 +1,7 @@
 // import { stacksSessionAtom } from '@micro-stacks/react';
-import { stacksSessionAtom } from '@micro-stacks/react';
 import type { AddressBalanceResponse } from '@stacks/stacks-blockchain-api-types';
 import { atomFamilyWithQuery, atomWithQuery, useQueryAtom } from 'jotai-query-toolkit';
-import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import { hexToBytes } from 'micro-stacks/common';
 import type { Supplier } from '.';
 import { currentStxAddressState, QueryKeys, suppliersState } from '.';
 import type { BtcBalanceResponse } from '../../pages/api/btc-balance';

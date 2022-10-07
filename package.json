@@ -7,12 +7,10 @@
     "dev:transfer": "clarinet deployments apply -p deployments/xbtc.devnet-plan.yaml",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint -d common",
+    "lint": "next lint",
     "script": "node -r @swc-node/register",
     "r": "DOTENV_CONFIG_PATH=\".env.local\" node -r @swc-node/register -r dotenv/config",
     "clarinet": "../clarinet/target/release/clarinet",
-    "server:dev": "NODE_ENV=development yarn r scripts/server.ts",
-    "server:dev:watch": "nodemon --verbose -x 'yarn server:dev'",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit",
@@ -106,9 +104,9 @@
     "eslint-config-next": "12.0.3",
     "eslint-plugin-jest": "^23.16.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-unused-imports": "2.0.0",
     "jest": "^27.0.3",
     "localtunnel": "^2.0.2",
-    "nodemon": "^2.0.15",
     "prettier": "2.4.1",
     "typescript": "4.5.1-rc"
   },
@@ -118,12 +116,5 @@
     "react-query": "3.32.1",
     "@stitches/react": "1.2.6",
     "@stitches/core": "1.2.6"
-  },
-  "nodemonConfig": {
-    "watch": [
-      "./server",
-      "./common"
-    ],
-    "ext": "ts"
   }
 }

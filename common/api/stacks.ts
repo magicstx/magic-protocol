@@ -15,7 +15,7 @@ import {
   fetchCoreApiInfo,
   fetchContractEventsById,
 } from 'micro-stacks/api';
-import { bridgeAddress, bridgeContract } from '../contracts';
+import { bridgeContract } from '../contracts';
 import type { BridgeEvent, Print } from '../events';
 
 export const apiConfig = new Configuration({

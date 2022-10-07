@@ -1,14 +1,12 @@
 import { WalletConnectButton } from './wallet-connect-button';
-import { Box, SpaceBetween, Stack } from '@nelson-ui/react';
+import { SpaceBetween, Stack } from '@nelson-ui/react';
 import { Text } from './text';
 import React, { useMemo } from 'react';
 import { Link } from './link';
-import { useBalances } from '../common/hooks/use-balances';
 import { SafeSuspense } from './safe-suspense';
 import BigNumber from 'bignumber.js';
 import { useAuth } from '@micro-stacks/react';
 import { getAppIcon, getAppName, NETWORK_CONFIG } from '../common/constants';
-import { BurstIcon } from './icons/burst';
 import { StarIcon } from './icons/star';
 import Image from 'next/image';
 import { useIsSSR } from '../common/hooks/use-is-ssr';

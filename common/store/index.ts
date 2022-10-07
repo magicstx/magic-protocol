@@ -1,8 +1,8 @@
-import { stacksSessionAtom, partialStacksSessionAtom } from '@micro-stacks/react';
+import { stacksSessionAtom } from '@micro-stacks/react';
 import { atom } from 'jotai';
 import { atomWithQuery, useQueryAtom, atomFamilyWithQuery } from 'jotai-query-toolkit';
 import type { Query } from 'jotai-query-toolkit/nextjs';
-import { atomWithStorage, waitForAll } from 'jotai/utils';
+import { atomWithStorage } from 'jotai/utils';
 import { getPublicKey } from 'noble-secp256k1';
 import type { SuppliersApi } from '../../pages/api/suppliers';
 import { LOCAL_URL, webProvider, NETWORK_CONFIG, getAppName, isAppNameDefault } from '../constants';
@@ -10,7 +10,6 @@ import { generateGaiaHubConfig } from 'micro-stacks/storage';
 import type { IntegerType } from 'micro-stacks/common';
 import { bytesToHex, hexToBytes } from 'micro-stacks/common';
 import { intToString } from '../utils';
-import type { SupplierWithCapacity } from './api';
 import { bridgeContract, getContracts } from '../contracts';
 import { useQueryAtomValue } from '../hooks/use-query-value';
 

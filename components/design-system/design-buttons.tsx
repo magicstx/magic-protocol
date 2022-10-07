@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, ButtonComp, StatusButton } from '../button';
-import { Box, SpaceBetween, Stack, Grid } from '@nelson-ui/react';
+import { Button, StatusButton } from '../button';
+import { Box, Grid } from '@nelson-ui/react';
 import { Text } from '../text';
 
 export const StatusButtons: React.FC = () => {

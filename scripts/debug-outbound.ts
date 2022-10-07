@@ -1,6 +1,5 @@
 import 'cross-fetch/polyfill';
 import type { ContractCallTransaction } from '@stacks/stacks-blockchain-api-types';
-import { Transaction } from '@stacks/stacks-blockchain-api-types';
 import { fetchTransaction } from 'micro-stacks/api';
 import type { UIntCV } from 'micro-stacks/clarity';
 import { hexToCV } from 'micro-stacks/clarity';

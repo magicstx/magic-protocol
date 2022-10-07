@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeGetServerSideProps, stacksNetworkFromCtx } from '@micro-stacks/nextjs';
+import { makeGetServerSideProps } from '@micro-stacks/nextjs';
 import type { NextPage } from 'next';
 import { Layout } from '../../components/layout';
 import { withMicroStacks } from '../../common/with-micro-stacks';

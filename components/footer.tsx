@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Stack } from '@nelson-ui/react';
-import { Text } from './text';
 
 export const Footer: React.FC = () => {
   return (
