@@ -8,7 +8,7 @@ module.exports = {
     NEXT_PUBLIC_APP_VERSION: version,
   },
   eslint: {
-    dirs: ['common', 'components', 'pages', 'scripts', 'test']
+    dirs: ['common', 'components', 'pages', 'scripts', 'test'],
   },
   webpack: config => {
     const alias = config.resolve.alias || (config.resolve.alias = {});
@@ -29,20 +29,20 @@ module.exports = {
     return [
       {
         // matching all routes
-        source: '/*',
+        source: '/:path*',
         headers: [
           {
             key: 'X-XSS-Protection',
-            value: '1; mode=block'
+            value: '1; mode=block',
           },
           {
             key: 'X-Frame-Options',
-            value: 'SAMEORIGIN'
+            value: 'SAMEORIGIN',
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
-          }
+            value: 'origin-when-cross-origin',
+          },
         ],
       },
     ];
