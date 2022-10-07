@@ -1,9 +1,9 @@
 import 'cross-fetch/polyfill';
-import { ECPair, networks, opcodes, payments, Psbt, script as bScript } from 'bitcoinjs-lib';
-import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import { ECPair, networks, payments, Psbt, script as bScript } from 'bitcoinjs-lib';
+import { hexToBytes } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { withElectrumClient } from '../common/api/electrum';
-import { generateHTLCAddress, getScriptHash } from '../common/htlc';
+import { generateHTLCAddress } from '../common/htlc';
 import BigNumber from 'bignumber.js';
 
 async function run() {

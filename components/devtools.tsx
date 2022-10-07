@@ -8,7 +8,7 @@ import { APP_VERSION, coreUrl, LOCAL_URL, NETWORK_CONFIG } from '../common/const
 import { bridgeContract } from '../common/contracts';
 import { persistQueryClient } from 'react-query/persistQueryClient-experimental';
 import { createWebStoragePersistor } from 'react-query/createWebStoragePersistor-experimental';
-import { useAtomsDebugValue, useAtomsDevtools } from 'jotai/devtools';
+import { useAtomsDebugValue } from 'jotai/devtools';
 
 export const DevtoolsPanel = () => {
   // useAtomsDebugValue();

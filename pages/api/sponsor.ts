@@ -1,6 +1,5 @@
 import type { StacksTransaction } from 'micro-stacks/transactions';
 import {
-  AddressHashMode,
   broadcastTransaction,
   deserializeTransaction,
   sponsorTransaction,

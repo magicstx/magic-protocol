@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useInput } from './use-input';
 import { useAtom } from 'jotai';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
@@ -7,7 +7,6 @@ import { useGenerateInboundSwap } from './use-generate-inbound-swap';
 import { useRouter } from 'next/router';
 import { pendingInitOutboundState, useInitiateOutbound } from './tx/use-initiate-outbound';
 import nProgress from 'nprogress';
-import { useGenerateOutboundSwap } from './use-generate-outbound-swap';
 import {
   pendingRegisterSwapperState,
   amountState,

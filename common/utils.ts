@@ -1,7 +1,7 @@
 import type { IntegerType } from 'micro-stacks/common';
 import { bytesToBigInt, intToBigInt as _intToBigInt } from 'micro-stacks/common';
 import BigNumber from 'bignumber.js';
-import { address as bAddress, networks, payments, Transaction } from 'bitcoinjs-lib';
+import { address as bAddress, networks, payments } from 'bitcoinjs-lib';
 import { coreUrl, btcNetwork, NETWORK_CONFIG } from './constants';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
 import { base58checkEncode, hashRipemd160 } from 'micro-stacks/crypto';

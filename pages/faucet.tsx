@@ -2,7 +2,6 @@ import React from 'react';
 import type { NextPage } from 'next';
 import { useAtom } from 'jotai';
 import { btcAddressState } from '../common/store';
-import { Input } from '../components/form';
 import { Box } from '@nelson-ui/react';
 import { Text } from '../components/text';
 import { Button } from '../components/button';

@@ -1,6 +1,4 @@
-import { makeColors } from '@nelson-ui/core';
-import { colors } from '@nelson-ui/theme';
-import { generatedTheme, baseTheme, makeTheme, makeNewTheme, newFsColors } from '../common/theme';
+import { baseTheme, makeTheme } from '../common/theme';
 
 test('can make theme', () => {
   const theme = makeTheme();

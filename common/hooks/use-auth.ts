@@ -12,7 +12,6 @@ import {
   useResetSessionCallback,
   authOptionsAtom,
   stacksSessionAtom,
-  isSignedInAtom,
 } from '@micro-stacks/react';
 // import { authOptionsAtom, isSignedInAtom, stacksSessionAtom } from '../store/auth';
 

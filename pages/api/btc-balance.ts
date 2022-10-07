@@ -1,9 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { address as bAddress } from 'bitcoinjs-lib';
-import { btcNetwork } from '../../common/constants';
-import { getScriptHash } from '../../common/htlc';
-import { fetchBtcBalance, withElectrumClient } from '../../common/api/electrum';
-import { bytesToHex } from 'micro-stacks/common';
+import { fetchBtcBalance } from '../../common/api/electrum';
 
 export interface BtcBalanceOkResponse {
   balance: string;

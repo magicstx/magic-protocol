@@ -7,6 +7,9 @@ module.exports = {
   env: {
     NEXT_PUBLIC_APP_VERSION: version,
   },
+  eslint: {
+    dirs: ['common', 'components', 'pages', 'scripts', 'test']
+  },
   webpack: config => {
     const alias = config.resolve.alias || (config.resolve.alias = {});
     alias['jotai'] = resolve(__dirname, 'node_modules', 'jotai');

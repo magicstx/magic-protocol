@@ -1,20 +1,9 @@
 import { useCallback, useState } from 'react';
-import {
-  ECPair,
-  networks,
-  opcodes,
-  payments,
-  Psbt,
-  script as bScript,
-  address as bAddress,
-} from 'bitcoinjs-lib';
-import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import { ECPair, payments, Psbt, script as bScript } from 'bitcoinjs-lib';
+import { hexToBytes } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
-import { withElectrumClient } from '../api/electrum';
-import { generateHTLCAddress, getScriptHash } from '../htlc';
-import BigNumber from 'bignumber.js';
-import { InboundSwapEscrowed } from '../store/swaps';
-import { broadcastBtc, TxData } from '../api';
+import { generateHTLCAddress } from '../htlc';
+import { broadcastBtc } from '../api';
 import { useAtomValue } from 'jotai/utils';
 import { stacksSessionAtom } from '@micro-stacks/react';
 import { btcNetwork } from '../constants';

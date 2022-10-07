@@ -3,10 +3,7 @@ import type { payments } from 'bitcoinjs-lib';
 import { Psbt, ECPair, networks } from 'bitcoinjs-lib';
 import type { IntegerType } from 'micro-stacks/common';
 import { intToBigInt } from 'micro-stacks/common';
-import { contracts as contractDef } from '../common/clarigen';
-import { deploymentFactory, projectFactory } from '@clarigen/core';
-import { testFactory } from '@clarigen/test';
-import { simnetDeployment } from '../common/clarigen/deployments/simnet';
+import { projectFactory } from '@clarigen/core';
 import { project, accounts } from '../common/clarigen/next';
 
 export { accounts };

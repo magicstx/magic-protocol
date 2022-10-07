@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback, useRef, useEffect } from 'react';
-import { Box, Stack, Flex, SpaceBetween } from '@nelson-ui/react';
+import React, { useCallback, useRef } from 'react';
+import { Stack, SpaceBetween } from '@nelson-ui/react';
 import { styled } from '@stitches/react';
 import { BtcIcon } from '../icons/btc';
 import { XBtcIcon } from '../icons/xbtc';

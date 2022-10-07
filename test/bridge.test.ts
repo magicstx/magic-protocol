@@ -1,28 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { PublicResultOk } from '@clarigen/test';
-import { createClarityBin, getBlockHeight, TestProvider, mineBlocks } from '@clarigen/test';
+import { getBlockHeight, TestProvider, mineBlocks } from '@clarigen/test';
 import { bytesToHex, hexToBytes, numberToHex } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';
-import {
-  CSV_DELAY,
-  CSV_DELAY_BUFF,
-  generateHTLCAddress,
-  numberToLE,
-  numberToLEBytes,
-} from '../common/htlc';
-import { getSwapAmount, logTxCosts, makeTxHex } from './helpers';
-import { privateKey, publicKey, publicKeys } from './mocks';
+import { CSV_DELAY, CSV_DELAY_BUFF, generateHTLCAddress, numberToLEBytes } from '../common/htlc';
+import { getSwapAmount, makeTxHex } from './helpers';
+import { publicKey, publicKeys } from './mocks';
 import { script as bScript, Transaction, payments, networks } from 'bitcoinjs-lib';
 import { base58checkDecode, getPublicKey } from 'micro-stacks/crypto';
-import { ClarinetAccounts, NativeClarityBinProvider } from '@clarigen/native-bin';
-import type { ContractFactory, AllContracts } from '@clarigen/core';
-import {
-  deploymentFactory,
-  ContractReturn,
-  CoreNodeEventType,
-  filterEvents,
-  makeContracts,
-} from '@clarigen/core';
+import { CoreNodeEventType, filterEvents } from '@clarigen/core';
 import { makeRandomPrivKey } from 'micro-stacks/transactions';
 import {
   getEscrowPrint,

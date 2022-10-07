@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { useInboundSwap } from '../../common/hooks/use-inbound-swap';
-import { Stack, Flex, Box } from '@nelson-ui/react';
+import { Stack, Box } from '@nelson-ui/react';
 import { useBtcTx, useStxTx, useCoreApiInfo } from '../../common/store/api';
 import { Alert, AlertHeader, AlertText } from '../alert';
 import { Text } from '../text';

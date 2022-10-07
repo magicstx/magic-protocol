@@ -2,7 +2,7 @@ import React, { Suspense, useCallback, useMemo } from 'react';
 import { Text } from '../text';
 import { Box, Flex, Stack } from '@nelson-ui/react';
 import { styled } from '@stitches/react';
-import { bpsToPercent, satsToBtc, truncateMiddle } from '../../common/utils';
+import { bpsToPercent, satsToBtc } from '../../common/utils';
 import { CheckSelected } from '../icons/check-selected';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import {

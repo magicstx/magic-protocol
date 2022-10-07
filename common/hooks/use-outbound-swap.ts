@@ -30,7 +30,7 @@ export function useOutboundSwap(_txId?: string) {
     return event.print;
   }, [initTx]);
 
-  const swapId = swap?.swapId || null;
+  const swapId = swap === null ? null : swap.swapId;
 
   const [footerSwapId, setSwapId] = useSwapId();
 

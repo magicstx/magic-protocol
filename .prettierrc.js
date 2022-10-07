@@ -1,9 +1,9 @@
 module.exports = {
   ...require('@stacks/prettier-config'),
-  overrides: {
+  overrides: [{
     files: './deployments/*.yaml',
     options: {
       singleQuote: false,
     },
-  },
+  }],
 };

@@ -2,7 +2,7 @@ import type { contracts } from './clarigen/next';
 import type { TypedAbiArg, TypedAbiFunction } from '@clarigen/core';
 import { hexToCvValue } from '@clarigen/core';
 import { getOutboundAddress, satsToBtc } from './utils';
-import { bytesToHex, hexToBytes } from 'micro-stacks/common';
+import { bytesToHex } from 'micro-stacks/common';
 import type { ApiEvent } from './api/stacks';
 
 type ResponseType<T> = T extends TypedAbiFunction<TypedAbiArg<unknown, string>[], infer R>

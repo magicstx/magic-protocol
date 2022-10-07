@@ -1,7 +1,7 @@
 import React from 'react';
 import { useOutboundSwap } from '../../common/hooks/use-outbound-swap';
 import { satsToBtc } from '../../common/utils';
-import { CenterBox, Divider, DoneRow, PendingRow } from '../center-box';
+import { CenterBox, Divider, DoneRow } from '../center-box';
 
 export const SwapCanceled: React.FC = () => {
   const { txId, swap } = useOutboundSwap();

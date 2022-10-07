@@ -1,6 +1,6 @@
 import { Stack, Flex } from '@nelson-ui/react';
 import React from 'react';
-import { AtomDevTools, Devtools } from './devtools';
+import { Devtools } from './devtools';
 import { Footer } from './footer';
 import { Header } from './header';
 import { SafeSuspense, Loading } from './safe-suspense';

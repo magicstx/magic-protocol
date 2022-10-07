@@ -3,18 +3,16 @@ import type { ContractCalls } from '@clarigen/core';
 import { tx as submitTx } from '@clarigen/web';
 import { sponsorTransaction } from '../api';
 import { getTxId } from '../utils';
-import { stxTxState, useStxTx, useStxTxResult } from '../store/api';
+import { stxTxState, useStxTxResult } from '../store/api';
 import { bytesToHex } from 'micro-stacks/common';
 import type { ContractCallTxOptions } from 'micro-stacks/connect';
 import { network } from '../constants';
-import { stacksSessionAtom } from '@micro-stacks/react';
 import { useAtomCallback, useAtomValue } from 'jotai/utils';
 import type { Contracts } from '../contracts';
 import { getContracts } from '../contracts';
 import { privateKeyState } from '../store';
 import { useQueryAtomValue } from './use-query-value';
 import type { PrimitiveAtom } from 'jotai';
-import { Atom, WritableAtom } from 'jotai';
 
 type Receipt<Ok, Err> = Awaited<ReturnType<typeof submitTx>>;
 

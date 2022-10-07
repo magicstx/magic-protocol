@@ -1,4 +1,4 @@
-import { bpsToPercent, pubKeyToBtcAddress, satsToBtc } from '../common/utils';
+import { bpsToPercent, satsToBtc } from '../common/utils';
 import { fetchAllSuppliers } from '../pages/api/suppliers';
 
 async function run() {

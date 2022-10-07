@@ -1,4 +1,3 @@
-import { AllContracts, ContractFactory } from '@clarigen/core';
 import { TestProvider } from '@clarigen/test';
 import { hexToBytes } from 'micro-stacks/common';
 import { hashSha256 } from 'micro-stacks/crypto-sha';

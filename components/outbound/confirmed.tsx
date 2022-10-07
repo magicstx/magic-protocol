@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Flex, Grid, Stack, Box } from '@nelson-ui/react';
+import { Flex, Stack } from '@nelson-ui/react';
 import { CenterBox, PendingRow, DoneRow, Divider } from '../center-box';
 import { useOutboundSwap } from '../../common/hooks/use-outbound-swap';
 import { satsToBtc } from '../../common/utils';
