@@ -1,6 +1,6 @@
-# Magic Bridge
+# Magic Protocol
 
-This repository is the codebase for the Magic Bridge contracts and web application.
+This repository is the codebase for the Magic Protocol contracts and web application.
 
 Check out the [Magic docs](https://docs.magic.fun) for more information about how Magic works.
 
@@ -15,5 +15,3 @@ First, install dependencies by running `yarn`.
 Copy the `.env.example` file to `.env.local`. The example configuration will work for public testnet configurations.
 
 Finally, run the app with `yarn dev`. The app will be available at [localhost:4444](http://localhost:4444).
-
-##
