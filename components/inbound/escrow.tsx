@@ -6,6 +6,7 @@ import { Button } from '../button';
 import { useEscrowSwap } from '../../common/hooks/tx/use-escrow-swap';
 import { satsToBtc } from '../../common/utils';
 import { BtcAddress } from './btc-address';
+import { SwapRedeem } from './recover';
 
 export const SwapEscrow: React.FC = () => {
   const { swap, updateSwap } = useInboundSwap();
@@ -31,6 +32,7 @@ export const SwapEscrow: React.FC = () => {
         <Divider />
         <DoneRow btcTxId={swap.btcTxid}>{satsToBtc(swap.satsAmount)} BTC received</DoneRow>
       </CenterBox>
+      <SwapRedeem />
       <Button width="260px" mx="auto" size="big" onClick={escrowSwap.submit}>
         Continue
       </Button>

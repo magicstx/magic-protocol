@@ -40,3 +40,5 @@ yarn-error.log*
 settings/Testnet.toml
 settings/Mainnet.toml
 history.txt
+
+.clarinet/requirements

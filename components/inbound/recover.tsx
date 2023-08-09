@@ -14,9 +14,9 @@ import { useWaitTime } from '../../common/hooks/use-wait-time';
 import { useDeepMemo } from '../../common/hooks/use-deep-effect';
 
 export const SwapRedeem: React.FC = () => {
-  const { swap, updateSwap } = useInboundSwap();
-  if (!('escrowTxid' in swap)) throw new Error('Invalid swap state');
-  const [escrowTx] = useStxTx(swap.escrowTxid);
+  const { swap } = useInboundSwap();
+  if (!('btcTxid' in swap)) throw new Error('Invalid swap state');
+  const [escrowTx] = useStxTx('escrowTxid' in swap ? swap.escrowTxid : undefined);
   const [btcTx] = useBtcTx(swap.btcTxid, swap.address);
   const [coreInfo] = useCoreApiInfo();
   const btcAddress = useInput(useAtom(btcAddressState));
@@ -40,7 +40,7 @@ export const SwapRedeem: React.FC = () => {
     return true;
   }, [escrowTx]);
 
-  if (!isFailed) return null;
+  if (!isFailed && !isExpired) return null;
   if ('recoveryTxid' in swap) return null;
 
   return (

@@ -47,9 +47,9 @@ export function useOutboundSwap(_txId?: string) {
   const [unspentApiResponse] = useListUnspent(btcAddress);
   const unspent = useMemo(() => {
     if (!swap || unspentApiResponse.unspents === undefined) return undefined;
-    const { burnHeight } = unspentApiResponse;
+    const initBurnHeight = swap.createdAt;
     return unspentApiResponse.unspents.find(unspent => {
-      const heightOk = unspent.height === 0 || unspent.height > burnHeight - 300;
+      const heightOk = unspent.height === 0 || BigInt(unspent.height) - initBurnHeight >= 500;
       const amountOk = BigInt(unspent.value) === swap.sats;
       return heightOk && amountOk;
     });
