@@ -11,6 +11,7 @@ import { Text } from '../text';
 import { MagicArrow } from '../icons/magic-arrow';
 import BigNumber from 'bignumber.js';
 import type { TransactionStatus } from '../../common/api/stacks';
+import { SwapRedeem } from './recover';
 
 export const FinalRow: React.FC<{ txId: string; status: TransactionStatus }> = ({
   txId,
@@ -26,6 +27,7 @@ export const FinalRow: React.FC<{ txId: string; status: TransactionStatus }> = (
           There was an error when finalizing your transaction.
         </Text>
         <ExternalTx txId={txId} />
+        <SwapRedeem />
       </SpaceBetween>
     );
   }
@@ -101,6 +103,10 @@ export const SwapDone: React.FC = () => {
     void setStatus();
   }, [setStatus]);
 
+  const showRecover = useMemo(() => {
+    return status !== 'pending' && status !== 'success';
+  }, [status]);
+
   return (
     <Stack spacing="$row-y">
       <CenterBox noPadding>
@@ -120,6 +126,7 @@ export const SwapDone: React.FC = () => {
           </>
         ) : null}
       </CenterBox>
+      {showRecover && <SwapRedeem />}
     </Stack>
   );
 };
