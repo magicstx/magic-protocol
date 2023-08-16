@@ -34,7 +34,8 @@ export const FinalizeRow: React.FC<{ txId?: string; status?: TransactionStatus }
 
 export const SwapFinalize: React.FC = () => {
   const { swap, updateSwap } = useInboundSwap();
-  if (!('escrowTxid' in swap)) throw new Error('Invalid swap state');
+  if (!('escrowTxid' in swap))
+    throw new Error('Invalid swap state - missing escrow txid (SwapFinalize)');
   const [escrowTx] = useStxTx(swap.escrowTxid);
   const xbtc = useMemo(() => {
     return getSwapAmount(swap.satsAmount, swap.supplier.inboundFee, swap.supplier.inboundBaseFee);

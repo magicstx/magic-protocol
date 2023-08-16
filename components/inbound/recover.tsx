@@ -1,26 +1,29 @@
 import React, { useCallback } from 'react';
 import { useInboundSwap } from '../../common/hooks/use-inbound-swap';
 import { Stack, Box } from '@nelson-ui/react';
-import { useBtcTx, useStxTx, useCoreApiInfo } from '../../common/store/api';
+import { useBtcTx, useStxTx, useCoreApiInfo, btcFeesState } from '../../common/store/api';
 import { Alert, AlertHeader, AlertText } from '../alert';
 import { Text } from '../text';
 import { StatusButton } from '../button';
 import { useInput } from '../../common/hooks/use-input';
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 import { btcAddressState } from '../../common/store';
 import { useRecoverSwap } from '../../common/hooks/use-recover-swap';
 import { MagicInput } from '../form';
 import { useWaitTime } from '../../common/hooks/use-wait-time';
 import { useDeepMemo } from '../../common/hooks/use-deep-effect';
+import { loadable } from 'jotai/utils';
 
 export const SwapRedeem: React.FC = () => {
   const { swap } = useInboundSwap();
-  if (!('btcTxid' in swap)) throw new Error('Invalid swap state');
+  if (!('btcTxid' in swap)) throw new Error('Invalid swap state - missing btc txid (SwapRedeem)');
   const [escrowTx] = useStxTx('escrowTxid' in swap ? swap.escrowTxid : undefined);
   const [btcTx] = useBtcTx(swap.btcTxid, swap.address);
   const [coreInfo] = useCoreApiInfo();
   const btcAddress = useInput(useAtom(btcAddressState));
   const { submit, txid } = useRecoverSwap();
+  // preload
+  useAtomValue(loadable(btcFeesState));
 
   const submitRedeem = useCallback(async () => {
     await submit();
@@ -46,7 +49,7 @@ export const SwapRedeem: React.FC = () => {
   return (
     <Alert>
       <Stack spacing="20px">
-        <AlertHeader>Supplier no longer has enough xBTC</AlertHeader>
+        <AlertHeader>Recover your BTC</AlertHeader>
         {isExpired ? (
           <>
             <Stack spacing="8px">
@@ -70,8 +73,7 @@ export const SwapRedeem: React.FC = () => {
           <>
             <Stack spacing="8px">
               <AlertText>
-                Something is wrong with the supplier. They may add funds momentarily or you may need
-                to cancel and recover.{' '}
+                Something is wrong with your swap. You may need to cancel and recover.{' '}
               </AlertText>
               <AlertText>
                 Your funds are safely escrowed, but for security you can only remove them{' '}

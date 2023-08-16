@@ -10,7 +10,7 @@ import { SwapRedeem } from './recover';
 
 export const SwapEscrow: React.FC = () => {
   const { swap, updateSwap } = useInboundSwap();
-  if (!('btcTxid' in swap)) throw new Error('Invalid swap state');
+  if (!('btcTxid' in swap)) throw new Error('Invalid swap state - missing BTC Txid (SwapEscrow)');
 
   const escrowSwap = useEscrowSwap(swap);
 

@@ -56,6 +56,10 @@ export const Devtools: React.FC = () => {
     console.debug('LOCAL_URL', LOCAL_URL);
     console.debug('NETWORK_CONFIG', NETWORK_CONFIG);
     console.debug('CONTRACT_ADDRESS', bridgeContract().identifier);
+    const gitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
+    if (gitSha) {
+      console.debug('GIT_COMMIT', gitSha);
+    }
   }, []);
   return process.env.NODE_ENV === 'production' ? null : (
     <>

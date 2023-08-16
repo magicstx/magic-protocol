@@ -27,7 +27,6 @@ export const FinalRow: React.FC<{ txId: string; status: TransactionStatus }> = (
           There was an error when finalizing your transaction.
         </Text>
         <ExternalTx txId={txId} />
-        <SwapRedeem />
       </SpaceBetween>
     );
   }
@@ -86,7 +85,8 @@ const FinalSummary = memo(FinalSummaryComp);
 
 export const SwapDone: React.FC = () => {
   const { swap, updateSwap } = useInboundSwap();
-  if (!('finalizeTxid' in swap)) throw new Error('Invalid swap state');
+  if (!('finalizeTxid' in swap))
+    throw new Error('Invalid swap state - missing finalizeTxid (SwapDone)');
   const [finalizeTx] = useStxTx(swap.finalizeTxid);
   const status = finalizeTx?.status || 'pending';
   const swapSavedStatus = useMemo(() => {

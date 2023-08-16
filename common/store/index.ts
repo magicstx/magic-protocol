@@ -31,6 +31,7 @@ export enum QueryKeys {
   BTC_BALANCES = 'btcBalances',
   BTC_TX = 'btcTxData',
   CORE_INFO = 'coreInfo',
+  BTC_FEES = 'btcFees',
 }
 
 export async function fetchSupplierWithContract(id: number) {
