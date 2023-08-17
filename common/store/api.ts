@@ -21,7 +21,6 @@ import { xbtcAssetId } from '../contracts';
 import type { FormattedBridgeEvent } from '../events';
 import { getPrintDescription, getPrintTitle } from '../events';
 import { useQueryAtomValue } from '../hooks/use-query-value';
-import mempoolJS from '@mempool/mempool.js';
 
 export const stxTxState = atomFamilyWithQuery<string | undefined, Transaction | null>(
   (get, txId) => [QueryKeys.STX_TX, txId],
@@ -133,14 +132,16 @@ export const formattedBridgeEventsState = atom<FormattedBridgeEvent[]>(get => {
   }));
 });
 
+export type MempoolFeesRecommended = {
+  fastestFee: number;
+  halfHourFee: number;
+};
+
 export const btcFeesState = atomWithQuery(QueryKeys.BTC_FEES, async () => {
-  const {
-    bitcoin: { fees },
-  } = mempoolJS({
-    hostname: 'mempool.space',
-  });
-  const recommended = await fees.getFeesRecommended();
-  return recommended.fastestFee;
+  const url = 'https://mempool.space/api/v1/fees/recommended';
+  const res = await fetch(url);
+  const data = (await res.json()) as MempoolFeesRecommended;
+  return data.fastestFee;
 });
 
 // hooks

@@ -27,7 +27,6 @@
     "@clarigen/node": "1.0.0-next.27",
     "@clarigen/test": "1.0.0-next.27",
     "@clarigen/web": "1.0.0-next.27",
-    "@mempool/mempool.js": "^2.3.0",
     "@micro-stacks/nextjs": "0.1.1",
     "@micro-stacks/query": "0.1.1",
     "@micro-stacks/react": "0.2.1",
